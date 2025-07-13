@@ -1,0 +1,9 @@
+schema: internal/client/schema.graphql
+operations:
+  - internal/client/queries.graphql
+generated: internal/client/generated.go
+package_name: client
+endpoint:
+  url: https://api.hardcover.app/v1/graphql
+  headers:
+    User-Agent: hardcover-cli/1.0.0
