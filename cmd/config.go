@@ -33,29 +33,36 @@ Example:
   hardcover config set-api-key "your-api-key-here"`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return fmt.Errorf("API key is required")
+		}
+		if len(args) > 1 {
+			return fmt.Errorf("too many arguments; expected exactly one API key")
+		}
+
 		apiKey := args[0]
-		
+
 		// Load existing config or create new one
 		cfg, err := config.LoadConfig()
 		if err != nil {
 			cfg = config.DefaultConfig()
 		}
-		
+
 		// Update the API key
 		cfg.APIKey = apiKey
-		
+
 		// Save the configuration
 		if err := config.SaveConfig(cfg); err != nil {
 			return fmt.Errorf("failed to save configuration: %w", err)
 		}
-		
-		fmt.Printf("API key has been set and saved to configuration file.\n")
-		
+
+		fmt.Fprintf(cmd.OutOrStdout(), "API key has been set and saved to configuration file.\n")
+
 		configPath, err := config.GetConfigPath()
 		if err == nil {
-			fmt.Printf("Configuration file: %s\n", configPath)
+			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file: %s\n", configPath)
 		}
-		
+
 		return nil
 	},
 }
@@ -77,34 +84,34 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to load configuration: %w", err)
 		}
-		
+
 		if cfg.APIKey == "" {
-			fmt.Printf("No API key is currently set.\n")
-			fmt.Printf("Set it using:\n")
-			fmt.Printf("  hardcover config set-api-key \"your-api-key\"\n")
-			fmt.Printf("  or\n")
-			fmt.Printf("  export HARDCOVER_API_KEY=\"your-api-key\"\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "No API key is currently set.\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "Set it using:\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "  hardcover config set-api-key \"your-api-key\"\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "  or\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "  export HARDCOVER_API_KEY=\"your-api-key\"\n")
 			return nil
 		}
-		
+
 		// Show only the first and last few characters for security
 		if len(cfg.APIKey) > 10 {
 			masked := cfg.APIKey[:4] + "..." + cfg.APIKey[len(cfg.APIKey)-4:]
-			fmt.Printf("API key: %s\n", masked)
+			fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", masked)
 		} else {
-			fmt.Printf("API key: %s\n", cfg.APIKey)
+			fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", cfg.APIKey)
 		}
-		
+
 		// Show the source of the API key
 		if os.Getenv("HARDCOVER_API_KEY") != "" {
-			fmt.Printf("Source: Environment variable (HARDCOVER_API_KEY)\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "Source: Environment variable (HARDCOVER_API_KEY)\n")
 		} else {
 			configPath, err := config.GetConfigPath()
 			if err == nil {
-				fmt.Printf("Source: Configuration file (%s)\n", configPath)
+				fmt.Fprintf(cmd.OutOrStdout(), "Source: Configuration file (%s)\n", configPath)
 			}
 		}
-		
+
 		return nil
 	},
 }
@@ -122,17 +129,17 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to get configuration path: %w", err)
 		}
-		
-		fmt.Printf("Configuration file path: %s\n", configPath)
-		
+
+		fmt.Fprintf(cmd.OutOrStdout(), "Configuration file path: %s\n", configPath)
+
 		// Check if file exists
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			fmt.Printf("Configuration file does not exist yet.\n")
-			fmt.Printf("It will be created when you set your API key.\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file does not exist yet.\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "It will be created when you set your API key.\n")
 		} else {
-			fmt.Printf("Configuration file exists.\n")
+			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file exists.\n")
 		}
-		
+
 		return nil
 	},
 }

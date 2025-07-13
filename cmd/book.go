@@ -43,6 +43,13 @@ Example:
   hardcover book get "book-slug-or-id"`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			return fmt.Errorf("book ID is required")
+		}
+		if len(args) > 1 {
+			return fmt.Errorf("too many arguments; expected exactly one book ID")
+		}
+
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
 			return fmt.Errorf("failed to get configuration")
@@ -93,19 +100,19 @@ Example:
 		book := response.Book
 
 		// Display detailed book information
-		fmt.Printf("Book Details:\n")
-		fmt.Printf("  Title: %s\n", book.Title)
-		fmt.Printf("  ID: %s\n", book.ID)
-		
+		fmt.Fprintf(cmd.OutOrStdout(), "Book Details:\n")
+		fmt.Fprintf(cmd.OutOrStdout(), "  Title: %s\n", book.Title)
+		fmt.Fprintf(cmd.OutOrStdout(), "  ID: %s\n", book.ID)
+
 		if book.Description != "" {
-			fmt.Printf("  Description: %s\n", book.Description)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Description: %s\n", book.Description)
 		}
 
 		// Display authors and contributors
 		if len(book.CachedContributors) > 0 {
 			var authors []string
 			var otherContributors []string
-			
+
 			for _, contributor := range book.CachedContributors {
 				if contributor.Role == "" || contributor.Role == "author" || contributor.Role == "Author" {
 					authors = append(authors, contributor.Name)
@@ -113,27 +120,27 @@ Example:
 					otherContributors = append(otherContributors, fmt.Sprintf("%s (%s)", contributor.Name, contributor.Role))
 				}
 			}
-			
+
 			if len(authors) > 0 {
-				fmt.Printf("  Authors: %s\n", strings.Join(authors, ", "))
+				fmt.Fprintf(cmd.OutOrStdout(), "  Authors: %s\n", strings.Join(authors, ", "))
 			}
-			
+
 			if len(otherContributors) > 0 {
-				fmt.Printf("  Contributors: %s\n", strings.Join(otherContributors, ", "))
+				fmt.Fprintf(cmd.OutOrStdout(), "  Contributors: %s\n", strings.Join(otherContributors, ", "))
 			}
 		}
 
 		// Display publication details
 		if book.PublicationYear > 0 {
-			fmt.Printf("  Published: %d\n", book.PublicationYear)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Published: %d\n", book.PublicationYear)
 		}
 
 		if book.PageCount > 0 {
-			fmt.Printf("  Pages: %d\n", book.PageCount)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Pages: %d\n", book.PageCount)
 		}
 
 		if book.ISBN != "" {
-			fmt.Printf("  ISBN: %s\n", book.ISBN)
+			fmt.Fprintf(cmd.OutOrStdout(), "  ISBN: %s\n", book.ISBN)
 		}
 
 		// Display genres
@@ -142,28 +149,28 @@ Example:
 			for _, genre := range book.CachedGenres {
 				genres = append(genres, genre.Name)
 			}
-			fmt.Printf("  Genres: %s\n", strings.Join(genres, ", "))
+			fmt.Fprintf(cmd.OutOrStdout(), "  Genres: %s\n", strings.Join(genres, ", "))
 		}
 
 		// Display rating information
 		if book.AverageRating > 0 {
-			fmt.Printf("  Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
 		}
 
 		// Display image URL
 		if book.Image != "" {
-			fmt.Printf("  Cover Image: %s\n", book.Image)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Cover Image: %s\n", book.Image)
 		}
 
 		// Display Hardcover URL
-		fmt.Printf("  URL: https://hardcover.app/books/%s\n", book.Slug)
+		fmt.Fprintf(cmd.OutOrStdout(), "  URL: https://hardcover.app/books/%s\n", book.Slug)
 
 		// Display timestamps
 		if book.CreatedAt != "" {
-			fmt.Printf("  Created: %s\n", book.CreatedAt)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Created: %s\n", book.CreatedAt)
 		}
 		if book.UpdatedAt != "" {
-			fmt.Printf("  Updated: %s\n", book.UpdatedAt)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Updated: %s\n", book.UpdatedAt)
 		}
 
 		return nil
