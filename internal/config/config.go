@@ -81,6 +81,11 @@ func SaveConfig(cfg *Config) error {
 
 // getConfigPath returns the path to the configuration file
 func getConfigPath() (string, error) {
+	// Check for XDG_CONFIG_HOME (for testing)
+	if xdgConfig := os.Getenv("XDG_CONFIG_HOME"); xdgConfig != "" {
+		return filepath.Join(xdgConfig, ".hardcover", "config.yaml"), nil
+	}
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("failed to get home directory: %w", err)

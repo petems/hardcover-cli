@@ -41,6 +41,19 @@ jobs:
     - name: Verify dependencies
       run: go mod verify
     
+    - name: Install genqlient
+      run: go install github.com/Khan/genqlient@latest
+    
+    - name: Verify generated code is up to date
+      run: |
+        cd internal/client
+        genqlient genqlient.yaml
+        if ! git diff --quiet generated.go; then
+          echo "Generated code is not up to date. Please run 'cd internal/client && genqlient genqlient.yaml' and commit the changes."
+          git diff generated.go
+          exit 1
+        fi
+    
     - name: Run tests
       run: go test -v -race -coverprofile=coverage.out ./...
 
