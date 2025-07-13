@@ -96,11 +96,6 @@ The project uses several GitHub Actions workflows to ensure code quality, securi
 - **Testing**: Ensures tests still pass with new dependencies
 - **Pull Request**: Creates PR with changes if updates are available
 
-#### Security Audit
-- **Nancy**: Sonatype dependency vulnerability scanner
-- **govulncheck**: Go vulnerability checker
-- **Gosec**: Security scanning with SARIF output
-
 #### License Check
 - **go-licenses**: Validates dependency licenses
 - **Report Generation**: Creates license summary
