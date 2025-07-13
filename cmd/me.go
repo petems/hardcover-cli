@@ -8,20 +8,6 @@ import (
 	"hardcover-cli/internal/client"
 )
 
-// User represents the user structure from the API
-type User struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-}
-
-// GetCurrentUserResponse represents the response from the GetCurrentUser query
-type GetCurrentUserResponse struct {
-	Me User `json:"me"`
-}
-
 // meCmd represents the me command
 var meCmd = &cobra.Command{
 	Use:   "me",
@@ -47,35 +33,24 @@ Example:
 
 		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
 
-		const query = `
-			query GetCurrentUser {
-				me {
-					id
-					username
-					email
-					createdAt
-					updatedAt
-				}
-			}
-		`
-
-		var response GetCurrentUserResponse
-		if err := client.Execute(context.Background(), query, nil, &response); err != nil {
+		response, err := client.GetCurrentUser(context.Background())
+		if err != nil {
 			return fmt.Errorf("failed to get user profile: %w", err)
 		}
 
-		// Display the user information
+		// Display the user information using the generated types
+		user := response.GetMe()
 		fmt.Printf("User Profile:\n")
-		fmt.Printf("  ID: %s\n", response.Me.ID)
-		fmt.Printf("  Username: %s\n", response.Me.Username)
-		if response.Me.Email != "" {
-			fmt.Printf("  Email: %s\n", response.Me.Email)
+		fmt.Printf("  ID: %s\n", user.GetId())
+		fmt.Printf("  Username: %s\n", user.GetUsername())
+		if user.GetEmail() != "" {
+			fmt.Printf("  Email: %s\n", user.GetEmail())
 		}
-		if response.Me.CreatedAt != "" {
-			fmt.Printf("  Created: %s\n", response.Me.CreatedAt)
+		if user.GetCreatedAt() != "" {
+			fmt.Printf("  Created: %s\n", user.GetCreatedAt())
 		}
-		if response.Me.UpdatedAt != "" {
-			fmt.Printf("  Updated: %s\n", response.Me.UpdatedAt)
+		if user.GetUpdatedAt() != "" {
+			fmt.Printf("  Updated: %s\n", user.GetUpdatedAt())
 		}
 
 		return nil

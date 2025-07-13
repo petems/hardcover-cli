@@ -2,6 +2,7 @@ scalar ID
 scalar String
 scalar Int
 scalar Boolean
+scalar Float
 
 type Query {
   me: User
