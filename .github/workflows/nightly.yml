@@ -1,0 +1,221 @@
+name: Nightly Tests
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  test-latest-dependencies:
+    name: Test with Latest Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Update to latest dependencies
+      run: |
+        go get -u ./...
+        go mod tidy
+    
+    - name: Run tests with race detection
+      run: go test -v -race -timeout=10m ./...
+    
+    - name: Run tests with coverage
+      run: go test -v -coverprofile=coverage.out ./...
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: nightly
+        name: nightly-coverage
+
+  test-go-versions:
+    name: Test Go Versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.19', '1.20', '1.21', '1.22']
+    
+    steps:
+    - name: Set up Go ${{ matrix.go-version }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ matrix.go-version }}-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run tests
+      run: go test -v ./...
+    
+    - name: Build application
+      run: go build -v .
+
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run benchmarks
+      run: |
+        go test -bench=. -benchmem ./... | tee benchmark.txt
+    
+    - name: Store benchmark result
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        tool: 'go'
+        output-file-path: benchmark.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: true
+        comment-on-alert: true
+        alert-threshold: '200%'
+        fail-on-alert: false
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'your-username'  # Only run for main repo
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Build application
+      run: go build -o hardcover .
+    
+    - name: Test CLI commands (without real API calls)
+      run: |
+        # Test help commands
+        ./hardcover --help
+        ./hardcover config --help
+        ./hardcover search --help
+        ./hardcover book --help
+        
+        # Test config commands (these don't require API)
+        ./hardcover config show-path
+        
+        echo "Integration tests completed successfully"
+
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [test-latest-dependencies, test-go-versions, benchmark, integration-test]
+    if: failure()
+    
+    steps:
+    - name: Create issue on failure
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `Nightly tests failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          ## Nightly Test Failure
+          
+          The nightly tests have failed. Please investigate the following:
+          
+          - Check if there are any dependency conflicts
+          - Verify external API compatibility
+          - Review performance regressions
+          - Check for Go version compatibility issues
+          
+          **Run details:** [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref }}
+          
+          This issue was automatically created by the nightly test workflow.
+          `;
+          
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: 'nightly-failure'
+          });
+          
+          // Check if there's already an open issue for nightly failures
+          const existingIssue = issues.data.find(issue => 
+            issue.title.includes('Nightly tests failed')
+          );
+          
+          if (!existingIssue) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['bug', 'nightly-failure', 'automated']
+            });
+          } else {
+            // Add a comment to the existing issue
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existingIssue.number,
+              body: `Nightly tests failed again on ${new Date().toISOString().split('T')[0]}. [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            });
+          }
