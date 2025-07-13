@@ -1,0 +1,70 @@
+scalar ID
+scalar String
+scalar Int
+scalar Boolean
+
+type Query {
+  me: User
+  book(id: ID!): Book
+  search(query: String!, type: SearchType!): SearchResults
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String
+  createdAt: String
+  updatedAt: String
+}
+
+type Book {
+  id: ID!
+  title: String!
+  description: String
+  slug: String!
+  isbn: String
+  publicationYear: Int
+  pageCount: Int
+  cached_contributors: [Contributor!]!
+  cached_genres: [Genre!]!
+  image: String
+  averageRating: Float
+  ratingsCount: Int
+  createdAt: String
+  updatedAt: String
+}
+
+type Contributor {
+  id: ID!
+  name: String!
+  role: String
+}
+
+type Genre {
+  id: ID!
+  name: String!
+  description: String
+}
+
+enum SearchType {
+  BOOKS
+  AUTHORS
+  USERS
+}
+
+union SearchResults = BookSearchResults | AuthorSearchResults | UserSearchResults
+
+type BookSearchResults {
+  results: [Book!]!
+  totalCount: Int!
+}
+
+type AuthorSearchResults {
+  results: [Contributor!]!
+  totalCount: Int!
+}
+
+type UserSearchResults {
+  results: [User!]!
+  totalCount: Int!
+}
