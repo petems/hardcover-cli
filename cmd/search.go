@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+
 	"hardcover-cli/internal/client"
 )
 
@@ -22,20 +23,20 @@ type Genre struct {
 
 // Book represents a book from the API
 type Book struct {
-	ID                 string        `json:"id"`
+	Image              string        `json:"image"`
 	Title              string        `json:"title"`
 	Slug               string        `json:"slug"`
 	ISBN               string        `json:"isbn"`
-	PublicationYear    int           `json:"publicationYear"`
-	PageCount          int           `json:"pageCount"`
+	UpdatedAt          string        `json:"updatedAt"`
+	CreatedAt          string        `json:"createdAt"`
+	ID                 string        `json:"id"`
+	Description        string        `json:"description"`
 	CachedContributors []Contributor `json:"cached_contributors"`
 	CachedGenres       []Genre       `json:"cached_genres"`
-	Image              string        `json:"image"`
 	AverageRating      float64       `json:"averageRating"`
 	RatingsCount       int           `json:"ratingsCount"`
-	Description        string        `json:"description"`
-	CreatedAt          string        `json:"createdAt"`
-	UpdatedAt          string        `json:"updatedAt"`
+	PageCount          int           `json:"pageCount"`
+	PublicationYear    int           `json:"publicationYear"`
 }
 
 // BookSearchResults represents the search results for books
