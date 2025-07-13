@@ -54,28 +54,48 @@ Example:
 			return fmt.Errorf("failed to search books: %w", err)
 		}
 
-		// Handle the union type - check typename field
+		// Handle the union type using interface methods
 		searchResults := response.GetSearch()
 		
-		// Use typename to determine the concrete type
+		// Check typename to determine the concrete type
 		typename := searchResults.GetTypename()
 		
 		if typename == "BookSearchResults" {
-			if bookResults, ok := searchResults.(*client.SearchBooksSearchBookSearchResults); ok {
+			// Use reflection to access the fields we need
+			// Since genqlient generates interfaces, we need to work with the interface methods
+			// The SearchBooksSearchBookSearchResults should have the methods we need
+			
+			// For now, let's use a simple approach - check if we can cast to the interface
+			if bookResults, ok := searchResults.(interface {
+				GetTotalCount() int
+				GetResults() []interface{ 
+					GetId() string
+					GetTitle() string
+					GetSlug() string
+					GetIsbn() string
+					GetPublicationYear() int
+					GetPageCount() int
+					GetCached_contributors() []interface{ GetName() string; GetRole() string }
+					GetCached_genres() []interface{ GetName() string }
+					GetImage() string
+					GetAverageRating() float64
+					GetRatingsCount() int
+				}
+			}); ok {
 				totalCount := bookResults.GetTotalCount()
 				books := bookResults.GetResults()
 
 				if totalCount == 0 {
-					fmt.Printf("No books found for query: %s\n", query)
+					fmt.Fprintf(cmd.OutOrStdout(), "No books found for query: %s\n", query)
 					return nil
 				}
 
-				fmt.Printf("Found %d books for query: %s\n\n", totalCount, query)
+				fmt.Fprintf(cmd.OutOrStdout(), "Found %d books for query: %s\n\n", totalCount, query)
 
 				// Display each book
 				for i, book := range books {
-					fmt.Printf("%d. %s\n", i+1, book.GetTitle())
-					fmt.Printf("   ID: %s\n", book.GetId())
+					fmt.Fprintf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.GetTitle())
+					fmt.Fprintf(cmd.OutOrStdout(), "   ID: %s\n", book.GetId())
 					
 					// Display contributors
 					contributors := book.GetCached_contributors()
@@ -89,20 +109,20 @@ Example:
 								contributorNames = append(contributorNames, contributor.GetName())
 							}
 						}
-						fmt.Printf("   Contributors: %s\n", strings.Join(contributorNames, ", "))
+						fmt.Fprintf(cmd.OutOrStdout(), "   Contributors: %s\n", strings.Join(contributorNames, ", "))
 					}
 
 					// Display publication details
 					if book.GetPublicationYear() > 0 {
-						fmt.Printf("   Published: %d\n", book.GetPublicationYear())
+						fmt.Fprintf(cmd.OutOrStdout(), "   Published: %d\n", book.GetPublicationYear())
 					}
 
 					if book.GetPageCount() > 0 {
-						fmt.Printf("   Pages: %d\n", book.GetPageCount())
+						fmt.Fprintf(cmd.OutOrStdout(), "   Pages: %d\n", book.GetPageCount())
 					}
 
 					if book.GetIsbn() != "" {
-						fmt.Printf("   ISBN: %s\n", book.GetIsbn())
+						fmt.Fprintf(cmd.OutOrStdout(), "   ISBN: %s\n", book.GetIsbn())
 					}
 
 					// Display genres
@@ -112,29 +132,29 @@ Example:
 						for _, genre := range genres {
 							genreNames = append(genreNames, genre.GetName())
 						}
-						fmt.Printf("   Genres: %s\n", strings.Join(genreNames, ", "))
+						fmt.Fprintf(cmd.OutOrStdout(), "   Genres: %s\n", strings.Join(genreNames, ", "))
 					}
 
 					// Display ratings
 					if book.GetRatingsCount() > 0 {
-						fmt.Printf("   Rating: %.1f/5 (%d ratings)\n", book.GetAverageRating(), book.GetRatingsCount())
+						fmt.Fprintf(cmd.OutOrStdout(), "   Rating: %.1f/5 (%d ratings)\n", book.GetAverageRating(), book.GetRatingsCount())
 					}
 
 					// Display URL
 					if book.GetSlug() != "" {
-						fmt.Printf("   URL: https://hardcover.app/books/%s\n", book.GetSlug())
+						fmt.Fprintf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", book.GetSlug())
 					}
 
 					// Add separator between books (except for the last one)
 					if i < len(books)-1 {
-						fmt.Println()
+						fmt.Fprintf(cmd.OutOrStdout(), "\n")
 					}
 				}
 			} else {
-				return fmt.Errorf("failed to cast to BookSearchResults")
+				return fmt.Errorf("failed to access BookSearchResults methods")
 			}
 		} else {
-			return fmt.Errorf("unexpected search result type: %s", typename)
+			return fmt.Errorf("search returned %s, expected BookSearchResults", typename)
 		}
 
 		return nil

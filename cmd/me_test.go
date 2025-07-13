@@ -13,7 +13,7 @@ import (
 	"hardcover-cli/internal/config"
 )
 
-// MockHardcoverClient is a mock implementation of HardcoverClient for testing
+// MockHardcoverClient is a mock implementation of client.HardcoverClient for testing
 type MockHardcoverClient struct {
 	GetCurrentUserFunc func(ctx context.Context) (*client.GetCurrentUserResponse, error)
 	GetBookFunc        func(ctx context.Context, id string) (*client.GetBookResponse, error)
@@ -41,11 +41,19 @@ func (m *MockHardcoverClient) SearchBooks(ctx context.Context, query string) (*c
 	return nil, fmt.Errorf("mock function not implemented")
 }
 
+// Store original NewClient function
+var originalNewClient = client.NewClient
+
 // Helper function to create a mock client factory
-func withMockClient(client client.HardcoverClient) func(endpoint, apiKey string) client.HardcoverClient {
-	return func(endpoint, apiKey string) client.HardcoverClient {
-		return client
+func withMockClient(mockClient client.HardcoverClient) {
+	client.NewClient = func(endpoint, apiKey string) client.HardcoverClient {
+		return mockClient
 	}
+}
+
+// Helper function to restore original client
+func restoreOriginalClient() {
+	client.NewClient = originalNewClient
 }
 
 func TestMeCmd_Success(t *testing.T) {
@@ -78,12 +86,9 @@ func TestMeCmd_Success(t *testing.T) {
 	var output bytes.Buffer
 	cmd.SetOut(&output)
 	
-	// Temporarily override the client.NewClient function
-	originalNewClient := client.NewClient
-	client.NewClient = withMockClient(mockClient)
-	defer func() {
-		client.NewClient = originalNewClient
-	}()
+	// Use mock client
+	withMockClient(mockClient)
+	defer restoreOriginalClient()
 	
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -145,12 +150,9 @@ func TestMeCmd_APIError(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
 	
-	// Temporarily override the client.NewClient function
-	originalNewClient := client.NewClient
-	client.NewClient = withMockClient(mockClient)
-	defer func() {
-		client.NewClient = originalNewClient
-	}()
+	// Use mock client
+	withMockClient(mockClient)
+	defer restoreOriginalClient()
 	
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -187,12 +189,9 @@ func TestMeCmd_PartialData(t *testing.T) {
 	var output bytes.Buffer
 	cmd.SetOut(&output)
 	
-	// Temporarily override the client.NewClient function
-	originalNewClient := client.NewClient
-	client.NewClient = withMockClient(mockClient)
-	defer func() {
-		client.NewClient = originalNewClient
-	}()
+	// Use mock client
+	withMockClient(mockClient)
+	defer restoreOriginalClient()
 	
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})

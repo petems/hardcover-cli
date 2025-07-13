@@ -20,8 +20,9 @@ type Client struct {
 	graphqlClient graphql.Client
 }
 
-// NewClient creates a new GraphQL client using genqlient
-func NewClient(endpoint, apiKey string) HardcoverClient {
+// NewClient is a variable function that creates a new GraphQL client using genqlient
+// This can be overridden in tests for mocking
+var NewClient = func(endpoint, apiKey string) HardcoverClient {
 	httpClient := &http.Client{
 		Timeout: 30 * time.Second,
 	}
