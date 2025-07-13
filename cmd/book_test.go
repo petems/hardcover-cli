@@ -21,7 +21,7 @@ func TestBookGetCmd_Success(t *testing.T) {
 		// Verify request
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
-		
+
 		// Verify GraphQL query
 		var req client.GraphQLRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -29,7 +29,7 @@ func TestBookGetCmd_Success(t *testing.T) {
 		assert.Contains(t, req.Query, "query GetBook")
 		assert.Contains(t, req.Query, "book")
 		assert.Equal(t, "book123", req.Variables["id"])
-		
+
 		// Send response
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
@@ -78,25 +78,25 @@ func TestBookGetCmd_Success(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"book123"})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Book Details:")
@@ -123,10 +123,10 @@ func TestBookGetCmd_MissingAPIKey(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"book123"})
 	require.Error(t, err)
@@ -145,25 +145,25 @@ func TestBookGetCmd_BookNotFound(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"nonexistent"})
 	require.NoError(t, err)
-	
+
 	// Verify output handles null book gracefully
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Book Details:")
@@ -186,17 +186,17 @@ func TestBookGetCmd_APIError(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"book123"})
 	require.Error(t, err)
@@ -223,25 +223,25 @@ func TestBookGetCmd_MinimalData(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"book123"})
 	require.NoError(t, err)
-	
+
 	// Verify output contains minimal information
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Title: Simple Book")
@@ -290,25 +290,25 @@ func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := bookGetCmd.RunE(cmd, []string{"book123"})
 	require.NoError(t, err)
-	
+
 	// Verify output shows authors but no contributors
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Authors: Author One, Author Two, Author Three")
@@ -331,14 +331,14 @@ func TestBookGetCmd_RequiresArgument(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Test with no arguments
 	err := bookGetCmd.RunE(cmd, []string{})
 	require.Error(t, err)
-	
+
 	// Test with too many arguments
 	err = bookGetCmd.RunE(cmd, []string{"arg1", "arg2"})
 	require.Error(t, err)
@@ -402,11 +402,11 @@ func TestGetBookResponse_JSONUnmarshal(t *testing.T) {
 			"updatedAt": "2023-01-02T00:00:00Z"
 		}
 	}`
-	
+
 	var response GetBookResponse
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
-	
+
 	book := response.Book
 	assert.Equal(t, "book123", book.ID)
 	assert.Equal(t, "Test Book", book.Title)

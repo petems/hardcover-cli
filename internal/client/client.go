@@ -12,8 +12,8 @@ import (
 
 // Client represents a GraphQL client
 type Client struct {
-	endpoint string
-	apiKey   string
+	endpoint   string
+	apiKey     string
 	httpClient *http.Client
 }
 
@@ -77,7 +77,7 @@ func (c *Client) Execute(ctx context.Context, query string, variables map[string
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("User-Agent", "hardcover-cli/1.0.0")
-	
+
 	if c.apiKey != "" {
 		httpReq.Header.Set("Authorization", "Bearer "+c.apiKey)
 	}

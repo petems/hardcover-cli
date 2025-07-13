@@ -65,17 +65,17 @@ Example:
 		}
 
 		// Display the user information
-		fmt.Printf("User Profile:\n")
-		fmt.Printf("  ID: %s\n", response.Me.ID)
-		fmt.Printf("  Username: %s\n", response.Me.Username)
+		fmt.Fprintf(cmd.OutOrStdout(), "User Profile:\n")
+		fmt.Fprintf(cmd.OutOrStdout(), "  ID: %s\n", response.Me.ID)
+		fmt.Fprintf(cmd.OutOrStdout(), "  Username: %s\n", response.Me.Username)
 		if response.Me.Email != "" {
-			fmt.Printf("  Email: %s\n", response.Me.Email)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Email: %s\n", response.Me.Email)
 		}
 		if response.Me.CreatedAt != "" {
-			fmt.Printf("  Created: %s\n", response.Me.CreatedAt)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Created: %s\n", response.Me.CreatedAt)
 		}
 		if response.Me.UpdatedAt != "" {
-			fmt.Printf("  Updated: %s\n", response.Me.UpdatedAt)
+			fmt.Fprintf(cmd.OutOrStdout(), "  Updated: %s\n", response.Me.UpdatedAt)
 		}
 
 		return nil

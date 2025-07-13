@@ -10,7 +10,7 @@ import (
 
 // Config holds the application configuration
 type Config struct {
-	APIKey string `yaml:"api_key"`
+	APIKey  string `yaml:"api_key"`
 	BaseURL string `yaml:"base_url"`
 }
 
