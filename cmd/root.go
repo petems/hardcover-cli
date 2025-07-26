@@ -35,13 +35,15 @@ Examples:
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	setupRootCommand()
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 }
 
-func init() {
+// setupRootCommand initializes the root command with its configuration
+func setupRootCommand() {
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -49,18 +51,25 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
-	rootCmd.PersistentFlags().StringP("api-key", "k", "", "Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+	rootCmd.PersistentFlags().StringP("api-key", "k", "", "Hardcover.app API key (can also be set via "+
+		"HARDCOVER_API_KEY environment variable)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// Initialize all subcommands
+	setupConfigCommands()
+	setupMeCommand()
+	setupBookCommands()
+	setupSearchCommands()
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
 		return
 	}
 

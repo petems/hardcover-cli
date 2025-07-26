@@ -214,13 +214,17 @@ func TestMeCmd_CommandProperties(t *testing.T) {
 }
 
 func TestMeCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupMeCommand()
+	
 	// Test the command is properly registered
 	found := false
 	for _, cmd := range rootCmd.Commands() {
-		if cmd.Use == "me" {
-			found = true
-			break
+		if cmd.Use != "me" {
+			continue
 		}
+		found = true
+		break
 	}
 	assert.True(t, found, "me command should be registered with root command")
 }

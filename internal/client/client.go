@@ -59,7 +59,8 @@ func (e GraphQLError) Error() string {
 }
 
 // Execute executes a GraphQL query
-func (c *Client) Execute(ctx context.Context, query string, variables map[string]interface{}, result interface{}) error {
+func (c *Client) Execute(ctx context.Context, query string, variables map[string]interface{}, 
+	result interface{}) error {
 	req := GraphQLRequest{
 		Query:     query,
 		Variables: variables,

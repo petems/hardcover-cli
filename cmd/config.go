@@ -50,11 +50,11 @@ Example:
 			return fmt.Errorf("failed to save configuration: %w", err)
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "API key has been set and saved to configuration file.\n")
+		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "API key has been set and saved to configuration file.\n")
 
 		configPath, err := config.GetConfigPath()
 		if err == nil {
-			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file: %s\n", configPath)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Configuration file: %s\n", configPath)
 		}
 
 		return nil
@@ -80,29 +80,29 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "No API key is currently set.\n")
-			fmt.Fprintf(cmd.OutOrStdout(), "Set it using:\n")
-			fmt.Fprintf(cmd.OutOrStdout(), "  hardcover config set-api-key \"your-api-key\"\n")
-			fmt.Fprintf(cmd.OutOrStdout(), "  or\n")
-			fmt.Fprintf(cmd.OutOrStdout(), "  export HARDCOVER_API_KEY=\"your-api-key\"\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "No API key is currently set.\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Set it using:\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "  hardcover config set-api-key \"your-api-key\"\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "  or\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "  export HARDCOVER_API_KEY=\"your-api-key\"\n")
 			return nil
 		}
 
 		// Show only the first and last few characters for security
 		if len(cfg.APIKey) > 10 {
 			masked := cfg.APIKey[:4] + "..." + cfg.APIKey[len(cfg.APIKey)-4:]
-			fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", masked)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", masked)
 		} else {
-			fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", cfg.APIKey)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", cfg.APIKey)
 		}
 
 		// Show the source of the API key
 		if os.Getenv("HARDCOVER_API_KEY") != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "Source: Environment variable (HARDCOVER_API_KEY)\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Source: Environment variable (HARDCOVER_API_KEY)\n")
 		} else {
 			configPath, err := config.GetConfigPath()
 			if err == nil {
-				fmt.Fprintf(cmd.OutOrStdout(), "Source: Configuration file (%s)\n", configPath)
+				_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Source: Configuration file (%s)\n", configPath)
 			}
 		}
 
@@ -124,21 +124,22 @@ Example:
 			return fmt.Errorf("failed to get configuration path: %w", err)
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "Configuration file path: %s\n", configPath)
+		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Configuration file path: %s\n", configPath)
 
 		// Check if file exists
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
-			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file does not exist yet.\n")
-			fmt.Fprintf(cmd.OutOrStdout(), "It will be created when you set your API key.\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Configuration file does not exist yet.\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "It will be created when you set your API key.\n")
 		} else {
-			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file exists.\n")
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Configuration file exists.\n")
 		}
 
 		return nil
 	},
 }
 
-func init() {
+// setupConfigCommands initializes the config command and its subcommands
+func setupConfigCommands() {
 	configCmd.AddCommand(configSetAPIKeyCmd)
 	configCmd.AddCommand(configGetAPIKeyCmd)
 	configCmd.AddCommand(configShowPathCmd)

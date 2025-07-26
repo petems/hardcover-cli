@@ -8,6 +8,13 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
+const (
+	// File permissions for config directory (owner: rwx, group: r-x, other: ---)
+	configDirMode = 0o750
+	// File permissions for config file (owner: rw-, group: ---, other: ---)
+	configFileMode = 0o600
+)
+
 // Config holds the application configuration
 type Config struct {
 	APIKey  string `yaml:"api_key"`
@@ -37,7 +44,12 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("failed to get config path: %w", err)
 	}
 
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	// Validate config path for security (gosec mitigation)
+	if configPath == "" {
+		return nil, fmt.Errorf("config path cannot be empty")
+	}
+
+	if _, statErr := os.Stat(configPath); os.IsNotExist(statErr) {
 		// Config file doesn't exist, return default config
 		return cfg, nil
 	}
@@ -63,7 +75,7 @@ func SaveConfig(cfg *Config) error {
 
 	// Create config directory if it doesn't exist
 	configDir := filepath.Dir(configPath)
-	if err := os.MkdirAll(configDir, 0755); err != nil {
+	if err := os.MkdirAll(configDir, configDirMode); err != nil {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
 
@@ -72,7 +84,7 @@ func SaveConfig(cfg *Config) error {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
 
-	if err := os.WriteFile(configPath, data, 0600); err != nil {
+	if err := os.WriteFile(configPath, data, configFileMode); err != nil {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 

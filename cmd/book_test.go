@@ -354,22 +354,27 @@ func TestBookCmd_CommandProperties(t *testing.T) {
 }
 
 func TestBookCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupBookCommands()
+	
 	// Test the command is properly registered
 	found := false
 	for _, cmd := range rootCmd.Commands() {
-		if cmd.Use == "book" {
-			found = true
-			// Check that get subcommand is registered
-			getFound := false
-			for _, subCmd := range cmd.Commands() {
-				if subCmd.Use == "get <book_id>" {
-					getFound = true
-					break
-				}
+		if cmd.Use != "book" {
+			continue
+		}
+		found = true
+		// Check that get subcommand is registered
+		getFound := false
+		for _, subCmd := range cmd.Commands() {
+			if subCmd.Use != "get <book_id>" {
+				continue
 			}
-			assert.True(t, getFound, "get subcommand should be registered")
+			getFound = true
 			break
 		}
+		assert.True(t, getFound, "get subcommand should be registered")
+		break
 	}
 	assert.True(t, found, "book command should be registered with root command")
 }
