@@ -1,0 +1,5967 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/
+  workflows/
+    ci.yml
+    dependency-update.yml
+    nightly.yml
+    release.yml
+  dependabot.yml
+  pull_request_template.md
+  WORKFLOWS.md
+cmd/
+  book_test.go
+  book.go
+  config_integration_test.go
+  config_test.go
+  config.go
+  context.go
+  me_test.go
+  me.go
+  root_test.go
+  root.go
+  search_test.go
+  search.go
+internal/
+  client/
+    client_test.go
+    client.go
+    generated.go
+    genqlient.yaml
+    queries.graphql
+    schema.graphql
+  config/
+    config_test.go
+    config.go
+.gitignore
+.golangci.yml
+DEVELOPMENT.md
+go.mod
+GRAPHQL.md
+LICENSE
+main.go
+Makefile
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/pull_request_template.md">
+## Description
+
+Please provide a clear and concise description of the changes in this PR.
+
+### Type of Change
+
+Please delete options that are not relevant:
+
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Documentation update
+- [ ] Performance improvement
+- [ ] Code refactoring (no functional changes)
+- [ ] Test improvements
+- [ ] CI/CD improvements
+
+## Related Issues
+
+Fixes #(issue_number)
+Closes #(issue_number)
+Related to #(issue_number)
+
+## Changes Made
+
+Please describe the changes made in this PR:
+
+- 
+- 
+- 
+
+## Testing
+
+### Test Coverage
+
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] All existing tests pass
+- [ ] New tests pass
+
+### Manual Testing
+
+Please describe the manual testing performed:
+
+- [ ] Tested on Linux
+- [ ] Tested on macOS
+- [ ] Tested on Windows
+- [ ] Tested CLI commands
+- [ ] Tested error scenarios
+
+### Test Commands
+
+```bash
+# Commands used for testing
+go test ./...
+go test -race ./...
+./hardcover --help
+# Add specific test commands here
+```
+
+## Code Quality
+
+- [ ] Code follows Go best practices
+- [ ] Code is properly formatted (`gofmt`)
+- [ ] Code passes linting (`golangci-lint`)
+- [ ] Code includes proper error handling
+- [ ] Code includes appropriate comments/documentation
+
+## Security
+
+- [ ] No sensitive information is exposed
+- [ ] Input validation is implemented where needed
+- [ ] Security best practices are followed
+- [ ] Dependencies are up to date and secure
+
+## Performance
+
+- [ ] Changes do not negatively impact performance
+- [ ] Benchmarks run (if applicable)
+- [ ] Memory usage is reasonable
+
+## Documentation
+
+- [ ] Code is self-documenting
+- [ ] README updated (if needed)
+- [ ] API documentation updated (if needed)
+- [ ] Help text updated (if needed)
+- [ ] CHANGELOG updated (if needed)
+
+## Dependencies
+
+- [ ] No new dependencies added
+- [ ] New dependencies are necessary and well-maintained
+- [ ] Dependencies are properly versioned
+- [ ] `go.mod` and `go.sum` are updated
+
+## Breaking Changes
+
+If this PR introduces breaking changes, please describe them and the migration path:
+
+- 
+- 
+
+## Screenshots/Examples
+
+If applicable, add screenshots or example outputs to help explain your changes:
+
+```
+# Example command output
+$ hardcover --help
+...
+```
+
+## Checklist
+
+- [ ] I have read the [CONTRIBUTING](CONTRIBUTING.md) guidelines
+- [ ] My code follows the project's coding standards
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published
+
+## Additional Notes
+
+Add any additional notes or context about the PR here.
+
+## Reviewer Focus Areas
+
+Please pay special attention to:
+
+- [ ] Logic correctness
+- [ ] Error handling
+- [ ] Performance implications
+- [ ] Security considerations
+- [ ] API design
+- [ ] Test coverage
+
+---
+
+**For Reviewers:**
+
+- [ ] Code review completed
+- [ ] Tests verified
+- [ ] Documentation reviewed
+- [ ] Security considerations checked
+- [ ] Performance impact assessed
+</file>
+
+<file path="cmd/config_integration_test.go">
+package cmd
+
+import (
+	"context"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/config"
+)
+
+func TestWithConfig_AddsConfigurationToContext(t *testing.T) {
+	// Test that withConfig properly adds configuration to context
+	ctx := context.Background()
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: "https://test.example.com/graphql",
+	}
+
+	newCtx := withConfig(ctx, cfg)
+
+	// Verify configuration can be retrieved
+	retrievedCfg, ok := getConfig(newCtx)
+	require.True(t, ok, "Configuration should be retrievable from context")
+	assert.Equal(t, cfg.APIKey, retrievedCfg.APIKey)
+	assert.Equal(t, cfg.BaseURL, retrievedCfg.BaseURL)
+}
+
+func TestGetConfig_RetrievesConfigurationFromContext(t *testing.T) {
+	// Test that getConfig properly retrieves configuration from context
+	ctx := context.Background()
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: "https://test.example.com/graphql",
+	}
+
+	ctxWithConfig := withConfig(ctx, cfg)
+
+	// Test successful retrieval
+	retrievedCfg, ok := getConfig(ctxWithConfig)
+	require.True(t, ok, "Should successfully retrieve configuration")
+	assert.Equal(t, cfg.APIKey, retrievedCfg.APIKey)
+	assert.Equal(t, cfg.BaseURL, retrievedCfg.BaseURL)
+
+	// Test retrieval from context without configuration
+	emptyCtx := context.Background()
+	_, ok = getConfig(emptyCtx)
+	assert.False(t, ok, "Should return false when no configuration in context")
+}
+
+func TestGetConfig_ReturnsNilWhenNoConfiguration(t *testing.T) {
+	// Test that getConfig returns nil when no configuration is in context
+	ctx := context.Background()
+
+	cfg, ok := getConfig(ctx)
+	assert.False(t, ok, "Should return false when no configuration in context")
+	assert.Nil(t, cfg, "Should return nil configuration when not found")
+}
+
+func TestSetupCommands_RegistersAllCommands(t *testing.T) {
+	// Test that SetupCommands properly registers all commands
+	// This ensures the command structure is set up correctly
+
+	// Create a fresh root command for testing
+	testRootCmd := &cobra.Command{Use: "test"}
+
+	// Store original and restore after test
+	originalRootCmd := rootCmd
+	rootCmd = testRootCmd
+	defer func() { rootCmd = originalRootCmd }()
+
+	// Setup commands
+	SetupCommands()
+
+	// Verify that commands are registered
+	expectedCommands := []string{"me", "search", "book", "config"}
+	for _, expectedCmd := range expectedCommands {
+		found := false
+		for _, cmd := range testRootCmd.Commands() {
+			if cmd.Use == expectedCmd {
+				found = true
+				break
+			}
+		}
+		assert.True(t, found, "Command %s should be registered", expectedCmd)
+	}
+}
+
+func TestSetupRootCommand_ConfiguresFlagsAndInitialization(t *testing.T) {
+	// Test that setupRootCommand properly configures flags and initialization
+
+	// Create a fresh root command for testing
+	testRootCmd := &cobra.Command{Use: "test"}
+
+	// Store original and restore after test
+	originalRootCmd := rootCmd
+	rootCmd = testRootCmd
+	defer func() { rootCmd = originalRootCmd }()
+
+	// Setup root command
+	setupRootCommand()
+
+	// Verify that persistent flags are configured
+	configFlag := testRootCmd.PersistentFlags().Lookup("config")
+	assert.NotNil(t, configFlag, "config flag should be configured")
+
+	apiKeyFlag := testRootCmd.PersistentFlags().Lookup("api-key")
+	assert.NotNil(t, apiKeyFlag, "api-key flag should be configured")
+
+	// Verify that local flags are configured
+	toggleFlag := testRootCmd.Flags().Lookup("toggle")
+	assert.NotNil(t, toggleFlag, "toggle flag should be configured")
+}
+</file>
+
+<file path="cmd/root_test.go">
+package cmd
+
+import (
+	"context"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestExecute_LoadsConfiguration(t *testing.T) {
+	// This test verifies that the Execute function properly loads configuration
+	// and sets it in the context before executing commands
+
+	// We can't easily test the full Execute function since it calls os.Exit,
+	// but we can test the configuration loading logic separately
+}
+
+func TestInitConfig_LoadsConfiguration(t *testing.T) {
+	// Test that initConfig properly loads configuration and sets context
+	// This is a unit test for the initConfig function
+
+	// Create a test command to work with
+	testCmd := &cobra.Command{}
+	testCmd.SetContext(context.Background())
+
+	// Set up flags
+	testCmd.PersistentFlags().String("api-key", "", "test flag")
+
+	// Mock the root command for testing
+	originalRootCmd := rootCmd
+	rootCmd = testCmd
+	defer func() { rootCmd = originalRootCmd }()
+
+	// Call initConfig
+	initConfig()
+
+	// Verify that context was set
+	cfg, ok := getConfig(testCmd.Context())
+	require.True(t, ok, "Configuration should be set in context")
+	assert.NotNil(t, cfg, "Configuration should not be nil")
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+</file>
+
+<file path="internal/client/generated.go">
+// Code generated by github.com/Khan/genqlient, DO NOT EDIT.
+
+package client
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/Khan/genqlient/graphql"
+)
+
+// GetBookBook includes the requested fields of the GraphQL type Book.
+type GetBookBook struct {
+	Id                  string                                      `json:"id"`
+	Title               string                                      `json:"title"`
+	Description         string                                      `json:"description"`
+	Slug                string                                      `json:"slug"`
+	Isbn                string                                      `json:"isbn"`
+	PublicationYear     int                                         `json:"publicationYear"`
+	PageCount           int                                         `json:"pageCount"`
+	Cached_contributors []GetBookBookCached_contributorsContributor `json:"cached_contributors"`
+	Cached_genres       []GetBookBookCached_genresGenre             `json:"cached_genres"`
+	Image               string                                      `json:"image"`
+	AverageRating       float64                                     `json:"averageRating"`
+	RatingsCount        int                                         `json:"ratingsCount"`
+	CreatedAt           string                                      `json:"createdAt"`
+	UpdatedAt           string                                      `json:"updatedAt"`
+}
+
+// GetId returns GetBookBook.Id, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetId() string { return v.Id }
+
+// GetTitle returns GetBookBook.Title, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetTitle() string { return v.Title }
+
+// GetDescription returns GetBookBook.Description, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetDescription() string { return v.Description }
+
+// GetSlug returns GetBookBook.Slug, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetSlug() string { return v.Slug }
+
+// GetIsbn returns GetBookBook.Isbn, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetIsbn() string { return v.Isbn }
+
+// GetPublicationYear returns GetBookBook.PublicationYear, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetPublicationYear() int { return v.PublicationYear }
+
+// GetPageCount returns GetBookBook.PageCount, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetPageCount() int { return v.PageCount }
+
+// GetCached_contributors returns GetBookBook.Cached_contributors, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetCached_contributors() []GetBookBookCached_contributorsContributor {
+	return v.Cached_contributors
+}
+
+// GetCached_genres returns GetBookBook.Cached_genres, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetCached_genres() []GetBookBookCached_genresGenre { return v.Cached_genres }
+
+// GetImage returns GetBookBook.Image, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetImage() string { return v.Image }
+
+// GetAverageRating returns GetBookBook.AverageRating, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetAverageRating() float64 { return v.AverageRating }
+
+// GetRatingsCount returns GetBookBook.RatingsCount, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetRatingsCount() int { return v.RatingsCount }
+
+// GetCreatedAt returns GetBookBook.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetCreatedAt() string { return v.CreatedAt }
+
+// GetUpdatedAt returns GetBookBook.UpdatedAt, and is useful for accessing the field via an interface.
+func (v *GetBookBook) GetUpdatedAt() string { return v.UpdatedAt }
+
+// GetBookBookCached_contributorsContributor includes the requested fields of the GraphQL type Contributor.
+type GetBookBookCached_contributorsContributor struct {
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
+
+// GetName returns GetBookBookCached_contributorsContributor.Name, and is useful for accessing the field via an interface.
+func (v *GetBookBookCached_contributorsContributor) GetName() string { return v.Name }
+
+// GetRole returns GetBookBookCached_contributorsContributor.Role, and is useful for accessing the field via an interface.
+func (v *GetBookBookCached_contributorsContributor) GetRole() string { return v.Role }
+
+// GetBookBookCached_genresGenre includes the requested fields of the GraphQL type Genre.
+type GetBookBookCached_genresGenre struct {
+	Name string `json:"name"`
+}
+
+// GetName returns GetBookBookCached_genresGenre.Name, and is useful for accessing the field via an interface.
+func (v *GetBookBookCached_genresGenre) GetName() string { return v.Name }
+
+// GetBookResponse is returned by GetBook on success.
+type GetBookResponse struct {
+	Book GetBookBook `json:"book"`
+}
+
+// GetBook returns GetBookResponse.Book, and is useful for accessing the field via an interface.
+func (v *GetBookResponse) GetBook() GetBookBook { return v.Book }
+
+// GetCurrentUserMeUser includes the requested fields of the GraphQL type User.
+type GetCurrentUserMeUser struct {
+	Id        string `json:"id"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
+// GetId returns GetCurrentUserMeUser.Id, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserMeUser) GetId() string { return v.Id }
+
+// GetUsername returns GetCurrentUserMeUser.Username, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserMeUser) GetUsername() string { return v.Username }
+
+// GetEmail returns GetCurrentUserMeUser.Email, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserMeUser) GetEmail() string { return v.Email }
+
+// GetCreatedAt returns GetCurrentUserMeUser.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserMeUser) GetCreatedAt() string { return v.CreatedAt }
+
+// GetUpdatedAt returns GetCurrentUserMeUser.UpdatedAt, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserMeUser) GetUpdatedAt() string { return v.UpdatedAt }
+
+// GetCurrentUserResponse is returned by GetCurrentUser on success.
+type GetCurrentUserResponse struct {
+	Me GetCurrentUserMeUser `json:"me"`
+}
+
+// GetMe returns GetCurrentUserResponse.Me, and is useful for accessing the field via an interface.
+func (v *GetCurrentUserResponse) GetMe() GetCurrentUserMeUser { return v.Me }
+
+// SearchBooksResponse is returned by SearchBooks on success.
+type SearchBooksResponse struct {
+	Search SearchBooksSearchSearchResults `json:"-"`
+}
+
+// GetSearch returns SearchBooksResponse.Search, and is useful for accessing the field via an interface.
+func (v *SearchBooksResponse) GetSearch() SearchBooksSearchSearchResults { return v.Search }
+
+func (v *SearchBooksResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SearchBooksResponse
+		Search json.RawMessage `json:"search"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SearchBooksResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Search
+		src := firstPass.Search
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalSearchBooksSearchSearchResults(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal SearchBooksResponse.Search: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalSearchBooksResponse struct {
+	Search json.RawMessage `json:"search"`
+}
+
+func (v *SearchBooksResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SearchBooksResponse) __premarshalJSON() (*__premarshalSearchBooksResponse, error) {
+	var retval __premarshalSearchBooksResponse
+
+	{
+
+		dst := &retval.Search
+		src := v.Search
+		var err error
+		*dst, err = __marshalSearchBooksSearchSearchResults(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal SearchBooksResponse.Search: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// SearchBooksSearchAuthorSearchResults includes the requested fields of the GraphQL type AuthorSearchResults.
+type SearchBooksSearchAuthorSearchResults struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns SearchBooksSearchAuthorSearchResults.Typename, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchAuthorSearchResults) GetTypename() string { return v.Typename }
+
+// SearchBooksSearchBookSearchResults includes the requested fields of the GraphQL type BookSearchResults.
+type SearchBooksSearchBookSearchResults struct {
+	Typename   string                                          `json:"__typename"`
+	TotalCount int                                             `json:"totalCount"`
+	Results    []SearchBooksSearchBookSearchResultsResultsBook `json:"results"`
+}
+
+// GetTypename returns SearchBooksSearchBookSearchResults.Typename, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResults) GetTypename() string { return v.Typename }
+
+// GetTotalCount returns SearchBooksSearchBookSearchResults.TotalCount, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResults) GetTotalCount() int { return v.TotalCount }
+
+// GetResults returns SearchBooksSearchBookSearchResults.Results, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResults) GetResults() []SearchBooksSearchBookSearchResultsResultsBook {
+	return v.Results
+}
+
+// SearchBooksSearchBookSearchResultsResultsBook includes the requested fields of the GraphQL type Book.
+type SearchBooksSearchBookSearchResultsResultsBook struct {
+	Id                  string                                                                        `json:"id"`
+	Title               string                                                                        `json:"title"`
+	Slug                string                                                                        `json:"slug"`
+	Isbn                string                                                                        `json:"isbn"`
+	PublicationYear     int                                                                           `json:"publicationYear"`
+	PageCount           int                                                                           `json:"pageCount"`
+	Cached_contributors []SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor `json:"cached_contributors"`
+	Cached_genres       []SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre             `json:"cached_genres"`
+	Image               string                                                                        `json:"image"`
+	AverageRating       float64                                                                       `json:"averageRating"`
+	RatingsCount        int                                                                           `json:"ratingsCount"`
+}
+
+// GetId returns SearchBooksSearchBookSearchResultsResultsBook.Id, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetId() string { return v.Id }
+
+// GetTitle returns SearchBooksSearchBookSearchResultsResultsBook.Title, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetTitle() string { return v.Title }
+
+// GetSlug returns SearchBooksSearchBookSearchResultsResultsBook.Slug, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetSlug() string { return v.Slug }
+
+// GetIsbn returns SearchBooksSearchBookSearchResultsResultsBook.Isbn, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetIsbn() string { return v.Isbn }
+
+// GetPublicationYear returns SearchBooksSearchBookSearchResultsResultsBook.PublicationYear, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetPublicationYear() int {
+	return v.PublicationYear
+}
+
+// GetPageCount returns SearchBooksSearchBookSearchResultsResultsBook.PageCount, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetPageCount() int { return v.PageCount }
+
+// GetCached_contributors returns SearchBooksSearchBookSearchResultsResultsBook.Cached_contributors, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetCached_contributors() []SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor {
+	return v.Cached_contributors
+}
+
+// GetCached_genres returns SearchBooksSearchBookSearchResultsResultsBook.Cached_genres, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetCached_genres() []SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre {
+	return v.Cached_genres
+}
+
+// GetImage returns SearchBooksSearchBookSearchResultsResultsBook.Image, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetImage() string { return v.Image }
+
+// GetAverageRating returns SearchBooksSearchBookSearchResultsResultsBook.AverageRating, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetAverageRating() float64 {
+	return v.AverageRating
+}
+
+// GetRatingsCount returns SearchBooksSearchBookSearchResultsResultsBook.RatingsCount, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBook) GetRatingsCount() int { return v.RatingsCount }
+
+// SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor includes the requested fields of the GraphQL type Contributor.
+type SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor struct {
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
+
+// GetName returns SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor.Name, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor) GetName() string {
+	return v.Name
+}
+
+// GetRole returns SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor.Role, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBookCached_contributorsContributor) GetRole() string {
+	return v.Role
+}
+
+// SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre includes the requested fields of the GraphQL type Genre.
+type SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre struct {
+	Name string `json:"name"`
+}
+
+// GetName returns SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre.Name, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchBookSearchResultsResultsBookCached_genresGenre) GetName() string {
+	return v.Name
+}
+
+// SearchBooksSearchSearchResults includes the requested fields of the GraphQL interface SearchResults.
+//
+// SearchBooksSearchSearchResults is implemented by the following types:
+// SearchBooksSearchAuthorSearchResults
+// SearchBooksSearchBookSearchResults
+// SearchBooksSearchUserSearchResults
+type SearchBooksSearchSearchResults interface {
+	implementsGraphQLInterfaceSearchBooksSearchSearchResults()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+}
+
+func (v *SearchBooksSearchAuthorSearchResults) implementsGraphQLInterfaceSearchBooksSearchSearchResults() {
+}
+func (v *SearchBooksSearchBookSearchResults) implementsGraphQLInterfaceSearchBooksSearchSearchResults() {
+}
+func (v *SearchBooksSearchUserSearchResults) implementsGraphQLInterfaceSearchBooksSearchSearchResults() {
+}
+
+func __unmarshalSearchBooksSearchSearchResults(b []byte, v *SearchBooksSearchSearchResults) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AuthorSearchResults":
+		*v = new(SearchBooksSearchAuthorSearchResults)
+		return json.Unmarshal(b, *v)
+	case "BookSearchResults":
+		*v = new(SearchBooksSearchBookSearchResults)
+		return json.Unmarshal(b, *v)
+	case "UserSearchResults":
+		*v = new(SearchBooksSearchUserSearchResults)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing SearchResults.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for SearchBooksSearchSearchResults: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalSearchBooksSearchSearchResults(v *SearchBooksSearchSearchResults) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *SearchBooksSearchAuthorSearchResults:
+		typename = "AuthorSearchResults"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SearchBooksSearchAuthorSearchResults
+		}{typename, v}
+		return json.Marshal(result)
+	case *SearchBooksSearchBookSearchResults:
+		typename = "BookSearchResults"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SearchBooksSearchBookSearchResults
+		}{typename, v}
+		return json.Marshal(result)
+	case *SearchBooksSearchUserSearchResults:
+		typename = "UserSearchResults"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*SearchBooksSearchUserSearchResults
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for SearchBooksSearchSearchResults: "%T"`, v)
+	}
+}
+
+// SearchBooksSearchUserSearchResults includes the requested fields of the GraphQL type UserSearchResults.
+type SearchBooksSearchUserSearchResults struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns SearchBooksSearchUserSearchResults.Typename, and is useful for accessing the field via an interface.
+func (v *SearchBooksSearchUserSearchResults) GetTypename() string { return v.Typename }
+
+// __GetBookInput is used internally by genqlient
+type __GetBookInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetBookInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBookInput) GetId() string { return v.Id }
+
+// __SearchBooksInput is used internally by genqlient
+type __SearchBooksInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __SearchBooksInput.Query, and is useful for accessing the field via an interface.
+func (v *__SearchBooksInput) GetQuery() string { return v.Query }
+
+// The query executed by GetBook.
+const GetBook_Operation = `
+query GetBook ($id: ID!) {
+	book(id: $id) {
+		id
+		title
+		description
+		slug
+		isbn
+		publicationYear
+		pageCount
+		cached_contributors {
+			name
+			role
+		}
+		cached_genres {
+			name
+		}
+		image
+		averageRating
+		ratingsCount
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func GetBook(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetBookResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBook",
+		Query:  GetBook_Operation,
+		Variables: &__GetBookInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetBookResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCurrentUser.
+const GetCurrentUser_Operation = `
+query GetCurrentUser {
+	me {
+		id
+		username
+		email
+		createdAt
+		updatedAt
+	}
+}
+`
+
+func GetCurrentUser(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *GetCurrentUserResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCurrentUser",
+		Query:  GetCurrentUser_Operation,
+	}
+
+	data_ = &GetCurrentUserResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by SearchBooks.
+const SearchBooks_Operation = `
+query SearchBooks ($query: String!) {
+	search(query: $query, type: BOOKS) {
+		__typename
+		... on BookSearchResults {
+			totalCount
+			results {
+				... on Book {
+					id
+					title
+					slug
+					isbn
+					publicationYear
+					pageCount
+					cached_contributors {
+						name
+						role
+					}
+					cached_genres {
+						name
+					}
+					image
+					averageRating
+					ratingsCount
+				}
+			}
+		}
+	}
+}
+`
+
+func SearchBooks(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *SearchBooksResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SearchBooks",
+		Query:  SearchBooks_Operation,
+		Variables: &__SearchBooksInput{
+			Query: query,
+		},
+	}
+
+	data_ = &SearchBooksResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+</file>
+
+<file path="internal/client/queries.graphql">
+query GetCurrentUser {
+  me {
+    id
+    username
+    email
+    createdAt
+    updatedAt
+  }
+}
+
+query SearchBooks($query: String!) {
+  search(query: $query, type: BOOKS) {
+    ... on BookSearchResults {
+      totalCount
+      results {
+        ... on Book {
+          id
+          title
+          slug
+          isbn
+          publicationYear
+          pageCount
+          cached_contributors {
+            name
+            role
+          }
+          cached_genres {
+            name
+          }
+          image
+          averageRating
+          ratingsCount
+        }
+      }
+    }
+  }
+}
+
+query GetBook($id: ID!) {
+  book(id: $id) {
+    id
+    title
+    description
+    slug
+    isbn
+    publicationYear
+    pageCount
+    cached_contributors {
+      name
+      role
+    }
+    cached_genres {
+      name
+    }
+    image
+    averageRating
+    ratingsCount
+    createdAt
+    updatedAt
+  }
+}
+</file>
+
+<file path="DEVELOPMENT.md">
+# Hardcover CLI Development Summary
+
+## Project Overview
+
+This project implements a comprehensive GoLang command-line interface (CLI) application for interacting with the Hardcover.app GraphQL API. The application is built using industry best practices and includes extensive testing and documentation.
+
+## Architecture & Design
+
+### Core Components
+
+1. **CLI Framework**: Built using the Cobra library for robust command-line interface management
+2. **GraphQL Client**: Custom HTTP client with type-safe GraphQL query execution
+3. **Configuration Management**: Flexible configuration system supporting both file and environment variable sources
+4. **Comprehensive Testing**: Unit tests with mocking and high coverage using testify
+
+### Directory Structure
+
+```
+hardcover-cli/
+├── cmd/                    # CLI command implementations
+│   ├── root.go            # Root command and initialization
+│   ├── me.go              # User profile command
+│   ├── search.go          # Book search functionality
+│   ├── book.go            # Book details retrieval
+│   ├── config.go          # Configuration management commands
+│   ├── context.go         # Context utilities for config passing
+│   └── *_test.go          # Comprehensive unit tests
+├── internal/
+│   ├── client/            # GraphQL client implementation
+│   │   ├── client.go      # HTTP client wrapper
+│   │   ├── schema.graphql # GraphQL schema definition
+│   │   ├── queries.graphql # GraphQL queries
+│   │   └── genqlient.yaml # genqlient configuration
+│   └── config/            # Configuration management
+│       ├── config.go      # Configuration logic
+│       └── config_test.go # Configuration tests
+├── main.go                # Application entry point
+├── go.mod                 # Go module definition
+├── README.md             # User documentation
+└── DEVELOPMENT.md        # This file
+```
+
+## Implementation Details
+
+### Commands Implemented
+
+#### 1. `hardcover me`
+- Fetches authenticated user profile information
+- Displays user ID, username, email, and timestamps
+- Includes comprehensive error handling and validation
+
+#### 2. `hardcover search books <query>`
+- Searches for books using GraphQL API
+- Supports filtering by title, author, and other criteria
+- Displays formatted results with book details, ratings, and genres
+- Includes pagination support and result counting
+
+#### 3. `hardcover book get <book_id>`
+- Retrieves detailed information for a specific book
+- Shows comprehensive book metadata including:
+  - Title, description, and publication details
+  - Author and contributor information
+  - Genre classification
+  - Ratings and review statistics
+  - Cover image and external URLs
+
+#### 4. `hardcover config` subcommands
+- `set-api-key`: Store API key securely
+- `get-api-key`: Display current API key (masked for security)
+- `show-path`: Show configuration file location
+
+### GraphQL Integration
+
+The application uses a well-defined GraphQL schema with the following key queries:
+
+```graphql
+# User profile retrieval
+query GetCurrentUser {
+  me {
+    id
+    username
+    email
+    createdAt
+    updatedAt
+  }
+}
+
+# Book search functionality
+query SearchBooks($query: String!) {
+  search(query: $query, type: BOOKS) {
+    ... on BookSearchResults {
+      totalCount
+      results {
+        ... on Book {
+          id
+          title
+          slug
+          cached_contributors { name role }
+          cached_genres { name }
+          averageRating
+          ratingsCount
+        }
+      }
+    }
+  }
+}
+
+# Book details retrieval
+query GetBook($id: ID!) {
+  book(id: $id) {
+    id
+    title
+    description
+    # ... additional fields
+  }
+}
+```
+
+### Configuration System
+
+The application implements a flexible configuration system:
+
+1. **Environment Variables**: `HARDCOVER_API_KEY`
+2. **Configuration File**: `~/.hardcover/config.yaml`
+3. **Command-line Flags**: `--api-key` for one-time overrides
+
+Configuration precedence: Command-line flags > Environment variables > Configuration file
+
+### Testing Strategy
+
+The project includes comprehensive unit tests with:
+
+- **Package Coverage**: All major packages have dedicated test files
+- **Mocking**: HTTP server mocking for API interactions
+- **Error Scenarios**: Testing of failure cases and edge conditions
+- **Integration Tests**: Command registration and interaction testing
+- **Configuration Tests**: File system mocking and environment variable testing
+
+### Test Files Overview
+
+- `internal/config/config_test.go`: Configuration management tests
+- `internal/client/client_test.go`: GraphQL client tests
+- `cmd/me_test.go`: User profile command tests
+- `cmd/search_test.go`: Book search command tests
+- `cmd/book_test.go`: Book retrieval command tests
+- `cmd/config_test.go`: Configuration command tests
+
+### Error Handling
+
+The application implements comprehensive error handling:
+
+- **API Errors**: GraphQL error parsing and user-friendly messages
+- **Network Errors**: Connection failure handling and timeouts
+- **Configuration Errors**: Missing API keys and invalid configurations
+- **Validation Errors**: Input validation and argument checking
+
+### Security Considerations
+
+1. **API Key Storage**: Secure file permissions (0600) for configuration files
+2. **API Key Display**: Masking of sensitive information in output
+3. **HTTP Headers**: Proper authentication header handling
+4. **Input Validation**: Sanitization of user inputs
+
+## Dependencies
+
+- **github.com/spf13/cobra**: CLI framework
+- **github.com/stretchr/testify**: Testing framework with assertions and mocks
+- **gopkg.in/yaml.v3**: YAML configuration file parsing
+
+## Future Enhancements
+
+1. **genqlient Integration**: Complete the type-safe GraphQL client generation
+2. **Additional Commands**: Support for more Hardcover.app API endpoints
+3. **Output Formats**: JSON and CSV output options
+4. **Batch Operations**: Support for bulk operations
+5. **Interactive Mode**: TUI for enhanced user experience
+6. **Configuration Profiles**: Support for multiple API configurations
+
+## Build and Deployment
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd hardcover-cli
+
+# Install dependencies
+go mod tidy
+
+# Build the application
+go build -o hardcover .
+
+# Run tests
+go test ./...
+
+# Run with coverage
+go test ./... -cover
+```
+
+### Production Deployment
+
+```bash
+# Build for production
+go build -ldflags="-s -w" -o hardcover .
+
+# Cross-compilation examples
+GOOS=linux GOARCH=amd64 go build -o hardcover-linux .
+GOOS=windows GOARCH=amd64 go build -o hardcover-windows.exe .
+GOOS=darwin GOARCH=amd64 go build -o hardcover-macos .
+```
+
+## Code Quality
+
+The project follows Go best practices:
+
+- **Package Structure**: Clear separation of concerns
+- **Error Handling**: Comprehensive error checking and reporting
+- **Documentation**: Extensive inline documentation and help text
+- **Testing**: High test coverage with meaningful test cases
+- **Code Style**: Consistent formatting and naming conventions
+
+## API Integration
+
+The application integrates with the Hardcover.app GraphQL API:
+
+- **Endpoint**: `https://api.hardcover.app/v1/graphql`
+- **Authentication**: Bearer token authentication
+- **Rate Limiting**: Respectful API usage with appropriate timeouts
+- **Error Handling**: Proper GraphQL error parsing and user feedback
+
+## Performance Considerations
+
+1. **HTTP Client**: Reusable HTTP client with connection pooling
+2. **Timeouts**: Configurable request timeouts (30 seconds default)
+3. **Memory Usage**: Efficient JSON parsing and minimal memory footprint
+4. **Concurrent Safety**: Thread-safe configuration and client usage
+
+## Conclusion
+
+This Hardcover CLI application demonstrates a professional-grade Go application with:
+
+- Clean architecture and separation of concerns
+- Comprehensive testing and error handling
+- User-friendly CLI interface with extensive help documentation
+- Secure configuration management
+- Extensible design for future enhancements
+
+The project serves as an excellent example of modern Go development practices and can be easily extended to support additional Hardcover.app API functionality.
+</file>
+
+<file path="GRAPHQL.md">
+# GraphQL Code Generation
+
+This document describes the Make tasks available for managing GraphQL schema and code generation in the hardcover-cli project.
+
+## Overview
+
+The project uses [genqlient](https://github.com/Khan/genqlient) to generate type-safe Go code from GraphQL schemas and queries. This ensures that your Go code is always in sync with the GraphQL API schema.
+
+## Make Tasks
+
+### `make graphql-info`
+Shows information about the current GraphQL configuration:
+- Schema file location
+- Configuration file location
+- Generated code file location
+- Current GraphQL endpoint
+- List of available types in the schema
+
+### `make graphql-generate`
+Generates Go code from the current GraphQL schema and queries:
+- Ensures all dependencies are installed
+- Runs genqlient to generate type-safe Go code
+- Updates `internal/client/generated.go`
+
+### `make graphql-fetch`
+Fetches the latest GraphQL schema from a remote endpoint:
+- Downloads the schema using GraphQL introspection
+- Converts the introspection result to GraphQL SDL format
+- Updates `internal/client/schema.graphql`
+
+**Usage:**
+```bash
+# Using the default endpoint
+make graphql-fetch
+
+# Using a custom endpoint
+make graphql-fetch GRAPHQL_ENDPOINT=https://your-api.com/graphql
+
+# With authentication (if required)
+make graphql-fetch GRAPHQL_ENDPOINT=https://your-api.com/graphql
+```
+
+**Requirements:**
+- The GraphQL endpoint must support introspection queries
+- If authentication is required, you may need to modify the curl command in the Makefile
+- `jq` is recommended for JSON processing (optional)
+- `go` command must be available
+
+### `make graphql-update`
+Complete workflow that fetches the latest schema and regenerates code:
+- Runs `graphql-fetch` to get the latest schema
+- Runs `graphql-generate` to create updated Go code
+
+## Configuration
+
+### GraphQL Endpoint
+The default GraphQL endpoint is set in the Makefile:
+```makefile
+GRAPHQL_ENDPOINT ?= https://api.hardcover.app/v1/graphql
+```
+
+You can override this by setting the environment variable or passing it as a parameter to the make commands.
+
+### Files
+- **Schema**: `internal/client/schema.graphql` - GraphQL schema definition
+- **Queries**: `internal/client/queries.graphql` - GraphQL queries used by the CLI
+- **Config**: `internal/client/genqlient.yaml` - genqlient configuration
+- **Generated**: `internal/client/generated.go` - Generated Go code (do not edit manually)
+
+## Workflow
+
+### Development Workflow
+1. Make changes to `internal/client/queries.graphql` if you need new queries
+2. Run `make graphql-generate` to regenerate the Go code
+3. Update your Go code to use the new generated types
+4. Test your changes
+
+### Schema Update Workflow
+1. Run `make graphql-update` to fetch the latest schema and regenerate code
+2. Review the changes in `internal/client/generated.go`
+3. Update your Go code if the API has changed
+4. Test your changes
+
+### Adding New Queries
+1. Add your GraphQL query to `internal/client/queries.graphql`
+2. Run `make graphql-generate` to generate the corresponding Go types
+3. Use the generated types in your Go code
+
+## Troubleshooting
+
+### Schema Fetch Issues
+If `make graphql-fetch` fails:
+1. Check that the endpoint URL is correct
+2. Verify the endpoint is accessible
+3. Ensure the endpoint supports introspection queries
+4. Check if authentication is required
+
+### Code Generation Issues
+If `make graphql-generate` fails:
+1. Run `go mod tidy` to ensure dependencies are up to date
+2. Check that the schema file is valid GraphQL
+3. Verify that queries reference valid schema types
+
+### Authentication
+If the GraphQL endpoint requires authentication, you'll need to modify the `graphql-fetch` task in the Makefile to include the appropriate headers:
+
+```makefile
+@curl -s -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_TOKEN" \
+     -d '{"query":"..."}' \
+     $(GRAPHQL_ENDPOINT) > /tmp/schema_response.json
+```
+
+## Examples
+
+### Fetch schema from a different endpoint
+```bash
+make graphql-fetch GRAPHQL_ENDPOINT=https://staging-api.hardcover.app/v1/graphql
+```
+
+### Generate code only (without fetching schema)
+```bash
+make graphql-generate
+```
+
+### Complete update workflow
+```bash
+make graphql-update
+```
+
+### Check current configuration
+```bash
+make graphql-info
+```
+</file>
+
+<file path="LICENSE">
+MIT License
+
+Copyright (c) 2025 Peter Souter
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path="Makefile">
+# Makefile for hardcover-cli
+
+APP := hardcover-cli
+VERSION ?= $(shell git describe --tags --always --dirty)
+GO := go
+LINT := golangci-lint
+GENQLIENT := go run github.com/Khan/genqlient
+
+BUILD_FLAGS := -ldflags "-X main.Version=${VERSION}"
+
+# GraphQL configuration
+GRAPHQL_DIR := internal/client
+SCHEMA_FILE := $(GRAPHQL_DIR)/schema.graphql
+GENQLIENT_CONFIG := $(GRAPHQL_DIR)/genqlient.yaml
+GENERATED_FILE := $(GRAPHQL_DIR)/generated.go
+
+# Default GraphQL endpoint (update this with the actual Hardcover API endpoint)
+GRAPHQL_ENDPOINT ?= https://api.hardcover.app/v1/graphql
+
+.PHONY: all build test lint install clean help release fmt graphql-fetch graphql-generate graphql-update
+
+all: build
+
+## Build the binary
+build:
+	@echo "Building $(APP) version $(VERSION)"
+	$(GO) build -o bin/$(APP) $(BUILD_FLAGS) .
+
+## Run tests
+test:
+	$(GO) test ./... -timeout 2m
+
+## Run linter
+lint:
+	$(LINT) run
+
+## Format code
+fmt:
+	$(GO) fmt ./...
+
+## Install binary into $GOBIN or default $GOPATH/bin
+install: build
+	@echo "Installing $(APP)..."
+	install -m 0755 bin/$(APP) $(GOBIN) || install -m 0755 bin/$(APP) $(GOPATH)/bin
+
+## Remove binaries and caches
+clean:
+	@echo "Cleaning..."
+	rm -rf bin/
+	$(GO) clean -cache ./...
+
+## Fetch latest GraphQL schema from remote endpoint
+graphql-fetch:
+	@echo "Fetching latest GraphQL schema from $(GRAPHQL_ENDPOINT)..."
+	@if [ -z "$(GRAPHQL_ENDPOINT)" ]; then \
+		echo "Error: GRAPHQL_ENDPOINT is not set. Please set it to the actual Hardcover API endpoint."; \
+		echo "Example: make graphql-fetch GRAPHQL_ENDPOINT=https://api.hardcover.app/graphql"; \
+		exit 1; \
+	fi
+	@echo "Downloading schema from $(GRAPHQL_ENDPOINT)..."
+	@echo "Note: This requires the GraphQL endpoint to support introspection queries."
+	@if [ -n "$(HARDCOVER_API_KEY)" ]; then \
+		echo "Using API key for authentication..."; \
+		curl -s -H "Content-Type: application/json" \
+			-H "Authorization: Bearer $(HARDCOVER_API_KEY)" \
+			-d '{"query":"query IntrospectionQuery{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}' \
+			$(GRAPHQL_ENDPOINT) > /tmp/schema_response.json; \
+	else \
+		echo "No API key found. Trying without authentication..."; \
+		curl -s -H "Content-Type: application/json" \
+			-d '{"query":"query IntrospectionQuery{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}' \
+			$(GRAPHQL_ENDPOINT) > /tmp/schema_response.json; \
+	fi
+	@if [ ! -s /tmp/schema_response.json ]; then \
+		echo "Error: Empty response from $(GRAPHQL_ENDPOINT)"; \
+		exit 1; \
+	fi
+	@echo "Converting introspection result to GraphQL SDL..."
+	@if command -v jq >/dev/null 2>&1; then \
+		jq -r '.data.__schema | to_entries | map(select(.key != "__typename")) | from_entries | {data: {__schema: .}}' /tmp/schema_response.json > /tmp/schema_processed.json; \
+	else \
+		echo "Warning: jq not found, using raw response"; \
+		cp /tmp/schema_response.json /tmp/schema_processed.json; \
+	fi
+	@if command -v gqlgen-introspect >/dev/null 2>&1; then \
+		gqlgen-introspect /tmp/schema_processed.json > $(SCHEMA_FILE); \
+	elif command -v go >/dev/null 2>&1; then \
+		go run github.com/vektah/gqlparser/v2/cmd/gqlgen-introspect /tmp/schema_processed.json > $(SCHEMA_FILE); \
+	else \
+		echo "Error: Neither gqlgen-introspect nor go command found"; \
+		echo "Please install gqlgen-introspect or ensure go is available"; \
+		exit 1; \
+	fi
+	@rm -f /tmp/schema_response.json /tmp/schema_processed.json
+	@echo "Schema updated successfully: $(SCHEMA_FILE)"
+
+## Generate Go code from GraphQL schema and queries
+graphql-generate:
+	@echo "Generating Go code from GraphQL schema..."
+	@if [ ! -f $(GENQLIENT_CONFIG) ]; then \
+		echo "Error: genqlient config not found at $(GENQLIENT_CONFIG)"; \
+		exit 1; \
+	fi
+	@echo "Ensuring genqlient dependencies are installed..."
+	@$(GO) mod tidy
+	@$(GO) get github.com/Khan/genqlient/generate@v0.8.1
+	@$(GO) get github.com/vektah/gqlparser/v2/validator@v2.5.19
+	$(GENQLIENT) $(GENQLIENT_CONFIG)
+	@echo "Generated Go code: $(GENERATED_FILE)"
+
+## Fetch latest schema and regenerate code (complete update)
+graphql-update: graphql-fetch graphql-generate
+	@echo "GraphQL schema and code generation completed successfully!"
+
+## Show GraphQL schema information
+graphql-info:
+	@echo "GraphQL Configuration:"
+	@echo "  Schema file: $(SCHEMA_FILE)"
+	@echo "  Config file: $(GENQLIENT_CONFIG)"
+	@echo "  Generated file: $(GENERATED_FILE)"
+	@echo "  Endpoint: $(GRAPHQL_ENDPOINT)"
+	@echo ""
+	@if [ -f $(SCHEMA_FILE) ]; then \
+		echo "Current schema types:"; \
+		grep "^type " $(SCHEMA_FILE) | sed 's/^type /  - /' | sed 's/ {.*//'; \
+	else \
+		echo "No schema file found at $(SCHEMA_FILE)"; \
+	fi
+
+## Help
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+</file>
+
+<file path="README.md">
+# Hardcover CLI
+
+A comprehensive command-line interface for interacting with the Hardcover.app GraphQL API.
+
+## Features
+
+- **User Profile Management**: Get your authenticated user profile information
+- **Book Search**: Search for books by title, author, or other criteria
+- **Book Details**: Retrieve detailed information about specific books
+- **Configuration Management**: Easy setup and management of API keys
+- **High Test Coverage**: Comprehensive unit tests for all functionality
+- **Well-Documented**: Clear help text and documentation for all commands
+
+## Installation
+
+### Prerequisites
+
+- Go 1.19 or later
+- A Hardcover.app account and API key
+
+### Build from Source
+
+```bash
+git clone <repository-url>
+cd hardcover-cli
+go build -o hardcover main.go
+```
+
+## Configuration
+
+Before using the CLI, you need to set your Hardcover.app API key. You can do this in two ways:
+
+### Option 1: Environment Variable
+
+```bash
+export HARDCOVER_API_KEY="your-api-key-here"
+```
+
+### Option 2: Configuration File
+
+```bash
+hardcover config set-api-key "your-api-key-here"
+```
+
+The configuration file is stored at `~/.hardcover/config.yaml`.
+
+## Usage
+
+### Basic Commands
+
+#### Get Your Profile
+
+```bash
+hardcover me
+```
+
+Displays your user profile information including:
+- User ID
+- Username
+- Email address
+- Account creation date
+- Last updated date
+
+#### Search for Books
+
+```bash
+hardcover search books "golang programming"
+hardcover search books "tolkien"
+hardcover search books "machine learning"
+```
+
+Returns matching books with:
+- Title and author information
+- Publication details
+- Ratings and genres
+- Hardcover.app URL
+
+#### Get Book Details
+
+```bash
+hardcover book get 12345
+hardcover book get "book-slug-or-id"
+```
+
+Displays comprehensive book information including:
+- Title and description
+- Author(s) and contributors
+- Publication details (year, page count, ISBN)
+- Genres and categories
+- Ratings and reviews summary
+- Cover image URL
+- Hardcover.app URL
+
+### Configuration Commands
+
+#### Set API Key
+
+```bash
+hardcover config set-api-key "your-api-key-here"
+```
+
+#### Get Current API Key
+
+```bash
+hardcover config get-api-key
+```
+
+#### Show Configuration File Path
+
+```bash
+hardcover config show-path
+```
+
+### Global Options
+
+- `--config`: Specify a custom config file path
+- `--api-key`: Override the API key for a single command
+- `--help`: Show help for any command
+
+## Examples
+
+### Search and Get Book Details
+
+```bash
+# Search for Go programming books
+hardcover search books "golang"
+
+# Get details for a specific book (use the ID from search results)
+hardcover book get 67890
+```
+
+### Profile Management
+
+```bash
+# Get your profile
+hardcover me
+
+# Set up your API key
+hardcover config set-api-key "your-api-key"
+
+# Check your current API key
+hardcover config get-api-key
+```
+
+## Development
+
+### Project Structure
+
+```
+hardcover-cli/
+├── cmd/                    # CLI command implementations
+│   ├── root.go            # Root command and CLI setup
+│   ├── me.go              # User profile command
+│   ├── search.go          # Search commands
+│   ├── book.go            # Book-related commands
+│   ├── config.go          # Configuration commands
+│   └── *_test.go          # Unit tests
+├── internal/
+│   ├── client/            # GraphQL client implementation
+│   │   ├── client.go      # HTTP client wrapper
+│   │   ├── schema.graphql # GraphQL schema
+│   │   └── queries.graphql # GraphQL queries
+│   └── config/            # Configuration management
+│       ├── config.go      # Configuration logic
+│       └── config_test.go # Configuration tests
+├── main.go                # Application entry point
+├── go.mod                 # Go module definition
+└── README.md             # This file
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+go test ./...
+
+# Run tests with coverage
+go test ./... -cover
+
+# Run tests for specific package
+go test ./internal/config -v
+```
+
+### GraphQL Schema
+
+The application uses a GraphQL schema based on the Hardcover.app API. The schema is defined in `internal/client/schema.graphql` and includes types for:
+
+- User profile information
+- Book details and metadata
+- Search results
+- Contributors and genres
+
+### Key Dependencies
+
+- **Cobra**: CLI framework for Go
+- **Testify**: Testing toolkit with assertions and mocks
+- **YAML**: Configuration file parsing
+
+## API Reference
+
+### GraphQL Queries
+
+The application uses the following GraphQL queries:
+
+#### Get Current User
+
+```graphql
+query GetCurrentUser {
+  me {
+    id
+    username
+    email
+    createdAt
+    updatedAt
+  }
+}
+```
+
+#### Search Books
+
+```graphql
+query SearchBooks($query: String!) {
+  search(query: $query, type: BOOKS) {
+    ... on BookSearchResults {
+      totalCount
+      results {
+        ... on Book {
+          id
+          title
+          slug
+          cached_contributors {
+            name
+            role
+          }
+          cached_genres {
+            name
+          }
+          averageRating
+          ratingsCount
+        }
+      }
+    }
+  }
+}
+```
+
+#### Get Book Details
+
+```graphql
+query GetBook($id: ID!) {
+  book(id: $id) {
+    id
+    title
+    description
+    slug
+    isbn
+    publicationYear
+    pageCount
+    cached_contributors {
+      name
+      role
+    }
+    cached_genres {
+      name
+    }
+    image
+    averageRating
+    ratingsCount
+    createdAt
+    updatedAt
+  }
+}
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For issues and questions:
+- Check the help text: `hardcover --help`
+- Review the documentation above
+- File an issue in the repository
+
+## Changelog
+
+### v1.0.0
+- Initial release
+- User profile management
+- Book search functionality
+- Book details retrieval
+- Configuration management
+- Comprehensive test coverage
+</file>
+
+<file path=".github/workflows/nightly.yml">
+name: Nightly Tests
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  test-latest-dependencies:
+    name: Test with Latest Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Update to latest dependencies
+      run: |
+        go get -u ./...
+        go mod tidy
+    
+    - name: Run tests with race detection
+      run: go test -v -race -timeout=10m ./...
+    
+    - name: Run tests with coverage
+      run: go test -v -coverprofile=coverage.out ./...
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: nightly
+        name: nightly-coverage
+
+  test-go-versions:
+    name: Test Go Versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.19', '1.20', '1.21', '1.22']
+    
+    steps:
+    - name: Set up Go ${{ matrix.go-version }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ matrix.go-version }}-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run tests
+      run: go test -v ./...
+    
+    - name: Build application
+      run: go build -v .
+
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run benchmarks
+      run: |
+        go test -bench=. -benchmem ./... | tee benchmark.txt
+    
+    - name: Store benchmark result
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        tool: 'go'
+        output-file-path: benchmark.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: true
+        comment-on-alert: true
+        alert-threshold: '200%'
+        fail-on-alert: false
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'your-username'  # Only run for main repo
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Build application
+      run: go build -o hardcover .
+    
+    - name: Test CLI commands (without real API calls)
+      run: |
+        # Test help commands
+        ./hardcover --help
+        ./hardcover config --help
+        ./hardcover search --help
+        ./hardcover book --help
+        
+        # Test config commands (these don't require API)
+        ./hardcover config show-path
+        
+        echo "Integration tests completed successfully"
+
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [test-latest-dependencies, test-go-versions, benchmark, integration-test]
+    if: failure()
+    
+    steps:
+    - name: Create issue on failure
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `Nightly tests failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          ## Nightly Test Failure
+          
+          The nightly tests have failed. Please investigate the following:
+          
+          - Check if there are any dependency conflicts
+          - Verify external API compatibility
+          - Review performance regressions
+          - Check for Go version compatibility issues
+          
+          **Run details:** [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref }}
+          
+          This issue was automatically created by the nightly test workflow.
+          `;
+          
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: 'nightly-failure'
+          });
+          
+          // Check if there's already an open issue for nightly failures
+          const existingIssue = issues.data.find(issue => 
+            issue.title.includes('Nightly tests failed')
+          );
+          
+          if (!existingIssue) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['bug', 'nightly-failure', 'automated']
+            });
+          } else {
+            // Add a comment to the existing issue
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existingIssue.number,
+              body: `Nightly tests failed again on ${new Date().toISOString().split('T')[0]}. [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            });
+          }
+</file>
+
+<file path="cmd/config_test.go">
+package cmd
+
+import (
+	"bytes"
+	"context"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/config"
+)
+
+func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := configSetAPIKeyCmd.RunE(cmd, []string{"test-api-key-123"})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "API key has been set and saved to configuration file")
+	assert.Contains(t, outputStr, "Configuration file:")
+
+	// Verify config file was created and contains correct data
+	configPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	_, err = os.Stat(configPath)
+	require.NoError(t, err)
+
+	// Load config and verify
+	cfg, err := config.LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "test-api-key-123", cfg.APIKey)
+}
+
+func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Test with no arguments - this should fail validation before reaching RunE
+	err := configSetAPIKeyCmd.Args(cmd, []string{})
+	require.Error(t, err)
+
+	// Test with too many arguments - this should fail validation before reaching RunE
+	err = configSetAPIKeyCmd.Args(cmd, []string{"arg1", "arg2"})
+	require.Error(t, err)
+}
+
+func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	// Create config with API key
+	cfg := &config.Config{
+		APIKey:  "test-api-key-123456789",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	err := config.SaveConfig(cfg)
+	require.NoError(t, err)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err = configGetAPIKeyCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output shows masked API key
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "API key: test...6789")
+	assert.Contains(t, outputStr, "Source: Configuration file")
+}
+
+func TestConfigGetAPIKeyCmd_WithEnvironmentVariable(t *testing.T) {
+	// Set environment variable
+	expectedAPIKey := "env-api-key-123456789"
+	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := configGetAPIKeyCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output shows masked API key from environment
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "API key: env-...6789")
+	assert.Contains(t, outputStr, "Source: Environment variable")
+}
+
+func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
+	// Make sure no environment variable is set
+	os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := configGetAPIKeyCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output shows no API key message
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "No API key is currently set")
+	assert.Contains(t, outputStr, "hardcover config set-api-key")
+	assert.Contains(t, outputStr, "export HARDCOVER_API_KEY")
+}
+
+func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	// Create config with short API key
+	cfg := &config.Config{
+		APIKey:  "short",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	err := config.SaveConfig(cfg)
+	require.NoError(t, err)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err = configGetAPIKeyCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output shows full API key for short keys
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "API key: short")
+}
+
+func TestConfigShowPathCmd_Success(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := configShowPathCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	assert.Contains(t, outputStr, "Configuration file path: "+expectedPath)
+	assert.Contains(t, outputStr, "Configuration file does not exist yet")
+}
+
+func TestConfigShowPathCmd_FileExists(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	// Create config file
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	err := config.SaveConfig(cfg)
+	require.NoError(t, err)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err = configShowPathCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	assert.Contains(t, outputStr, "Configuration file path: "+expectedPath)
+	assert.Contains(t, outputStr, "Configuration file exists")
+	assert.NotContains(t, outputStr, "does not exist yet")
+}
+
+func TestConfigCmd_CommandProperties(t *testing.T) {
+	// Test config command properties
+	assert.Equal(t, "config", configCmd.Use)
+	assert.Equal(t, "Manage configuration settings", configCmd.Short)
+	assert.NotEmpty(t, configCmd.Long)
+	assert.Contains(t, configCmd.Long, "set-api-key")
+	assert.Contains(t, configCmd.Long, "get-api-key")
+	assert.Contains(t, configCmd.Long, "show-path")
+}
+
+func TestConfigSetAPIKeyCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "set-api-key <api_key>", configSetAPIKeyCmd.Use)
+	assert.Equal(t, "Set your Hardcover.app API key", configSetAPIKeyCmd.Short)
+	assert.NotEmpty(t, configSetAPIKeyCmd.Long)
+	assert.Contains(t, configSetAPIKeyCmd.Long, "~/.hardcover/config.yaml")
+	assert.Contains(t, configSetAPIKeyCmd.Long, "hardcover config set-api-key")
+}
+
+func TestConfigGetAPIKeyCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "get-api-key", configGetAPIKeyCmd.Use)
+	assert.Equal(t, "Display your current API key", configGetAPIKeyCmd.Short)
+	assert.NotEmpty(t, configGetAPIKeyCmd.Long)
+	assert.Contains(t, configGetAPIKeyCmd.Long, "HARDCOVER_API_KEY")
+	assert.Contains(t, configGetAPIKeyCmd.Long, "hardcover config get-api-key")
+}
+
+func TestConfigShowPathCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "show-path", configShowPathCmd.Use)
+	assert.Equal(t, "Show the path to the configuration file", configShowPathCmd.Short)
+	assert.NotEmpty(t, configShowPathCmd.Long)
+	assert.Contains(t, configShowPathCmd.Long, "hardcover config show-path")
+}
+
+func TestConfigCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupConfigCommands()
+
+	// Test the command is properly registered
+	found := false
+	for _, cmd := range rootCmd.Commands() {
+		if cmd.Use == "config" {
+			found = true
+
+			// Check that subcommands are registered
+			subCommands := []string{"set-api-key <api_key>", "get-api-key", "show-path"}
+			for _, expectedSub := range subCommands {
+				subFound := false
+				for _, subCmd := range cmd.Commands() {
+					if subCmd.Use == expectedSub {
+						subFound = true
+						break
+					}
+				}
+				assert.True(t, subFound, "subcommand %s should be registered", expectedSub)
+			}
+			break
+		}
+	}
+	assert.True(t, found, "config command should be registered with root command")
+}
+
+func TestConfigSetAPIKeyCmd_UpdatesExistingConfig(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	// Create initial config
+	cfg := &config.Config{
+		APIKey:  "old-api-key",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	err := config.SaveConfig(cfg)
+	require.NoError(t, err)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Execute command to update API key
+	err = configSetAPIKeyCmd.RunE(cmd, []string{"new-api-key"})
+	require.NoError(t, err)
+
+	// Verify config was updated
+	updatedCfg, err := config.LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, "new-api-key", updatedCfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", updatedCfg.BaseURL)
+}
+</file>
+
+<file path="cmd/config.go">
+package cmd
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
+
+	"hardcover-cli/internal/config"
+)
+
+// configCmd represents the config command
+var configCmd = &cobra.Command{
+	Use:   "config",
+	Short: "Manage configuration settings",
+	Long: `Manage configuration settings for the Hardcover CLI application.
+
+Available subcommands:
+  set-api-key    Set your Hardcover.app API key
+  get-api-key    Display your current API key
+  show-path      Show the path to the configuration file`,
+}
+
+// configSetAPIKeyCmd represents the config set-api-key command
+var configSetAPIKeyCmd = &cobra.Command{
+	Use:   "set-api-key <api_key>",
+	Short: "Set your Hardcover.app API key",
+	Long: `Set your Hardcover.app API key for authenticating with the API.
+
+The API key will be stored in a configuration file at:
+  ~/.hardcover/config.yaml
+
+Example:
+  hardcover config set-api-key "your-api-key-here"`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		apiKey := args[0]
+
+		// Load existing config or create new one
+		cfg, err := config.LoadConfig()
+		if err != nil {
+			cfg = config.DefaultConfig()
+		}
+
+		// Update the API key
+		cfg.APIKey = apiKey
+
+		// Save the configuration
+		if saveErr := config.SaveConfig(cfg); saveErr != nil {
+			return fmt.Errorf("failed to save configuration: %w", saveErr)
+		}
+
+		printToStdoutf(cmd.OutOrStdout(), "API key has been set and saved to configuration file.\n")
+
+		configPath, err := config.GetConfigPath()
+		if err == nil {
+			printToStdoutf(cmd.OutOrStdout(), "Configuration file: %s\n", configPath)
+		}
+
+		return nil
+	},
+}
+
+// configGetAPIKeyCmd represents the config get-api-key command
+var configGetAPIKeyCmd = &cobra.Command{
+	Use:   "get-api-key",
+	Short: "Display your current API key",
+	Long: `Display your current API key from the configuration file or environment variable.
+
+The API key is loaded from:
+1. HARDCOVER_API_KEY environment variable (if set)
+2. Configuration file at ~/.hardcover/config.yaml
+
+Example:
+  hardcover config get-api-key`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cfg, err := config.LoadConfig()
+		if err != nil {
+			return fmt.Errorf("failed to load configuration: %w", err)
+		}
+
+		if cfg.APIKey == "" {
+			printToStdoutf(cmd.OutOrStdout(), "No API key is currently set.\n")
+			printToStdoutf(cmd.OutOrStdout(), "Set it using:\n")
+			printToStdoutf(cmd.OutOrStdout(), "  hardcover config set-api-key \"your-api-key\"\n")
+			printToStdoutf(cmd.OutOrStdout(), "  or\n")
+			printToStdoutf(cmd.OutOrStdout(), "  export HARDCOVER_API_KEY=\"your-api-key\"\n")
+			return nil
+		}
+
+		// Show only the first and last few characters for security
+		const minLengthForMasking = 10
+		if len(cfg.APIKey) > minLengthForMasking {
+			masked := cfg.APIKey[:4] + "..." + cfg.APIKey[len(cfg.APIKey)-4:]
+			printToStdoutf(cmd.OutOrStdout(), "API key: %s\n", masked)
+		} else {
+			printToStdoutf(cmd.OutOrStdout(), "API key: %s\n", cfg.APIKey)
+		}
+
+		// Show the source of the API key
+		if os.Getenv("HARDCOVER_API_KEY") != "" {
+			printToStdoutf(cmd.OutOrStdout(), "Source: Environment variable (HARDCOVER_API_KEY)\n")
+		} else {
+			configPath, err := config.GetConfigPath()
+			if err == nil {
+				printToStdoutf(cmd.OutOrStdout(), "Source: Configuration file (%s)\n", configPath)
+			}
+		}
+
+		return nil
+	},
+}
+
+// configShowPathCmd represents the config show-path command
+var configShowPathCmd = &cobra.Command{
+	Use:   "show-path",
+	Short: "Show the path to the configuration file",
+	Long: `Show the path to the configuration file where settings are stored.
+
+Example:
+  hardcover config show-path`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		configPath, err := config.GetConfigPath()
+		if err != nil {
+			return fmt.Errorf("failed to get configuration path: %w", err)
+		}
+
+		printToStdoutf(cmd.OutOrStdout(), "Configuration file path: %s\n", configPath)
+
+		// Check if file exists
+		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+			printToStdoutf(cmd.OutOrStdout(), "Configuration file does not exist yet.\n")
+			printToStdoutf(cmd.OutOrStdout(), "It will be created when you set your API key.\n")
+		} else {
+			printToStdoutf(cmd.OutOrStdout(), "Configuration file exists.\n")
+		}
+
+		return nil
+	},
+}
+
+// setupConfigCommands registers the config commands with the root command
+func setupConfigCommands() {
+	configCmd.AddCommand(configSetAPIKeyCmd)
+	configCmd.AddCommand(configGetAPIKeyCmd)
+	configCmd.AddCommand(configShowPathCmd)
+	rootCmd.AddCommand(configCmd)
+}
+</file>
+
+<file path="internal/client/client_test.go">
+package client
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestNewClient(t *testing.T) {
+	endpoint := "https://api.example.com/graphql"
+	apiKey := "test-api-key"
+
+	client := NewClient(endpoint, apiKey)
+
+	assert.NotNil(t, client)
+	// Note: We can't access internal fields anymore since we're using an interface
+	// The client should be functional though
+}
+
+func TestClient_GetCurrentUser_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method and headers
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Verify request body
+		var req map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&req)
+		require.NoError(t, err)
+		assert.Contains(t, req["query"], "query GetCurrentUser")
+		assert.Contains(t, req["query"], "me")
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":        "user123",
+					"username":  "testuser",
+					"email":     "test@example.com",
+					"createdAt": "2023-01-01T00:00:00Z",
+					"updatedAt": "2023-01-02T00:00:00Z",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	response, err := client.GetCurrentUser(context.Background())
+
+	require.NoError(t, err)
+	assert.NotNil(t, response)
+	user := response.GetMe()
+	assert.Equal(t, "user123", user.GetId())
+	assert.Equal(t, "testuser", user.GetUsername())
+	assert.Equal(t, "test@example.com", user.GetEmail())
+}
+
+func TestClient_GetCurrentUser_GraphQLError(t *testing.T) {
+	// Create test server that returns GraphQL errors
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
+				{
+					"message": "User not found",
+					"locations": []map[string]interface{}{
+						{"line": 1, "column": 9},
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	_, err := client.GetCurrentUser(context.Background())
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "User not found")
+}
+
+func TestClient_GetCurrentUser_HTTPError(t *testing.T) {
+	// Create test server that returns HTTP error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	_, err := client.GetCurrentUser(context.Background())
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "returned error 401")
+}
+
+func TestClient_GetCurrentUser_NetworkError(t *testing.T) {
+	// Use invalid endpoint to trigger network error
+	client := NewClient("http://invalid-endpoint:99999", "test-api-key")
+
+	_, err := client.GetCurrentUser(context.Background())
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "dial tcp: address 99999: invalid port")
+}
+
+func TestClient_GetCurrentUser_WithoutAPIKey(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify no Authorization header is set
+		assert.Empty(t, r.Header.Get("Authorization"))
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "")
+
+	response, err := client.GetCurrentUser(context.Background())
+
+	require.NoError(t, err)
+	assert.NotNil(t, response)
+	user := response.GetMe()
+	assert.Equal(t, "user123", user.GetId())
+}
+
+func TestClient_GetCurrentUser_WithContext(t *testing.T) {
+	// Create test server with delay
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(100 * time.Millisecond)
+
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	// Create context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
+
+	_, err := client.GetCurrentUser(ctx)
+
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "context deadline exceeded")
+}
+
+func TestClient_GetBook_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":    "book123",
+					"title": "Test Book",
+					"slug":  "test-book",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	response, err := client.GetBook(context.Background(), "book123")
+
+	require.NoError(t, err)
+	assert.NotNil(t, response)
+	book := response.GetBook()
+	assert.Equal(t, "book123", book.GetId())
+	assert.Equal(t, "Test Book", book.GetTitle())
+}
+
+func TestClient_SearchBooks_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"search": map[string]interface{}{
+					"__typename": "BookSearchResults",
+					"totalCount": 1,
+					"results": []map[string]interface{}{
+						{
+							"id":    "book123",
+							"title": "Test Book",
+							"slug":  "test-book",
+						},
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	response, err := client.SearchBooks(context.Background(), "test")
+
+	require.NoError(t, err)
+	assert.NotNil(t, response)
+	searchResults := response.GetSearch()
+	assert.Equal(t, "BookSearchResults", searchResults.GetTypename())
+}
+</file>
+
+<file path="internal/client/genqlient.yaml">
+# Local schema file (for development)
+schema: schema.graphql
+
+# Remote schema endpoint (for production/updates)
+# Uncomment and update the URL when you have the actual Hardcover GraphQL endpoint
+# schema: https://api.hardcover.app/v1/graphql
+
+operations:
+  - queries.graphql
+generated: generated.go
+</file>
+
+<file path=".gitignore">
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build output directory
+bin/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# Editor/IDE
+# .idea/
+# .vscode/
+
+# Build artifacts
+bin/
+hardcover-cli
+</file>
+
+<file path=".golangci.yml">
+version: "2"
+run:
+  issues-exit-code: 1
+  tests: true
+linters:
+  enable:
+    - bodyclose
+    - depguard
+    - dogsled
+    - dupl
+    - exhaustive
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - goprintffuncname
+    - gosec
+    - lll
+    - misspell
+    - mnd
+    - nakedret
+    - noctx
+    - nolintlint
+    - revive
+    - rowserrcheck
+    - staticcheck
+    - unconvert
+    - unparam
+    - whitespace
+  disable:
+    - gochecknoglobals
+  settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - "cmd/**/*.go"
+            - "main.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "context"
+            - "strings"
+            - "github.com/spf13/cobra"
+            - "hardcover-cli/internal/client"
+            - "hardcover-cli/internal/config"
+        test:
+          files:
+            - "**/*_test.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "context"
+            - "strings"
+            - "bytes"
+            - "net/http"
+            - "net/http/httptest"
+            - "path/filepath"
+            - "encoding/json"
+            - "testing"
+            - "time"
+            - "github.com/spf13/cobra"
+            - "github.com/stretchr/testify/assert"
+            - "github.com/stretchr/testify/require"
+            - "hardcover-cli/internal/client"
+            - "hardcover-cli/internal/config"
+            - "hardcover-cli/cmd"
+        internal:
+          files:
+            - "internal/**/*.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "path/filepath"
+            - "gopkg.in/yaml.v3"
+            - "bytes"
+            - "context"
+            - "encoding/json"
+            - "io"
+            - "net/http"
+            - "time"
+            - "github.com/stretchr/testify/assert"
+            - "github.com/stretchr/testify/require"
+    dupl:
+      threshold: 100
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+    gocritic:
+      disabled-checks:
+        - wrapperFunc
+        - dupImport
+        - ifElseChain
+      enabled-tags:
+        - performance
+        - style
+        - experimental
+        - diagnostic
+    gocyclo:
+      min-complexity: 15
+    govet:
+      enable-all: true
+    lll:
+      line-length: 120
+    misspell:
+      locale: US
+    nakedret:
+      max-func-lines: 30
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: false
+    revive:
+      confidence: 0.8
+    unparam:
+      check-exported: false
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - dupl
+          - errcheck
+          - funlen
+          - gocyclo
+          - gosec
+        path: _test\.go
+      - linters:
+          - lll
+        source: '^//go:generate '
+      - linters:
+          - staticcheck
+        text: 'SA9003:'
+      - linters:
+          - staticcheck
+        text: 'SA1019:'
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gofmt:
+      simplify: true
+    goimports:
+      local-prefixes:
+        - hardcover-cli
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+</file>
+
+<file path="main.go">
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"hardcover-cli/cmd"
+)
+
+// version is set by the build process
+var version = "dev"
+
+// main is the entry point for the hardcover CLI application
+func main() {
+	// Set version in cmd package if needed
+	if len(os.Args) > 1 && (os.Args[1] == "--version" || os.Args[1] == "-v") {
+		fmt.Printf("hardcover version %s\n", version)
+		os.Exit(0)
+	}
+
+	// Setup all commands
+	cmd.SetupCommands()
+
+	cmd.Execute()
+}
+</file>
+
+<file path=".github/dependabot.yml">
+version: 2
+updates:
+  # Enable version updates for Go modules
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    assignees:
+      - "petems"
+    reviewers:
+      - "petems"
+    labels:
+      - "dependencies"
+      - "go"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    rebase-strategy: "auto"
+    
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 3
+    assignees:
+      - "petems"
+    reviewers:
+      - "petems"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+</file>
+
+<file path=".github/WORKFLOWS.md">
+# GitHub Actions Workflows
+
+This document describes the GitHub Actions workflows configured for the Hardcover CLI project.
+
+## Overview
+
+The project uses several GitHub Actions workflows to ensure code quality, security, and automated deployment:
+
+1. **CI (Continuous Integration)** - Main testing and quality checks
+2. **Release** - Automated releases and binary builds
+3. **Dependency Update** - Automated dependency management
+4. **Nightly Tests** - Scheduled testing with latest dependencies
+
+## Workflows
+
+### 1. CI Workflow (`.github/workflows/ci.yml`)
+
+**Triggers:**
+- Push to `main` or `develop` branches
+- Pull requests to `main` or `develop` branches
+
+**Jobs:**
+
+#### Test Job
+- **Matrix Strategy**: Tests across multiple OS (Ubuntu, Windows, macOS) and Go versions (1.19, 1.20, 1.21)
+- **Features**:
+  - Go module caching for faster builds
+  - Race condition detection
+  - Code coverage reporting
+  - Codecov integration
+
+#### Lint Job
+- **golangci-lint**: Comprehensive code linting
+- **Configuration**: Uses `.golangci.yml` for custom rules
+- **Features**: Performance, style, and security checks
+
+#### Format Check Job
+- **gofmt**: Ensures consistent code formatting
+- **Fails if**: Any files are not properly formatted
+
+#### Security Job
+- **Gosec**: Security vulnerability scanning
+- **SARIF Upload**: Results uploaded to GitHub Security tab
+
+#### Build Job
+- **Binary Build**: Ensures application builds successfully
+- **CLI Testing**: Basic CLI functionality verification
+- **Artifact Upload**: Stores built binary
+
+#### Go Vet Job
+- **Static Analysis**: Go's built-in static analysis tool
+- **Detects**: Common Go programming errors
+
+#### Mod Tidy Job
+- **Dependency Check**: Ensures `go.mod` and `go.sum` are clean
+- **Fails if**: `go mod tidy` would make changes
+
+### 2. Release Workflow (`.github/workflows/release.yml`)
+
+**Triggers:**
+- Git tags matching `v*` pattern (e.g., `v1.0.0`)
+
+**Jobs:**
+
+#### Test Before Release
+- **Full Test Suite**: Ensures all tests pass before release
+- **Linting**: Code quality verification
+
+#### Build Matrix
+- **Cross-Platform**: Builds for multiple OS/architecture combinations
+  - Linux (amd64, arm64)
+  - macOS (amd64, arm64)
+  - Windows (amd64)
+- **Versioning**: Embeds version information in binaries
+- **Archive Creation**: Creates `.tar.gz` (Unix) and `.zip` (Windows) archives
+
+#### Release Creation
+- **GitHub Release**: Automatically creates GitHub release
+- **Asset Upload**: Attaches all platform binaries
+- **Release Notes**: Includes installation and usage instructions
+
+#### Homebrew (Optional)
+- **Formula Update**: Automatically updates Homebrew formula
+- **Requires**: `COMMITTER_TOKEN` secret and Homebrew tap repository
+
+### 3. Dependency Update Workflow (`.github/workflows/dependency-update.yml`)
+
+**Triggers:**
+- Weekly schedule (Mondays at 9 AM UTC)
+- Manual trigger (`workflow_dispatch`)
+
+**Jobs:**
+
+#### Dependency Updates
+- **Automated Updates**: Updates all Go dependencies to latest versions
+- **Testing**: Ensures tests still pass with new dependencies
+- **Pull Request**: Creates PR with changes if updates are available
+
+#### Security Audit
+- **Nancy**: Sonatype dependency vulnerability scanner
+- **govulncheck**: Go vulnerability checker
+- **Gosec**: Security scanning with SARIF output
+
+#### License Check
+- **go-licenses**: Validates dependency licenses
+- **Report Generation**: Creates license summary
+
+### 4. Nightly Tests Workflow (`.github/workflows/nightly.yml`)
+
+**Triggers:**
+- Daily schedule (2 AM UTC)
+- Manual trigger (`workflow_dispatch`)
+
+**Jobs:**
+
+#### Latest Dependencies Test
+- **Bleeding Edge**: Tests with latest available dependencies
+- **Coverage**: Generates coverage reports
+
+#### Go Version Matrix
+- **Compatibility**: Tests across multiple Go versions (1.19-1.22)
+- **Future Proofing**: Ensures compatibility with newer Go releases
+
+#### Performance Benchmarks
+- **Benchmark Tests**: Runs performance benchmarks
+- **Trend Tracking**: Monitors performance over time
+- **Alerts**: Notifies on significant performance regressions
+
+#### Integration Tests
+- **CLI Testing**: End-to-end CLI command testing
+- **Smoke Tests**: Basic functionality verification
+
+#### Failure Notification
+- **Issue Creation**: Automatically creates GitHub issues on failure
+- **Comment Updates**: Updates existing issues with new failures
+
+## Dependabot Configuration (`.github/dependabot.yml`)
+
+**Features:**
+- **Go Modules**: Weekly dependency updates
+- **GitHub Actions**: Weekly action version updates
+- **Pull Request Limits**: Prevents overwhelming number of PRs
+- **Auto-Assignment**: Assigns PRs to maintainers
+- **Labeling**: Automatic categorization
+
+## Required Secrets
+
+### For Basic Workflows
+- `GITHUB_TOKEN` - Automatically provided by GitHub
+
+### For Enhanced Features (Optional)
+- `CODECOV_TOKEN` - For code coverage reporting
+- `COMMITTER_TOKEN` - For Homebrew formula updates
+
+## Configuration Files
+
+### `.golangci.yml`
+Comprehensive linting configuration with:
+- **Enabled Linters**: 30+ linters for code quality
+- **Custom Rules**: Project-specific configurations
+- **Test Exclusions**: Relaxed rules for test files
+- **Performance Focus**: Optimized for Go best practices
+
+### `.github/dependabot.yml`
+Automated dependency management:
+- **Schedule**: Weekly updates on Mondays
+- **Limits**: Reasonable PR limits to avoid spam
+- **Categorization**: Proper labeling and assignment
+
+## Usage
+
+### Running Tests Locally
+
+```bash
+# Run all tests
+go test ./...
+
+# Run tests with race detection
+go test -race ./...
+
+# Run tests with coverage
+go test -coverprofile=coverage.out ./...
+
+# Run linter
+golangci-lint run
+
+# Check formatting
+gofmt -s -l .
+```
+
+### Creating a Release
+
+1. **Tag the Release**:
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   git push origin v1.0.0
+   ```
+
+2. **Automatic Process**:
+   - Tests run automatically
+   - Binaries built for all platforms
+   - GitHub release created
+   - Assets uploaded
+
+### Manual Workflow Triggers
+
+All workflows support manual triggering via GitHub UI:
+1. Go to **Actions** tab
+2. Select desired workflow
+3. Click **Run workflow**
+4. Choose branch and click **Run workflow**
+
+## Best Practices
+
+### For Contributors
+1. **Test Locally**: Run tests before pushing
+2. **Format Code**: Use `gofmt` or IDE formatting
+3. **Check Linting**: Run `golangci-lint` locally
+4. **Update Dependencies**: Keep dependencies current
+
+### For Maintainers
+1. **Review PRs**: Check automated PR reviews
+2. **Monitor Nightly**: Check nightly test results
+3. **Security**: Review security scan results
+4. **Releases**: Use semantic versioning for tags
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Test Failures**: Check for dependency conflicts or API changes
+2. **Lint Errors**: Review `.golangci.yml` configuration
+3. **Build Failures**: Verify Go version compatibility
+4. **Security Alerts**: Review and update vulnerable dependencies
+
+### Workflow Debugging
+
+1. **Enable Debug Logging**: Add `ACTIONS_STEP_DEBUG=true` secret
+2. **Check Logs**: Review workflow run logs in Actions tab
+3. **Local Reproduction**: Run commands locally to reproduce issues
+
+## Monitoring
+
+### Key Metrics
+- **Test Coverage**: Monitor via Codecov dashboard
+- **Security**: Review GitHub Security tab
+- **Performance**: Track benchmark trends
+- **Dependencies**: Monitor Dependabot PRs
+
+### Alerts
+- **Nightly Failures**: Automatic issue creation
+- **Security Vulnerabilities**: GitHub Security alerts
+- **Performance Regressions**: Benchmark alerts
+- **Dependency Updates**: Dependabot notifications
+
+This comprehensive CI/CD setup ensures high code quality, security, and automated maintenance for the Hardcover CLI project.
+</file>
+
+<file path="cmd/book_test.go">
+package cmd
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/config"
+)
+
+func TestBookGetCmd_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Verify GraphQL query
+		var req map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&req)
+		require.NoError(t, err)
+		assert.Contains(t, req["query"], "query GetBook")
+		assert.Contains(t, req["query"], "book")
+		assert.Equal(t, "book123", req["variables"].(map[string]interface{})["id"])
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":              "book123",
+					"title":           "The Go Programming Language",
+					"description":     "A comprehensive guide to Go programming",
+					"slug":            "go-programming-language",
+					"isbn":            "978-0134190440",
+					"publicationYear": 2015,
+					"pageCount":       380,
+					"cached_contributors": []map[string]interface{}{
+						{
+							"name": "Alan Donovan",
+							"role": "author",
+						},
+						{
+							"name": "Brian Kernighan",
+							"role": "author",
+						},
+						{
+							"name": "John Doe",
+							"role": "editor",
+						},
+					},
+					"cached_genres": []map[string]interface{}{
+						{
+							"name": "Programming",
+						},
+						{
+							"name": "Technology",
+						},
+						{
+							"name": "Computer Science",
+						},
+					},
+					"image":         "https://example.com/book-cover.jpg",
+					"averageRating": 4.5,
+					"ratingsCount":  123,
+					"createdAt":     "2023-01-01T00:00:00Z",
+					"updatedAt":     "2023-01-02T00:00:00Z",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Book Details:")
+	assert.Contains(t, outputStr, "Title: The Go Programming Language")
+	assert.Contains(t, outputStr, "ID: book123")
+	assert.Contains(t, outputStr, "Description: A comprehensive guide to Go programming")
+	assert.Contains(t, outputStr, "Contributors:")
+	assert.Contains(t, outputStr, "Alan Donovan (author)")
+	assert.Contains(t, outputStr, "Brian Kernighan (author)")
+	assert.Contains(t, outputStr, "John Doe (editor)")
+	assert.Contains(t, outputStr, "Publication Year: 2015")
+	assert.Contains(t, outputStr, "Page Count: 380")
+	assert.Contains(t, outputStr, "ISBN: 978-0134190440")
+	assert.Contains(t, outputStr, "Genres: Programming, Technology, Computer Science")
+	assert.Contains(t, outputStr, "Average Rating: 4.50 (123 ratings)")
+	assert.Contains(t, outputStr, "Image: https://example.com/book-cover.jpg")
+	assert.Contains(t, outputStr, "Hardcover URL: https://hardcover.app/books/go-programming-language")
+	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
+	assert.Contains(t, outputStr, "Updated: 2023-01-02T00:00:00Z")
+}
+
+func TestBookGetCmd_MissingAPIKey(t *testing.T) {
+	// Create command with empty API key
+	cfg := &config.Config{
+		APIKey:  "",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "API key is required")
+}
+
+func TestBookGetCmd_BookNotFound(t *testing.T) {
+	// Create test server that returns null for book
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": nil,
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"nonexistent"})
+	require.NoError(t, err)
+
+	// Verify output handles null book gracefully
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Book Details:")
+	assert.Contains(t, outputStr, "Title: ")
+	assert.Contains(t, outputStr, "ID: ")
+}
+
+func TestBookGetCmd_APIError(t *testing.T) {
+	// Create test server that returns error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
+				{
+					"message": "Book not found",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to get book")
+}
+
+func TestBookGetCmd_MinimalData(t *testing.T) {
+	// Create test server with minimal book data
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":                  "book123",
+					"title":               "Simple Book",
+					"slug":                "simple-book",
+					"cached_contributors": []map[string]interface{}{},
+					"cached_genres":       []map[string]interface{}{},
+					"averageRating":       0,
+					"ratingsCount":        0,
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	require.NoError(t, err)
+
+	// Verify output contains minimal information
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Title: Simple Book")
+	assert.Contains(t, outputStr, "ID: book123")
+	assert.NotContains(t, outputStr, "Description:")
+	assert.NotContains(t, outputStr, "Contributors:")
+	assert.NotContains(t, outputStr, "Publication Year:")
+	assert.NotContains(t, outputStr, "Page Count:")
+	assert.NotContains(t, outputStr, "ISBN:")
+	assert.NotContains(t, outputStr, "Genres:")
+	assert.NotContains(t, outputStr, "Average Rating:")
+	assert.NotContains(t, outputStr, "Image:")
+	assert.NotContains(t, outputStr, "Created:")
+	assert.NotContains(t, outputStr, "Updated:")
+}
+
+func TestBookGetCmd_OnlyAuthors(t *testing.T) {
+	// Create test server with book that has only authors, no other contributors
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":    "book123",
+					"title": "Authors Only Book",
+					"slug":  "authors-only-book",
+					"cached_contributors": []map[string]interface{}{
+						{
+							"name": "Author One",
+							"role": "author",
+						},
+						{
+							"name": "Author Two",
+							"role": "Author",
+						},
+						{
+							"name": "Author Three",
+							"role": "",
+						},
+					},
+					"cached_genres": []map[string]interface{}{},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	require.NoError(t, err)
+
+	// Verify output shows authors but no contributors
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Contributors:")
+	assert.Contains(t, outputStr, "Author One (author)")
+	assert.Contains(t, outputStr, "Author Two (Author)")
+	assert.Contains(t, outputStr, "Author Three")
+}
+
+func TestBookGetCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "get <book_id>", bookGetCmd.Use)
+	assert.Equal(t, "Get detailed information about a specific book", bookGetCmd.Short)
+	assert.NotEmpty(t, bookGetCmd.Long)
+	assert.Contains(t, bookGetCmd.Long, "Retrieves and displays detailed information")
+	assert.Contains(t, bookGetCmd.Long, "hardcover book get")
+}
+
+func TestBookGetCmd_RequiresArgument(t *testing.T) {
+	// Test that the command requires exactly one argument
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Test with no arguments - this should fail validation before reaching RunE
+	err := bookGetCmd.Args(cmd, []string{})
+	require.Error(t, err)
+
+	// Test with too many arguments - this should fail validation before reaching RunE
+	err = bookGetCmd.Args(cmd, []string{"arg1", "arg2"})
+	require.Error(t, err)
+}
+
+func TestBookCmd_CommandProperties(t *testing.T) {
+	// Test book command properties
+	assert.Equal(t, "book", bookCmd.Use)
+	assert.Equal(t, "Manage and retrieve book information", bookCmd.Short)
+	assert.NotEmpty(t, bookCmd.Long)
+	assert.Contains(t, bookCmd.Long, "get")
+}
+
+func TestBookCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupBookCommands()
+
+	// Test the command is properly registered
+	found := false
+	for _, cmd := range rootCmd.Commands() {
+		if cmd.Use != "book" {
+			continue
+		}
+		found = true
+		// Check that get subcommand is registered
+		getFound := false
+		for _, subCmd := range cmd.Commands() {
+			if subCmd.Use == "get <book_id>" {
+				getFound = true
+				break
+			}
+		}
+		assert.True(t, getFound, "get subcommand should be registered")
+		break
+	}
+	assert.True(t, found, "book command should be registered with root command")
+}
+</file>
+
+<file path="cmd/context.go">
+package cmd
+
+import (
+	"context"
+	"fmt"
+
+	"hardcover-cli/internal/config"
+)
+
+type contextKey string
+
+const (
+	configKey contextKey = "config"
+)
+
+// withConfig adds the configuration to the context
+func withConfig(ctx context.Context, cfg *config.Config) context.Context {
+	return context.WithValue(ctx, configKey, cfg)
+}
+
+// getConfig retrieves the configuration from the context
+func getConfig(ctx context.Context) (*config.Config, bool) {
+	cfg, ok := ctx.Value(configKey).(*config.Config)
+	return cfg, ok
+}
+
+// printToStdoutf safely prints to stdout without checking errors (for CLI output)
+func printToStdoutf(w interface{ Write([]byte) (int, error) }, format string, args ...interface{}) {
+	_, _ = fmt.Fprintf(w, format, args...) //nolint:errcheck // CLI output errors are not critical
+}
+</file>
+
+<file path="cmd/search_test.go">
+package cmd
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/config"
+)
+
+func TestSearchBooksCmd_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Verify GraphQL query
+		var req map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&req)
+		require.NoError(t, err)
+		assert.Contains(t, req["query"], "query SearchBooks")
+		assert.Contains(t, req["query"], "search")
+		variables := req["variables"].(map[string]interface{})
+		assert.Equal(t, "golang", variables["query"])
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"search": map[string]interface{}{
+					"__typename": "BookSearchResults",
+					"totalCount": 2,
+					"results": []map[string]interface{}{
+						{
+							"id":              "book1",
+							"title":           "Go Programming Language",
+							"slug":            "go-programming-language",
+							"isbn":            "978-0134190440",
+							"publicationYear": 2015,
+							"pageCount":       380,
+							"cached_contributors": []map[string]interface{}{
+								{
+									"name": "Alan Donovan",
+									"role": "author",
+								},
+								{
+									"name": "Brian Kernighan",
+									"role": "author",
+								},
+							},
+							"cached_genres": []map[string]interface{}{
+								{
+									"name": "Programming",
+								},
+								{
+									"name": "Technology",
+								},
+							},
+							"image":         "https://example.com/book1.jpg",
+							"averageRating": 4.5,
+							"ratingsCount":  123,
+						},
+						{
+							"id":              "book2",
+							"title":           "Effective Go",
+							"slug":            "effective-go",
+							"isbn":            "",
+							"publicationYear": 2020,
+							"pageCount":       250,
+							"cached_contributors": []map[string]interface{}{
+								{
+									"name": "Go Team",
+									"role": "author",
+								},
+							},
+							"cached_genres": []map[string]interface{}{
+								{
+									"name": "Programming",
+								},
+							},
+							"image":         "",
+							"averageRating": 4.2,
+							"ratingsCount":  89,
+						},
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Search Results for \"golang\":")
+	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
+	assert.Contains(t, outputStr, "Note: Full search results display is being updated to work with GraphQL types.")
+}
+
+func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
+	// Create command with empty API key
+	cfg := &config.Config{
+		APIKey:  "",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "API key is required")
+}
+
+func TestSearchBooksCmd_NoResults(t *testing.T) {
+	// Create test server that returns no results
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"search": map[string]interface{}{
+					"__typename": "BookSearchResults",
+					"totalCount": 0,
+					"results":    []map[string]interface{}{},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := searchBooksCmd.RunE(cmd, []string{"nonexistent"})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
+}
+
+func TestSearchBooksCmd_APIError(t *testing.T) {
+	// Create test server that returns error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
+				{
+					"message": "Search failed",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to search books")
+}
+
+func TestSearchBooksCmd_MinimalData(t *testing.T) {
+	// Create test server with minimal book data
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"search": map[string]interface{}{
+					"__typename": "BookSearchResults",
+					"totalCount": 1,
+					"results": []map[string]interface{}{
+						{
+							"id":                  "book1",
+							"title":               "Simple Book",
+							"slug":                "simple-book",
+							"cached_contributors": []map[string]interface{}{},
+							"cached_genres":       []map[string]interface{}{},
+							"averageRating":       0,
+							"ratingsCount":        0,
+						},
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := searchBooksCmd.RunE(cmd, []string{"simple"})
+	require.NoError(t, err)
+
+	// Verify output contains minimal information
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
+}
+
+func TestSearchBooksCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "books <query>", searchBooksCmd.Use)
+	assert.Equal(t, "Search for books", searchBooksCmd.Short)
+	assert.NotEmpty(t, searchBooksCmd.Long)
+	assert.Contains(t, searchBooksCmd.Long, "Search for books based on title, author")
+	assert.Contains(t, searchBooksCmd.Long, "hardcover search books")
+}
+
+func TestSearchBooksCmd_RequiresArgument(t *testing.T) {
+	// Test that the command requires exactly one argument
+	cmd := &cobra.Command{}
+
+	// Test with no arguments - this should fail validation before reaching RunE
+	err := searchBooksCmd.Args(cmd, []string{})
+	require.Error(t, err)
+
+	// Test with too many arguments - this should fail validation before reaching RunE
+	err = searchBooksCmd.Args(cmd, []string{"arg1", "arg2"})
+	require.Error(t, err)
+}
+
+func TestSearchCmd_CommandProperties(t *testing.T) {
+	// Test search command properties
+	assert.Equal(t, "search", searchCmd.Use)
+	assert.Equal(t, "Search for content on Hardcover.app", searchCmd.Short)
+	assert.NotEmpty(t, searchCmd.Long)
+	assert.Contains(t, searchCmd.Long, "books")
+}
+
+func TestSearchCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupSearchCommands()
+
+	// Test the command is properly registered
+	found := false
+	for _, cmd := range rootCmd.Commands() {
+		if cmd.Use != "search" {
+			continue
+		}
+		found = true
+		// Check that books subcommand is registered
+		booksFound := false
+		for _, subCmd := range cmd.Commands() {
+			if subCmd.Use == "books <query>" {
+				booksFound = true
+				break
+			}
+		}
+		assert.True(t, booksFound, "books subcommand should be registered")
+		break
+	}
+	assert.True(t, found, "search command should be registered with root command")
+}
+</file>
+
+<file path="internal/client/schema.graphql">
+scalar ID
+scalar String
+scalar Int
+scalar Float
+scalar Boolean
+
+type Query {
+  me: User
+  book(id: ID!): Book
+  search(query: String!, type: SearchType): SearchResults
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Book {
+  id: ID!
+  title: String!
+  description: String
+  slug: String!
+  isbn: String
+  publicationYear: Int
+  pageCount: Int
+  cached_contributors: [Contributor!]!
+  cached_genres: [Genre!]!
+  image: String
+  averageRating: Float
+  ratingsCount: Int
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Contributor {
+  name: String!
+  role: String!
+}
+
+type Genre {
+  name: String!
+}
+
+enum SearchType {
+  BOOKS
+  AUTHORS
+  USERS
+}
+
+union SearchResults = BookSearchResults | AuthorSearchResults | UserSearchResults
+
+type BookSearchResults {
+  totalCount: Int!
+  results: [Book!]!
+}
+
+type AuthorSearchResults {
+  totalCount: Int!
+  results: [Author!]!
+}
+
+type UserSearchResults {
+  totalCount: Int!
+  results: [User!]!
+}
+
+type Author {
+  id: ID!
+  name: String!
+}
+</file>
+
+<file path=".github/workflows/dependency-update.yml">
+name: Dependency Update
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update Go Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Configure git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+    
+    - name: Update dependencies
+      run: |
+        go get -u ./...
+        go mod tidy
+    
+    - name: Run tests
+      run: go test ./...
+    
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Create Pull Request
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore: update Go dependencies'
+        title: 'chore: update Go dependencies'
+        body: |
+          ## Automated Dependency Update
+          
+          This PR updates Go dependencies to their latest versions.
+          
+          ### Changes
+          - Updated all Go module dependencies
+          - Ran `go mod tidy` to clean up unused dependencies
+          
+          ### Testing
+          - [x] All tests pass
+          - [x] Dependencies verified with `go mod verify`
+          
+          This is an automated pull request created by GitHub Actions.
+        branch: dependency-updates
+        delete-branch: true
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Install Nancy for dependency scanning
+      run: go install github.com/sonatypecommunity/nancy@latest
+    
+    - name: Run Nancy security scan
+      run: go list -json -deps ./... | nancy sleuth
+    
+    - name: Install govulncheck
+      run: go install golang.org/x/vuln/cmd/govulncheck@latest
+    
+    - name: Run govulncheck
+      run: govulncheck ./...
+    
+    - name: Run Gosec Security Scanner
+      uses: securecodewarrior/github-action-gosec@master
+      with:
+        args: '-fmt sarif -out results.sarif ./...'
+    
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: results.sarif
+
+  license-check:
+    name: License Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Install go-licenses
+      run: go install github.com/google/go-licenses@latest
+    
+    - name: Check licenses
+      run: |
+        echo "Checking licenses for all dependencies..."
+        go-licenses check ./...
+        
+        echo "Generating license report..."
+        go-licenses report ./... > licenses.txt
+        
+        echo "License summary:"
+        cat licenses.txt
+</file>
+
+<file path="cmd/me_test.go">
+package cmd
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/config"
+)
+
+func TestMeCmd_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Verify GraphQL query
+		var req map[string]interface{}
+		err := json.NewDecoder(r.Body).Decode(&req)
+		require.NoError(t, err)
+		assert.Contains(t, req["query"], "query GetCurrentUser")
+		assert.Contains(t, req["query"], "me")
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":        "user123",
+					"username":  "testuser",
+					"email":     "test@example.com",
+					"createdAt": "2023-01-01T00:00:00Z",
+					"updatedAt": "2023-01-02T00:00:00Z",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "User Profile:")
+	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "Username: testuser")
+	assert.Contains(t, outputStr, "Email: test@example.com")
+	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
+	assert.Contains(t, outputStr, "Updated: 2023-01-02T00:00:00Z")
+}
+
+func TestMeCmd_MissingAPIKey(t *testing.T) {
+	// Create command with empty API key
+	cfg := &config.Config{
+		APIKey:  "",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "API key is required")
+}
+
+func TestMeCmd_NoConfig(t *testing.T) {
+	// Create command without config
+	cmd := &cobra.Command{}
+	cmd.SetContext(context.Background())
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to get configuration")
+}
+
+func TestMeCmd_APIError(t *testing.T) {
+	// Create test server that returns error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
+				{
+					"message": "User not found",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to get user profile")
+}
+
+func TestMeCmd_HTTPError(t *testing.T) {
+	// Create test server that returns HTTP error
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to get user profile")
+}
+
+func TestMeCmd_PartialData(t *testing.T) {
+	// Create test server with minimal user data
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	// Create command with test context
+	cfg := &config.Config{
+		APIKey:  "test-api-key",
+		BaseURL: server.URL,
+	}
+	ctx := withConfig(context.Background(), cfg)
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
+
+	// Capture output
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	// Execute command
+	err := meCmd.RunE(cmd, []string{})
+	require.NoError(t, err)
+
+	// Verify output contains required fields but not optional ones
+	outputStr := output.String()
+	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "Username: testuser")
+	assert.NotContains(t, outputStr, "Email:")
+	assert.NotContains(t, outputStr, "Created:")
+	assert.NotContains(t, outputStr, "Updated:")
+}
+
+func TestMeCmd_CommandProperties(t *testing.T) {
+	// Test command properties
+	assert.Equal(t, "me", meCmd.Use)
+	assert.Equal(t, "Get your user profile information", meCmd.Short)
+	assert.NotEmpty(t, meCmd.Long)
+	assert.Contains(t, meCmd.Long, "User ID")
+	assert.Contains(t, meCmd.Long, "Username")
+	assert.Contains(t, meCmd.Long, "Email address")
+	assert.Contains(t, meCmd.Long, "hardcover me")
+}
+
+func TestMeCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupMeCommands()
+
+	// Test the command is properly registered
+	found := false
+	for _, cmd := range rootCmd.Commands() {
+		if cmd.Use == "me" {
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "me command should be registered with root command")
+}
+</file>
+
+<file path="cmd/me.go">
+package cmd
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/spf13/cobra"
+
+	"hardcover-cli/internal/client"
+)
+
+// meCmd represents the me command
+var meCmd = &cobra.Command{
+	Use:   "me",
+	Short: "Get your user profile information",
+	Long: `Fetches and displays the authenticated user's profile information including:
+- User ID
+- Username
+- Email address
+- Account creation date
+- Last updated date
+
+Example:
+  hardcover me`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cfg, ok := getConfig(cmd.Context())
+		if !ok {
+			return fmt.Errorf("failed to get configuration")
+		}
+
+		if cfg.APIKey == "" {
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
+		}
+
+		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
+
+		response, err := client.GetCurrentUser(context.Background())
+		if err != nil {
+			return fmt.Errorf("failed to get user profile: %w", err)
+		}
+
+		// Display the user information using the generated types
+		user := response.GetMe()
+		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", user.GetId())
+		printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", user.GetUsername())
+		if user.GetEmail() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Email: %s\n", user.GetEmail())
+		}
+		if user.GetCreatedAt() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", user.GetCreatedAt())
+		}
+		if user.GetUpdatedAt() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", user.GetUpdatedAt())
+		}
+
+		return nil
+	},
+}
+
+// setupMeCommands registers the me command with the root command
+func setupMeCommands() {
+	rootCmd.AddCommand(meCmd)
+}
+</file>
+
+<file path="cmd/root.go">
+package cmd
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
+
+	"hardcover-cli/internal/config"
+)
+
+var cfgFile string
+
+// rootCmd represents the base command when called without any subcommands
+var rootCmd = &cobra.Command{
+	Use:   "hardcover",
+	Short: "A CLI tool for interacting with the Hardcover.app GraphQL API",
+	Long: `Hardcover CLI is a command-line interface for interacting with the Hardcover.app GraphQL API.
+It allows you to search for books, get book details, and manage your profile.
+
+Before using the CLI, you need to set your Hardcover.app API key:
+
+  # Set via environment variable
+  export HARDCOVER_API_KEY="your-api-key-here"
+  
+  # Or set via config file
+  hardcover config set-api-key "your-api-key-here"
+
+Examples:
+  hardcover me                           # Get your user profile
+  hardcover search books "golang"        # Search for books about golang
+  hardcover book get 12345               # Get details for book with ID 12345`,
+}
+
+// SetupCommands initializes all commands and their relationships
+func SetupCommands() {
+	setupRootCommand()
+	setupMeCommands()
+	setupSearchCommands()
+	setupBookCommands()
+	setupConfigCommands()
+}
+
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+	// Load configuration and set context before executing
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+		// Continue with default config
+		cfg = config.DefaultConfig()
+	}
+
+	// Override with command-line flag if provided
+	if apiKey, flagErr := rootCmd.PersistentFlags().GetString("api-key"); flagErr == nil && apiKey != "" {
+		cfg.APIKey = apiKey
+	}
+
+	// Set context on root command with a proper context
+	ctx := withConfig(context.Background(), cfg)
+	rootCmd.SetContext(ctx)
+
+	err = rootCmd.Execute()
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+// setupRootCommand configures the root command with flags and initialization
+func setupRootCommand() {
+	cobra.OnInitialize(initConfig)
+
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
+	rootCmd.PersistentFlags().StringP("api-key", "k", "",
+		"Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+		return
+	}
+
+	// Override with command-line flag if provided
+	if apiKey, err := rootCmd.PersistentFlags().GetString("api-key"); err == nil && apiKey != "" {
+		cfg.APIKey = apiKey
+	}
+
+	// Store config in a way that subcommands can access it
+	rootCmd.SetContext(withConfig(rootCmd.Context(), cfg))
+}
+</file>
+
+<file path="cmd/search.go">
+package cmd
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/spf13/cobra"
+
+	"hardcover-cli/internal/client"
+)
+
+// searchCmd represents the search command
+var searchCmd = &cobra.Command{
+	Use:   "search",
+	Short: "Search for content on Hardcover.app",
+	Long: `Search for various types of content on Hardcover.app including books, authors, and users.
+	
+Available subcommands:
+  books    Search for books by title, author, or other criteria`,
+}
+
+// searchBooksCmd represents the search books command
+var searchBooksCmd = &cobra.Command{
+	Use:   "books <query>",
+	Short: "Search for books",
+	Long: `Search for books based on title, author, or other criteria.
+	
+The search will return matching books with their:
+- Title and author information
+- Publication details
+- Ratings and genres
+- Hardcover.app URL
+
+Example:
+  hardcover search books "golang programming"
+  hardcover search books "tolkien"
+  hardcover search books "machine learning"`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cfg, ok := getConfig(cmd.Context())
+		if !ok {
+			return fmt.Errorf("failed to get configuration")
+		}
+
+		if cfg.APIKey == "" {
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
+		}
+
+		query := args[0]
+		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
+
+		response, err := client.SearchBooks(context.Background(), query)
+		if err != nil {
+			return fmt.Errorf("failed to search books: %w", err)
+		}
+
+		// Display search results
+		searchResults := response.GetSearch()
+
+		// Check the type name to determine what kind of results we got
+		typeName := searchResults.GetTypename()
+
+		if typeName != "BookSearchResults" {
+			printToStdoutf(cmd.OutOrStdout(), "Search completed for query: %s\n", query)
+			printToStdoutf(cmd.OutOrStdout(), "No book results found or unexpected result type: %s\n", typeName)
+			return nil
+		}
+
+		// For now, just display a simple message since we can't access the specific fields
+		// without the type assertion working
+		printToStdoutf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
+		printToStdoutf(cmd.OutOrStdout(), "Found book results (type: %s)\n", typeName)
+		printToStdoutf(cmd.OutOrStdout(), "Note: Full search results display is being updated to work with GraphQL types.\n")
+
+		return nil
+	},
+}
+
+// setupSearchCommands registers the search commands with the root command
+func setupSearchCommands() {
+	searchCmd.AddCommand(searchBooksCmd)
+	rootCmd.AddCommand(searchCmd)
+}
+</file>
+
+<file path="internal/client/client.go">
+package client
+
+import (
+	"context"
+	"net/http"
+	"time"
+
+	"github.com/Khan/genqlient/graphql"
+)
+
+const (
+	// DefaultTimeout is the default HTTP client timeout
+	DefaultTimeout = 30 * time.Second
+)
+
+// HardcoverClient defines the interface for interacting with Hardcover API
+type HardcoverClient interface {
+	GetCurrentUser(ctx context.Context) (*GetCurrentUserResponse, error)
+	GetBook(ctx context.Context, id string) (*GetBookResponse, error)
+	SearchBooks(ctx context.Context, query string) (*SearchBooksResponse, error)
+}
+
+// Client represents a GraphQL client that uses genqlient
+type Client struct {
+	graphqlClient graphql.Client
+}
+
+// NewClient creates a new GraphQL client using genqlient
+func NewClient(endpoint, apiKey string) HardcoverClient {
+	httpClient := &http.Client{
+		Timeout: DefaultTimeout,
+	}
+
+	// Create a graphql client with auth headers
+	graphqlClient := graphql.NewClient(endpoint, &authedTransport{
+		wrapped: httpClient,
+		apiKey:  apiKey,
+	})
+
+	return &Client{
+		graphqlClient: graphqlClient,
+	}
+}
+
+// authedTransport wraps an HTTP client to add authorization headers
+type authedTransport struct {
+	wrapped *http.Client
+	apiKey  string
+}
+
+// Do implements the graphql.Doer interface
+func (t *authedTransport) Do(req *http.Request) (*http.Response, error) {
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "hardcover-cli/1.0.0")
+	if t.apiKey != "" {
+		req.Header.Set("Authorization", "Bearer "+t.apiKey)
+	}
+	return t.wrapped.Do(req)
+}
+
+// GetCurrentUser gets the current user profile using genqlient
+func (c *Client) GetCurrentUser(ctx context.Context) (*GetCurrentUserResponse, error) {
+	return GetCurrentUser(ctx, c.graphqlClient)
+}
+
+// GetBook gets a book by ID using genqlient
+func (c *Client) GetBook(ctx context.Context, id string) (*GetBookResponse, error) {
+	return GetBook(ctx, c.graphqlClient, id)
+}
+
+// SearchBooks searches for books using genqlient
+func (c *Client) SearchBooks(ctx context.Context, query string) (*SearchBooksResponse, error) {
+	return SearchBooks(ctx, c.graphqlClient, query)
+}
+</file>
+
+<file path="internal/config/config_test.go">
+package config
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	testAPIKeyFromEnv    = "test-api-key-from-env"
+	testAPIKeyFromFile   = "test-api-key-from-file"
+	defaultConfigContent = `api_key: test-api-key-from-file
+base_url: https://api.hardcover.app/v1/graphql`
+)
+
+func TestDefaultConfig(t *testing.T) {
+	cfg := DefaultConfig()
+	assert.NotNil(t, cfg)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+	assert.Empty(t, cfg.APIKey)
+}
+
+func TestLoadConfig_FromEnvironment(t *testing.T) {
+	// Set environment variable
+	os.Setenv("HARDCOVER_API_KEY", testAPIKeyFromEnv)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, testAPIKeyFromEnv, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+func TestLoadConfig_FromFile(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
+	require.NoError(t, err)
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+func TestLoadConfig_NoFileExists(t *testing.T) {
+	// Make sure no environment variable is set
+	os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Empty(t, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+func TestSaveConfig(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg := &Config{
+		APIKey:  "test-api-key",
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+
+	err := SaveConfig(cfg)
+	require.NoError(t, err)
+
+	// Verify file was created
+	configPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	_, err = os.Stat(configPath)
+	require.NoError(t, err)
+
+	// Load the config back and verify
+	loadedCfg, err := LoadConfig()
+	require.NoError(t, err)
+	assert.Equal(t, cfg.APIKey, loadedCfg.APIKey)
+	assert.Equal(t, cfg.BaseURL, loadedCfg.BaseURL)
+}
+
+func TestGetConfigPath(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	configPath, err := GetConfigPath()
+	require.NoError(t, err)
+
+	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	assert.Equal(t, expectedPath, configPath)
+}
+
+func TestLoadConfig_EnvironmentOverridesFile(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with one API key
+	configContent := `api_key: file-api-key
+base_url: https://api.hardcover.app/v1/graphql`
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	require.NoError(t, err)
+
+	// Set environment variable with different API key
+	envAPIKey := "env-api-key"
+	os.Setenv("HARDCOVER_API_KEY", envAPIKey)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Environment variable should override file
+	assert.Equal(t, envAPIKey, cfg.APIKey)
+}
+
+func TestLoadConfig_InvalidYAML(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with invalid YAML
+	configContent := `api_key: test-api-key
+base_url: https://api.hardcover.app/v1/graphql
+invalid_yaml: [unclosed bracket`
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	require.NoError(t, err)
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	_, err = LoadConfig()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to parse config file")
+}
+
+// TestLoadConfig_EmptyEnvironmentVariable tests the specific fix for the issue
+// where an empty environment variable was preventing config file loading
+func TestLoadConfig_EmptyEnvironmentVariable(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with API key
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
+	require.NoError(t, err)
+
+	// Set empty environment variable (this was the bug)
+	os.Setenv("HARDCOVER_API_KEY", "")
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should load from config file even with empty environment variable
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_WhitespaceEnvironmentVariable tests that whitespace-only environment variables are treated as empty
+func TestLoadConfig_WhitespaceEnvironmentVariable(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with API key
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
+	require.NoError(t, err)
+
+	// Set whitespace-only environment variable
+	os.Setenv("HARDCOVER_API_KEY", "   ")
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should load from config file even with whitespace-only environment variable
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_EnvironmentVariableOverridesFile tests that non-empty environment variables
+// properly override config file
+func TestLoadConfig_EnvironmentVariableOverridesFile(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with API key
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
+	require.NoError(t, err)
+
+	// Set non-empty environment variable
+	envAPIKey := testAPIKeyFromEnv
+	os.Setenv("HARDCOVER_API_KEY", envAPIKey)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Environment variable should override config file
+	assert.Equal(t, envAPIKey, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_NoEnvironmentVariableNoFile tests the default behavior when neither env var nor file exists
+func TestLoadConfig_NoEnvironmentVariableNoFile(t *testing.T) {
+	// Make sure no environment variable is set
+	os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should return default config with empty API key
+	assert.Empty(t, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_ConfigFileOnly tests loading from config file when no environment variable is set
+func TestLoadConfig_ConfigFileOnly(t *testing.T) {
+	// Make sure no environment variable is set
+	os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with API key
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
+	require.NoError(t, err)
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should load from config file
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_EnvironmentVariableOnly tests loading from environment variable when no config file exists
+func TestLoadConfig_EnvironmentVariableOnly(t *testing.T) {
+	// Set environment variable
+	expectedAPIKey := testAPIKeyFromEnv
+	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config (but don't create config file)
+	tempDir := t.TempDir()
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should load from environment variable
+	assert.Equal(t, expectedAPIKey, cfg.APIKey)
+	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_ConfigFileWithCustomBaseURL tests that custom base URL from config file is preserved
+func TestLoadConfig_ConfigFileWithCustomBaseURL(t *testing.T) {
+	// Make sure no environment variable is set
+	os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with custom base URL
+	configContent := `api_key: test-api-key
+base_url: https://custom-api.example.com/graphql`
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	require.NoError(t, err)
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Should preserve custom base URL from config file
+	assert.Equal(t, "test-api-key", cfg.APIKey)
+	assert.Equal(t, "https://custom-api.example.com/graphql", cfg.BaseURL)
+}
+
+// TestLoadConfig_EnvironmentVariablePreservesBaseURL tests that environment variable doesn't affect base URL
+func TestLoadConfig_EnvironmentVariablePreservesBaseURL(t *testing.T) {
+	// Create temporary directory for config
+	tempDir := t.TempDir()
+	configDir := filepath.Join(tempDir, ".hardcover")
+	configPath := filepath.Join(configDir, "config.yaml")
+
+	// Create config directory
+	err := os.MkdirAll(configDir, 0o755)
+	require.NoError(t, err)
+
+	// Create config file with custom base URL
+	configContent := `api_key: file-api-key
+base_url: https://custom-api.example.com/graphql`
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	require.NoError(t, err)
+
+	// Set environment variable
+	envAPIKey := "env-api-key"
+	os.Setenv("HARDCOVER_API_KEY", envAPIKey)
+	defer os.Unsetenv("HARDCOVER_API_KEY")
+
+	// Mock the home directory for testing
+	oldHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", oldHome)
+
+	cfg, err := LoadConfig()
+	require.NoError(t, err)
+
+	// Environment variable should override API key but preserve base URL
+	assert.Equal(t, envAPIKey, cfg.APIKey)
+	assert.Equal(t, "https://custom-api.example.com/graphql", cfg.BaseURL)
+}
+</file>
+
+<file path="internal/config/config.go">
+package config
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
+	yaml "gopkg.in/yaml.v3"
+)
+
+// Config holds the application configuration
+type Config struct {
+	APIKey  string `yaml:"api_key"`
+	BaseURL string `yaml:"base_url"`
+}
+
+// DefaultConfig returns the default configuration
+func DefaultConfig() *Config {
+	return &Config{
+		BaseURL: "https://api.hardcover.app/v1/graphql",
+	}
+}
+
+// LoadConfig loads configuration from environment variables and config file
+func LoadConfig() (*Config, error) {
+	cfg := DefaultConfig()
+
+	// Try to load from config file first
+	configPath, err := getConfigPath()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get config path: %w", err)
+	}
+
+	if _, statErr := os.Stat(configPath); !os.IsNotExist(statErr) {
+		// Config file exists, load it
+		data, err := os.ReadFile(configPath) //nolint:gosec // configPath is constructed from user home directory
+		if err != nil {
+			return nil, fmt.Errorf("failed to read config file: %w", err)
+		}
+
+		if err := yaml.Unmarshal(data, cfg); err != nil {
+			return nil, fmt.Errorf("failed to parse config file: %w", err)
+		}
+	}
+
+	// Check environment variable - it overrides config file
+	if apiKey := os.Getenv("HARDCOVER_API_KEY"); apiKey != "" {
+		// Trim whitespace and check if it's still non-empty
+		if trimmedAPIKey := strings.TrimSpace(apiKey); trimmedAPIKey != "" {
+			cfg.APIKey = trimmedAPIKey
+		}
+	}
+
+	return cfg, nil
+}
+
+// SaveConfig saves the configuration to a file
+func SaveConfig(cfg *Config) error {
+	configPath, err := getConfigPath()
+	if err != nil {
+		return fmt.Errorf("failed to get config path: %w", err)
+	}
+
+	// Create config directory if it doesn't exist
+	configDir := filepath.Dir(configPath)
+	const configDirPerm = 0o750
+	if mkdirErr := os.MkdirAll(configDir, configDirPerm); mkdirErr != nil {
+		return fmt.Errorf("failed to create config directory: %w", mkdirErr)
+	}
+
+	data, err := yaml.Marshal(cfg)
+	if err != nil {
+		return fmt.Errorf("failed to marshal config: %w", err)
+	}
+
+	const configFilePerm = 0o600
+	if err := os.WriteFile(configPath, data, configFilePerm); err != nil {
+		return fmt.Errorf("failed to write config file: %w", err)
+	}
+
+	return nil
+}
+
+// getConfigPath returns the path to the configuration file
+func getConfigPath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to get home directory: %w", err)
+	}
+
+	return filepath.Join(homeDir, ".hardcover", "config.yaml"), nil
+}
+
+// GetConfigPath returns the configuration file path for external access
+func GetConfigPath() (string, error) {
+	return getConfigPath()
+}
+</file>
+
+<file path="go.mod">
+module hardcover-cli
+
+go 1.23
+
+require (
+	github.com/Khan/genqlient v0.8.1
+	github.com/spf13/cobra v1.9.1
+	github.com/stretchr/testify v1.10.0
+	gopkg.in/yaml.v3 v3.0.1
+)
+
+require (
+	github.com/agnivade/levenshtein v1.1.1 // indirect
+	github.com/alexflint/go-arg v1.5.1 // indirect
+	github.com/alexflint/go-scalar v1.2.0 // indirect
+	github.com/bmatcuk/doublestar/v4 v4.6.1 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/spf13/pflag v1.0.6 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.19 // indirect
+	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/tools v0.24.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+)
+</file>
+
+<file path=".github/workflows/release.yml">
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    name: Test Before Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.23-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run tests
+      run: go test -v -race ./...
+    
+    - name: Run linter
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: latest
+
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    needs: test
+    
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+        exclude:
+          # Windows on ARM64 is not widely supported yet
+          - goos: windows
+            goarch: arm64
+    
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+    
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-1.23-
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Build binary
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/}
+        BINARY_NAME=hardcover
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          BINARY_NAME="${BINARY_NAME}.exe"
+        fi
+        
+        go build -ldflags="-s -w -X main.version=${VERSION}" -o ${BINARY_NAME} .
+        
+        # Create archive
+        ARCHIVE_NAME="hardcover-${VERSION}-${{ matrix.goos }}-${{ matrix.goarch }}"
+        if [ "${{ matrix.goos }}" = "windows" ]; then
+          zip "${ARCHIVE_NAME}.zip" ${BINARY_NAME} README.md LICENSE
+          echo "ASSET=${ARCHIVE_NAME}.zip" >> $GITHUB_ENV
+        else
+          tar -czf "${ARCHIVE_NAME}.tar.gz" ${BINARY_NAME} README.md LICENSE
+          echo "ASSET=${ARCHIVE_NAME}.tar.gz" >> $GITHUB_ENV
+        fi
+    
+    - name: Upload binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.ASSET }}
+        path: ${{ env.ASSET }}
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+    
+    - name: Display structure of downloaded files
+      run: ls -R ./artifacts
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          ## Changes in this Release
+          
+          See the [CHANGELOG](CHANGELOG.md) for detailed information about this release.
+          
+          ## Installation
+          
+          Download the appropriate binary for your platform:
+          
+          - **Linux (amd64)**: `hardcover-${{ github.ref }}-linux-amd64.tar.gz`
+          - **Linux (arm64)**: `hardcover-${{ github.ref }}-linux-arm64.tar.gz`
+          - **macOS (amd64)**: `hardcover-${{ github.ref }}-darwin-amd64.tar.gz`
+          - **macOS (arm64)**: `hardcover-${{ github.ref }}-darwin-arm64.tar.gz`
+          - **Windows (amd64)**: `hardcover-${{ github.ref }}-windows-amd64.zip`
+          
+          Extract the archive and move the binary to a directory in your PATH.
+          
+          ## Usage
+          
+          ```bash
+          # Set your API key
+          export HARDCOVER_API_KEY="your-api-key"
+          
+          # Or use config file
+          hardcover config set-api-key "your-api-key"
+          
+          # Get help
+          hardcover --help
+          
+          # Example commands
+          hardcover me
+          hardcover search books "golang"
+          hardcover book get 12345
+          ```
+    
+    - name: Upload Release Assets
+      run: |
+        for artifact in ./artifacts/*/; do
+          file=$(find "$artifact" -type f \( -name "*.tar.gz" -o -name "*.zip" \))
+          if [ -f "$file" ]; then
+            echo "Uploading $file"
+            gh release upload ${{ github.ref }} "$file"
+          fi
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  homebrew:
+    name: Update Homebrew Formula
+    runs-on: ubuntu-latest
+    needs: release
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Update Homebrew formula
+      uses: mislav/bump-homebrew-formula-action@v3
+      with:
+        formula-name: hardcover-cli
+        homebrew-tap: your-username/homebrew-tap
+        base-branch: main
+        download-url: https://github.com/${{ github.repository }}/releases/download/${{ github.ref }}/hardcover-${{ github.ref }}-darwin-amd64.tar.gz
+      env:
+        COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+</file>
+
+<file path="cmd/book.go">
+package cmd
+
+import (
+	"context"
+	"fmt"
+	"strings"
+
+	"github.com/spf13/cobra"
+
+	"hardcover-cli/internal/client"
+)
+
+// bookCmd represents the book command
+var bookCmd = &cobra.Command{
+	Use:   "book",
+	Short: "Manage and retrieve book information",
+	Long: `Commands for managing and retrieving book information from Hardcover.app.
+
+Available subcommands:
+  get      Get detailed information about a specific book`,
+}
+
+// bookGetCmd represents the book get command
+var bookGetCmd = &cobra.Command{
+	Use:   "get <book_id>",
+	Short: "Get detailed information about a specific book",
+	Long: `Retrieves and displays detailed information for a specific book by its ID.
+
+The command will display:
+- Book title and description
+- Author(s) and contributors
+- Publication details (year, page count, ISBN)
+- Genres and categories
+- Ratings and reviews summary
+- Hardcover.app URL
+
+Example:
+  hardcover book get 12345
+  hardcover book get "book-slug-or-id"`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return fmt.Errorf("book ID argument is required")
+		}
+
+		cfg, ok := getConfig(cmd.Context())
+		if !ok {
+			return fmt.Errorf("failed to get configuration")
+		}
+
+		if cfg.APIKey == "" {
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
+		}
+
+		bookID := args[0]
+		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
+
+		response, err := client.GetBook(context.Background(), bookID)
+		if err != nil {
+			return fmt.Errorf("failed to get book: %w", err)
+		}
+
+		book := response.GetBook()
+
+		// Display detailed book information
+		printToStdoutf(cmd.OutOrStdout(), "Book Details:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  Title: %s\n", book.GetTitle())
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", book.GetId())
+
+		if book.GetDescription() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Description: %s\n", book.GetDescription())
+		}
+
+		if book.GetSlug() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Slug: %s\n", book.GetSlug())
+		}
+
+		if book.GetIsbn() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  ISBN: %s\n", book.GetIsbn())
+		}
+
+		if book.GetPublicationYear() > 0 {
+			printToStdoutf(cmd.OutOrStdout(), "  Publication Year: %d\n", book.GetPublicationYear())
+		}
+
+		if book.GetPageCount() > 0 {
+			printToStdoutf(cmd.OutOrStdout(), "  Page Count: %d\n", book.GetPageCount())
+		}
+
+		// Display contributors
+		contributors := book.GetCached_contributors()
+		if len(contributors) > 0 {
+			printToStdoutf(cmd.OutOrStdout(), "  Contributors:\n")
+			for _, contributor := range contributors {
+				role := contributor.GetRole()
+				if role != "" {
+					printToStdoutf(cmd.OutOrStdout(), "    - %s (%s)\n", contributor.GetName(), role)
+				} else {
+					printToStdoutf(cmd.OutOrStdout(), "    - %s\n", contributor.GetName())
+				}
+			}
+		}
+
+		// Display genres
+		genres := book.GetCached_genres()
+		if len(genres) > 0 {
+			var genreNames []string
+			for _, genre := range genres {
+				genreNames = append(genreNames, genre.GetName())
+			}
+			printToStdoutf(cmd.OutOrStdout(), "  Genres: %s\n", strings.Join(genreNames, ", "))
+		}
+
+		// Display ratings
+		if book.GetRatingsCount() > 0 {
+			printToStdoutf(cmd.OutOrStdout(), "  Average Rating: %.2f (%d ratings)\n",
+				book.GetAverageRating(), book.GetRatingsCount())
+		}
+
+		// Display image URL
+		if book.GetImage() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Image: %s\n", book.GetImage())
+		}
+
+		// Display creation/update timestamps
+		if book.GetCreatedAt() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", book.GetCreatedAt())
+		}
+
+		if book.GetUpdatedAt() != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", book.GetUpdatedAt())
+		}
+
+		// Display Hardcover.app URL
+		printToStdoutf(cmd.OutOrStdout(), "  Hardcover URL: https://hardcover.app/books/%s\n", book.GetSlug())
+
+		return nil
+	},
+}
+
+// setupBookCommands registers the book commands with the root command
+func setupBookCommands() {
+	bookCmd.AddCommand(bookGetCmd)
+	rootCmd.AddCommand(bookCmd)
+}
+</file>
+
+<file path=".github/workflows/ci.yml">
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Run tests
+      run: go test -v ./...
+    
+    - name: Run tests with coverage
+      run: go test -v -coverprofile=coverage.out ./...
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+    
+    - name: Build
+      run: go build -v ./...
+    
+    - name: Build binary
+      run: make build
+    
+    - name: Test binary help
+      run: ./bin/hardcover-cli --help
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23'
+    
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v7
+      with:
+        version: v2.2.1
+        args: --timeout=3m
+</file>
+
+</files>

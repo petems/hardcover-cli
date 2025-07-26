@@ -1,9 +1,10 @@
-schema: internal/client/schema.graphql
+# Local schema file (for development)
+schema: schema.graphql
+
+# Remote schema endpoint (for production/updates)
+# Uncomment and update the URL when you have the actual Hardcover GraphQL endpoint
+# schema: https://api.hardcover.app/v1/graphql
+
 operations:
-  - internal/client/queries.graphql
-generated: internal/client/generated.go
-package_name: client
-endpoint:
-  url: https://api.hardcover.app/v1/graphql
-  headers:
-    User-Agent: hardcover-cli/1.0.0
+  - queries.graphql
+generated: generated.go

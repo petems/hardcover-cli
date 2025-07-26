@@ -1,20 +1,21 @@
 scalar ID
 scalar String
 scalar Int
+scalar Float
 scalar Boolean
 
 type Query {
   me: User
   book(id: ID!): Book
-  search(query: String!, type: SearchType!): SearchResults
+  search(query: String!, type: SearchType): SearchResults
 }
 
 type User {
   id: ID!
   username: String!
-  email: String
-  createdAt: String
-  updatedAt: String
+  email: String!
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Book {
@@ -30,20 +31,17 @@ type Book {
   image: String
   averageRating: Float
   ratingsCount: Int
-  createdAt: String
-  updatedAt: String
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Contributor {
-  id: ID!
   name: String!
-  role: String
+  role: String!
 }
 
 type Genre {
-  id: ID!
   name: String!
-  description: String
 }
 
 enum SearchType {
@@ -55,16 +53,21 @@ enum SearchType {
 union SearchResults = BookSearchResults | AuthorSearchResults | UserSearchResults
 
 type BookSearchResults {
-  results: [Book!]!
   totalCount: Int!
+  results: [Book!]!
 }
 
 type AuthorSearchResults {
-  results: [Contributor!]!
   totalCount: Int!
+  results: [Author!]!
 }
 
 type UserSearchResults {
-  results: [User!]!
   totalCount: Int!
+  results: [User!]!
+}
+
+type Author {
+  id: ID!
+  name: String!
 }

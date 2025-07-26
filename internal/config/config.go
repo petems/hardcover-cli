@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	yaml "gopkg.in/yaml.v3"
 )
@@ -25,30 +26,30 @@ func DefaultConfig() *Config {
 func LoadConfig() (*Config, error) {
 	cfg := DefaultConfig()
 
-	// Check environment variable first
-	if apiKey := os.Getenv("HARDCOVER_API_KEY"); apiKey != "" {
-		cfg.APIKey = apiKey
-		return cfg, nil
-	}
-
-	// Try to load from config file
+	// Try to load from config file first
 	configPath, err := getConfigPath()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get config path: %w", err)
 	}
 
-	if _, statErr := os.Stat(configPath); os.IsNotExist(statErr) {
-		// Config file doesn't exist, return default config
-		return cfg, nil
+	if _, statErr := os.Stat(configPath); !os.IsNotExist(statErr) {
+		// Config file exists, load it
+		data, err := os.ReadFile(configPath) //nolint:gosec // configPath is constructed from user home directory
+		if err != nil {
+			return nil, fmt.Errorf("failed to read config file: %w", err)
+		}
+
+		if err := yaml.Unmarshal(data, cfg); err != nil {
+			return nil, fmt.Errorf("failed to parse config file: %w", err)
+		}
 	}
 
-	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is constructed from user home directory
-	if err != nil {
-		return nil, fmt.Errorf("failed to read config file: %w", err)
-	}
-
-	if err := yaml.Unmarshal(data, cfg); err != nil {
-		return nil, fmt.Errorf("failed to parse config file: %w", err)
+	// Check environment variable - it overrides config file
+	if apiKey := os.Getenv("HARDCOVER_API_KEY"); apiKey != "" {
+		// Trim whitespace and check if it's still non-empty
+		if trimmedAPIKey := strings.TrimSpace(apiKey); trimmedAPIKey != "" {
+			cfg.APIKey = trimmedAPIKey
+		}
 	}
 
 	return cfg, nil

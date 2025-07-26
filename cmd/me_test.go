@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hardcover-cli/internal/client"
 	"hardcover-cli/internal/config"
 )
 
@@ -24,23 +23,23 @@ func TestMeCmd_Success(t *testing.T) {
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
 		// Verify GraphQL query
-		var req client.GraphQLRequest
+		var req map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&req)
 		require.NoError(t, err)
-		assert.Contains(t, req.Query, "query GetCurrentUser")
-		assert.Contains(t, req.Query, "me")
+		assert.Contains(t, req["query"], "query GetCurrentUser")
+		assert.Contains(t, req["query"], "me")
 
 		// Send response
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"me": {
-					"id": "user123",
-					"username": "testuser",
-					"email": "test@example.com",
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":        "user123",
+					"username":  "testuser",
+					"email":     "test@example.com",
 					"createdAt": "2023-01-01T00:00:00Z",
-					"updatedAt": "2023-01-02T00:00:00Z"
-				}
-			}`),
+					"updatedAt": "2023-01-02T00:00:00Z",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -106,11 +105,11 @@ func TestMeCmd_NoConfig(t *testing.T) {
 func TestMeCmd_APIError(t *testing.T) {
 	// Create test server that returns error
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`null`),
-			Errors: []client.GraphQLError{
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
 				{
-					Message: "User not found",
+					"message": "User not found",
 				},
 			},
 		}
@@ -162,13 +161,13 @@ func TestMeCmd_HTTPError(t *testing.T) {
 func TestMeCmd_PartialData(t *testing.T) {
 	// Create test server with minimal user data
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"me": {
-					"id": "user123",
-					"username": "testuser"
-				}
-			}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -226,44 +225,4 @@ func TestMeCmd_Integration(t *testing.T) {
 		}
 	}
 	assert.True(t, found, "me command should be registered with root command")
-}
-
-func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
-	// Test JSON unmarshaling
-	jsonData := `{
-		"me": {
-			"id": "user123",
-			"username": "testuser",
-			"email": "test@example.com",
-			"createdAt": "2023-01-01T00:00:00Z",
-			"updatedAt": "2023-01-02T00:00:00Z"
-		}
-	}`
-
-	var response GetCurrentUserResponse
-	err := json.Unmarshal([]byte(jsonData), &response)
-	require.NoError(t, err)
-
-	assert.Equal(t, "user123", response.Me.ID)
-	assert.Equal(t, "testuser", response.Me.Username)
-	assert.Equal(t, "test@example.com", response.Me.Email)
-	assert.Equal(t, "2023-01-01T00:00:00Z", response.Me.CreatedAt)
-	assert.Equal(t, "2023-01-02T00:00:00Z", response.Me.UpdatedAt)
-}
-
-func TestUser_StructFields(t *testing.T) {
-	// Test User struct
-	user := User{
-		ID:        "user123",
-		Username:  "testuser",
-		Email:     "test@example.com",
-		CreatedAt: "2023-01-01T00:00:00Z",
-		UpdatedAt: "2023-01-02T00:00:00Z",
-	}
-
-	assert.Equal(t, "user123", user.ID)
-	assert.Equal(t, "testuser", user.Username)
-	assert.Equal(t, "test@example.com", user.Email)
-	assert.Equal(t, "2023-01-01T00:00:00Z", user.CreatedAt)
-	assert.Equal(t, "2023-01-02T00:00:00Z", user.UpdatedAt)
 }

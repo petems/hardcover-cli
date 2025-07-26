@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hardcover-cli/internal/client"
 	"hardcover-cli/internal/config"
 )
 
@@ -24,56 +23,56 @@ func TestBookGetCmd_Success(t *testing.T) {
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
 		// Verify GraphQL query
-		var req client.GraphQLRequest
+		var req map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&req)
 		require.NoError(t, err)
-		assert.Contains(t, req.Query, "query GetBook")
-		assert.Contains(t, req.Query, "book")
-		assert.Equal(t, "book123", req.Variables["id"])
+		assert.Contains(t, req["query"], "query GetBook")
+		assert.Contains(t, req["query"], "book")
+		assert.Equal(t, "book123", req["variables"].(map[string]interface{})["id"])
 
 		// Send response
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"book": {
-					"id": "book123",
-					"title": "The Go Programming Language",
-					"description": "A comprehensive guide to Go programming",
-					"slug": "go-programming-language",
-					"isbn": "978-0134190440",
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":              "book123",
+					"title":           "The Go Programming Language",
+					"description":     "A comprehensive guide to Go programming",
+					"slug":            "go-programming-language",
+					"isbn":            "978-0134190440",
 					"publicationYear": 2015,
-					"pageCount": 380,
-					"cached_contributors": [
+					"pageCount":       380,
+					"cached_contributors": []map[string]interface{}{
 						{
 							"name": "Alan Donovan",
-							"role": "author"
+							"role": "author",
 						},
 						{
 							"name": "Brian Kernighan",
-							"role": "author"
+							"role": "author",
 						},
 						{
 							"name": "John Doe",
-							"role": "editor"
-						}
-					],
-					"cached_genres": [
+							"role": "editor",
+						},
+					},
+					"cached_genres": []map[string]interface{}{
 						{
-							"name": "Programming"
+							"name": "Programming",
 						},
 						{
-							"name": "Technology"
+							"name": "Technology",
 						},
 						{
-							"name": "Computer Science"
-						}
-					],
-					"image": "https://example.com/book-cover.jpg",
+							"name": "Computer Science",
+						},
+					},
+					"image":         "https://example.com/book-cover.jpg",
 					"averageRating": 4.5,
-					"ratingsCount": 123,
-					"createdAt": "2023-01-01T00:00:00Z",
-					"updatedAt": "2023-01-02T00:00:00Z"
-				}
-			}`),
+					"ratingsCount":  123,
+					"createdAt":     "2023-01-01T00:00:00Z",
+					"updatedAt":     "2023-01-02T00:00:00Z",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -104,15 +103,17 @@ func TestBookGetCmd_Success(t *testing.T) {
 	assert.Contains(t, outputStr, "Title: The Go Programming Language")
 	assert.Contains(t, outputStr, "ID: book123")
 	assert.Contains(t, outputStr, "Description: A comprehensive guide to Go programming")
-	assert.Contains(t, outputStr, "Authors: Alan Donovan, Brian Kernighan")
-	assert.Contains(t, outputStr, "Contributors: John Doe (editor)")
-	assert.Contains(t, outputStr, "Published: 2015")
-	assert.Contains(t, outputStr, "Pages: 380")
+	assert.Contains(t, outputStr, "Contributors:")
+	assert.Contains(t, outputStr, "Alan Donovan (author)")
+	assert.Contains(t, outputStr, "Brian Kernighan (author)")
+	assert.Contains(t, outputStr, "John Doe (editor)")
+	assert.Contains(t, outputStr, "Publication Year: 2015")
+	assert.Contains(t, outputStr, "Page Count: 380")
 	assert.Contains(t, outputStr, "ISBN: 978-0134190440")
 	assert.Contains(t, outputStr, "Genres: Programming, Technology, Computer Science")
-	assert.Contains(t, outputStr, "Rating: 4.5/5 (123 ratings)")
-	assert.Contains(t, outputStr, "Cover Image: https://example.com/book-cover.jpg")
-	assert.Contains(t, outputStr, "URL: https://hardcover.app/books/go-programming-language")
+	assert.Contains(t, outputStr, "Average Rating: 4.50 (123 ratings)")
+	assert.Contains(t, outputStr, "Image: https://example.com/book-cover.jpg")
+	assert.Contains(t, outputStr, "Hardcover URL: https://hardcover.app/books/go-programming-language")
 	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
 	assert.Contains(t, outputStr, "Updated: 2023-01-02T00:00:00Z")
 }
@@ -137,10 +138,10 @@ func TestBookGetCmd_MissingAPIKey(t *testing.T) {
 func TestBookGetCmd_BookNotFound(t *testing.T) {
 	// Create test server that returns null for book
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"book": null
-			}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": nil,
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -175,11 +176,11 @@ func TestBookGetCmd_BookNotFound(t *testing.T) {
 func TestBookGetCmd_APIError(t *testing.T) {
 	// Create test server that returns error
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`null`),
-			Errors: []client.GraphQLError{
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
 				{
-					Message: "Book not found",
+					"message": "Book not found",
 				},
 			},
 		}
@@ -207,18 +208,18 @@ func TestBookGetCmd_APIError(t *testing.T) {
 func TestBookGetCmd_MinimalData(t *testing.T) {
 	// Create test server with minimal book data
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"book": {
-					"id": "book123",
-					"title": "Simple Book",
-					"slug": "simple-book",
-					"cached_contributors": [],
-					"cached_genres": [],
-					"averageRating": 0,
-					"ratingsCount": 0
-				}
-			}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":                  "book123",
+					"title":               "Simple Book",
+					"slug":                "simple-book",
+					"cached_contributors": []map[string]interface{}{},
+					"cached_genres":       []map[string]interface{}{},
+					"averageRating":       0,
+					"ratingsCount":        0,
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -248,14 +249,13 @@ func TestBookGetCmd_MinimalData(t *testing.T) {
 	assert.Contains(t, outputStr, "Title: Simple Book")
 	assert.Contains(t, outputStr, "ID: book123")
 	assert.NotContains(t, outputStr, "Description:")
-	assert.NotContains(t, outputStr, "Authors:")
 	assert.NotContains(t, outputStr, "Contributors:")
-	assert.NotContains(t, outputStr, "Published:")
-	assert.NotContains(t, outputStr, "Pages:")
+	assert.NotContains(t, outputStr, "Publication Year:")
+	assert.NotContains(t, outputStr, "Page Count:")
 	assert.NotContains(t, outputStr, "ISBN:")
 	assert.NotContains(t, outputStr, "Genres:")
-	assert.NotContains(t, outputStr, "Rating:")
-	assert.NotContains(t, outputStr, "Cover Image:")
+	assert.NotContains(t, outputStr, "Average Rating:")
+	assert.NotContains(t, outputStr, "Image:")
 	assert.NotContains(t, outputStr, "Created:")
 	assert.NotContains(t, outputStr, "Updated:")
 }
@@ -263,29 +263,29 @@ func TestBookGetCmd_MinimalData(t *testing.T) {
 func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 	// Create test server with book that has only authors, no other contributors
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"book": {
-					"id": "book123",
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":    "book123",
 					"title": "Authors Only Book",
-					"slug": "authors-only-book",
-					"cached_contributors": [
+					"slug":  "authors-only-book",
+					"cached_contributors": []map[string]interface{}{
 						{
 							"name": "Author One",
-							"role": "author"
+							"role": "author",
 						},
 						{
 							"name": "Author Two",
-							"role": "Author"
+							"role": "Author",
 						},
 						{
 							"name": "Author Three",
-							"role": ""
-						}
-					],
-					"cached_genres": []
-				}
-			}`),
+							"role": "",
+						},
+					},
+					"cached_genres": []map[string]interface{}{},
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -312,8 +312,10 @@ func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 
 	// Verify output shows authors but no contributors
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Authors: Author One, Author Two, Author Three")
-	assert.NotContains(t, outputStr, "Contributors:")
+	assert.Contains(t, outputStr, "Contributors:")
+	assert.Contains(t, outputStr, "Author One (author)")
+	assert.Contains(t, outputStr, "Author Two (Author)")
+	assert.Contains(t, outputStr, "Author Three")
 }
 
 func TestBookGetCmd_CommandProperties(t *testing.T) {
@@ -376,56 +378,4 @@ func TestBookCmd_Integration(t *testing.T) {
 		break
 	}
 	assert.True(t, found, "book command should be registered with root command")
-}
-
-func TestGetBookResponse_JSONUnmarshal(t *testing.T) {
-	// Test JSON unmarshaling
-	jsonData := `{
-		"book": {
-			"id": "book123",
-			"title": "Test Book",
-			"description": "A test book",
-			"slug": "test-book",
-			"isbn": "978-1234567890",
-			"publicationYear": 2023,
-			"pageCount": 200,
-			"cached_contributors": [
-				{
-					"name": "Test Author",
-					"role": "author"
-				}
-			],
-			"cached_genres": [
-				{
-					"name": "Test Genre"
-				}
-			],
-			"image": "https://example.com/image.jpg",
-			"averageRating": 4.0,
-			"ratingsCount": 50,
-			"createdAt": "2023-01-01T00:00:00Z",
-			"updatedAt": "2023-01-02T00:00:00Z"
-		}
-	}`
-
-	var response GetBookResponse
-	err := json.Unmarshal([]byte(jsonData), &response)
-	require.NoError(t, err)
-
-	book := response.Book
-	assert.Equal(t, "book123", book.ID)
-	assert.Equal(t, "Test Book", book.Title)
-	assert.Equal(t, "A test book", book.Description)
-	assert.Equal(t, "test-book", book.Slug)
-	assert.Equal(t, "978-1234567890", book.ISBN)
-	assert.Equal(t, 2023, book.PublicationYear)
-	assert.Equal(t, 200, book.PageCount)
-	assert.Equal(t, "Test Author", book.CachedContributors[0].Name)
-	assert.Equal(t, "author", book.CachedContributors[0].Role)
-	assert.Equal(t, "Test Genre", book.CachedGenres[0].Name)
-	assert.Equal(t, "https://example.com/image.jpg", book.Image)
-	assert.Equal(t, 4.0, book.AverageRating)
-	assert.Equal(t, 50, book.RatingsCount)
-	assert.Equal(t, "2023-01-01T00:00:00Z", book.CreatedAt)
-	assert.Equal(t, "2023-01-02T00:00:00Z", book.UpdatedAt)
 }
