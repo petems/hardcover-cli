@@ -37,12 +37,12 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("failed to get config path: %w", err)
 	}
 
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	if _, statErr := os.Stat(configPath); os.IsNotExist(statErr) {
 		// Config file doesn't exist, return default config
 		return cfg, nil
 	}
 
-	data, err := os.ReadFile(configPath)
+	data, err := os.ReadFile(configPath) //nolint:gosec // configPath is constructed from user home directory
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
@@ -63,8 +63,9 @@ func SaveConfig(cfg *Config) error {
 
 	// Create config directory if it doesn't exist
 	configDir := filepath.Dir(configPath)
-	if err := os.MkdirAll(configDir, 0755); err != nil {
-		return fmt.Errorf("failed to create config directory: %w", err)
+	const configDirPerm = 0o750
+	if mkdirErr := os.MkdirAll(configDir, configDirPerm); mkdirErr != nil {
+		return fmt.Errorf("failed to create config directory: %w", mkdirErr)
 	}
 
 	data, err := yaml.Marshal(cfg)
@@ -72,7 +73,8 @@ func SaveConfig(cfg *Config) error {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
 
-	if err := os.WriteFile(configPath, data, 0600); err != nil {
+	const configFilePerm = 0o600
+	if err := os.WriteFile(configPath, data, configFilePerm); err != nil {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 

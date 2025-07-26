@@ -54,7 +54,10 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf("API key is required. Set it using:\n  export HARDCOVER_API_KEY=\"your-api-key\"\n  or\n  hardcover config set-api-key \"your-api-key\"")
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
 		}
 
 		bookID := args[0]
@@ -98,12 +101,12 @@ Example:
 		book := response.Book
 
 		// Display detailed book information
-		fmt.Fprintf(cmd.OutOrStdout(), "Book Details:\n")
-		fmt.Fprintf(cmd.OutOrStdout(), "  Title: %s\n", book.Title)
-		fmt.Fprintf(cmd.OutOrStdout(), "  ID: %s\n", book.ID)
+		printToStdoutf(cmd.OutOrStdout(), "Book Details:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  Title: %s\n", book.Title)
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", book.ID)
 
 		if book.Description != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Description: %s\n", book.Description)
+			printToStdoutf(cmd.OutOrStdout(), "  Description: %s\n", book.Description)
 		}
 
 		// Display authors and contributors
@@ -120,25 +123,25 @@ Example:
 			}
 
 			if len(authors) > 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "  Authors: %s\n", strings.Join(authors, ", "))
+				printToStdoutf(cmd.OutOrStdout(), "  Authors: %s\n", strings.Join(authors, ", "))
 			}
 
 			if len(otherContributors) > 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "  Contributors: %s\n", strings.Join(otherContributors, ", "))
+				printToStdoutf(cmd.OutOrStdout(), "  Contributors: %s\n", strings.Join(otherContributors, ", "))
 			}
 		}
 
 		// Display publication details
 		if book.PublicationYear > 0 {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Published: %d\n", book.PublicationYear)
+			printToStdoutf(cmd.OutOrStdout(), "  Published: %d\n", book.PublicationYear)
 		}
 
 		if book.PageCount > 0 {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Pages: %d\n", book.PageCount)
+			printToStdoutf(cmd.OutOrStdout(), "  Pages: %d\n", book.PageCount)
 		}
 
 		if book.ISBN != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  ISBN: %s\n", book.ISBN)
+			printToStdoutf(cmd.OutOrStdout(), "  ISBN: %s\n", book.ISBN)
 		}
 
 		// Display genres
@@ -147,35 +150,36 @@ Example:
 			for _, genre := range book.CachedGenres {
 				genres = append(genres, genre.Name)
 			}
-			fmt.Fprintf(cmd.OutOrStdout(), "  Genres: %s\n", strings.Join(genres, ", "))
+			printToStdoutf(cmd.OutOrStdout(), "  Genres: %s\n", strings.Join(genres, ", "))
 		}
 
 		// Display rating information
 		if book.AverageRating > 0 {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
+			printToStdoutf(cmd.OutOrStdout(), "  Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
 		}
 
 		// Display image URL
 		if book.Image != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Cover Image: %s\n", book.Image)
+			printToStdoutf(cmd.OutOrStdout(), "  Cover Image: %s\n", book.Image)
 		}
 
 		// Display Hardcover URL
-		fmt.Fprintf(cmd.OutOrStdout(), "  URL: https://hardcover.app/books/%s\n", book.Slug)
+		printToStdoutf(cmd.OutOrStdout(), "  URL: https://hardcover.app/books/%s\n", book.Slug)
 
 		// Display timestamps
 		if book.CreatedAt != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Created: %s\n", book.CreatedAt)
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", book.CreatedAt)
 		}
 		if book.UpdatedAt != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Updated: %s\n", book.UpdatedAt)
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", book.UpdatedAt)
 		}
 
 		return nil
 	},
 }
 
-func init() {
+// setupBookCommands registers the book commands with the root command
+func setupBookCommands() {
 	bookCmd.AddCommand(bookGetCmd)
 	rootCmd.AddCommand(bookCmd)
 }

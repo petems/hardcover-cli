@@ -336,12 +336,12 @@ func TestBookGetCmd_RequiresArgument(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
 
-	// Test with no arguments
-	err := bookGetCmd.RunE(cmd, []string{})
+	// Test with no arguments - this should fail validation before reaching RunE
+	err := bookGetCmd.Args(cmd, []string{})
 	require.Error(t, err)
 
-	// Test with too many arguments
-	err = bookGetCmd.RunE(cmd, []string{"arg1", "arg2"})
+	// Test with too many arguments - this should fail validation before reaching RunE
+	err = bookGetCmd.Args(cmd, []string{"arg1", "arg2"})
 	require.Error(t, err)
 }
 
@@ -354,22 +354,26 @@ func TestBookCmd_CommandProperties(t *testing.T) {
 }
 
 func TestBookCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupBookCommands()
+
 	// Test the command is properly registered
 	found := false
 	for _, cmd := range rootCmd.Commands() {
-		if cmd.Use == "book" {
-			found = true
-			// Check that get subcommand is registered
-			getFound := false
-			for _, subCmd := range cmd.Commands() {
-				if subCmd.Use == "get <book_id>" {
-					getFound = true
-					break
-				}
-			}
-			assert.True(t, getFound, "get subcommand should be registered")
-			break
+		if cmd.Use != "book" {
+			continue
 		}
+		found = true
+		// Check that get subcommand is registered
+		getFound := false
+		for _, subCmd := range cmd.Commands() {
+			if subCmd.Use == "get <book_id>" {
+				getFound = true
+				break
+			}
+		}
+		assert.True(t, getFound, "get subcommand should be registered")
+		break
 	}
 	assert.True(t, found, "book command should be registered with root command")
 }

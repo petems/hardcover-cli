@@ -18,5 +18,8 @@ func main() {
 		os.Exit(0)
 	}
 
+	// Setup all commands
+	cmd.SetupCommands()
+
 	cmd.Execute()
 }

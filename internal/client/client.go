@@ -23,7 +23,7 @@ func NewClient(endpoint, apiKey string) *Client {
 		endpoint: endpoint,
 		apiKey:   apiKey,
 		httpClient: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: 30 * time.Second, //nolint:mnd // 30 seconds is a reasonable timeout for HTTP requests
 		},
 	}
 }
@@ -59,7 +59,7 @@ func (e GraphQLError) Error() string {
 }
 
 // Execute executes a GraphQL query
-func (c *Client) Execute(ctx context.Context, query string, variables map[string]interface{}, result interface{}) error {
+func (c *Client) Execute(ctx context.Context, query string, variables map[string]interface{}, result interface{}) error { //nolint:lll // Function signature is long but necessary
 	req := GraphQLRequest{
 		Query:     query,
 		Variables: variables,
@@ -86,7 +86,12 @@ func (c *Client) Execute(ctx context.Context, query string, variables map[string
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log the error but don't return it as it's in a defer
+			_ = closeErr
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

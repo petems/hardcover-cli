@@ -31,6 +31,57 @@ linters:
   disable:
     - gochecknoglobals
   settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - "cmd/**/*.go"
+            - "main.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "context"
+            - "strings"
+            - "github.com/spf13/cobra"
+            - "hardcover-cli/internal/client"
+            - "hardcover-cli/internal/config"
+        test:
+          files:
+            - "**/*_test.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "context"
+            - "strings"
+            - "bytes"
+            - "net/http"
+            - "net/http/httptest"
+            - "path/filepath"
+            - "encoding/json"
+            - "testing"
+            - "time"
+            - "github.com/spf13/cobra"
+            - "github.com/stretchr/testify/assert"
+            - "github.com/stretchr/testify/require"
+            - "hardcover-cli/internal/client"
+            - "hardcover-cli/internal/config"
+            - "hardcover-cli/cmd"
+        internal:
+          files:
+            - "internal/**/*.go"
+          allow:
+            - "fmt"
+            - "os"
+            - "path/filepath"
+            - "gopkg.in/yaml.v3"
+            - "bytes"
+            - "context"
+            - "encoding/json"
+            - "io"
+            - "net/http"
+            - "time"
+            - "github.com/stretchr/testify/assert"
+            - "github.com/stretchr/testify/require"
     dupl:
       threshold: 100
     errcheck:

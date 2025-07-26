@@ -84,7 +84,10 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf("API key is required. Set it using:\n  export HARDCOVER_API_KEY=\"your-api-key\"\n  or\n  hardcover config set-api-key \"your-api-key\"")
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
 		}
 
 		query := args[0]
@@ -130,11 +133,11 @@ Example:
 		}
 
 		// Display the search results
-		fmt.Fprintf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
-		fmt.Fprintf(cmd.OutOrStdout(), "Found %d books\n\n", response.Search.TotalCount)
+		printToStdoutf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
+		printToStdoutf(cmd.OutOrStdout(), "Found %d books\n\n", response.Search.TotalCount)
 
 		for i, book := range response.Search.Results {
-			fmt.Fprintf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.Title)
+			printToStdoutf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.Title)
 
 			// Display authors
 			if len(book.CachedContributors) > 0 {
@@ -145,23 +148,23 @@ Example:
 					}
 				}
 				if len(authors) > 0 {
-					fmt.Fprintf(cmd.OutOrStdout(), "   Authors: %s\n", strings.Join(authors, ", "))
+					printToStdoutf(cmd.OutOrStdout(), "   Authors: %s\n", strings.Join(authors, ", "))
 				}
 			}
 
 			// Display publication year
 			if book.PublicationYear > 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "   Published: %d\n", book.PublicationYear)
+				printToStdoutf(cmd.OutOrStdout(), "   Published: %d\n", book.PublicationYear)
 			}
 
 			// Display page count
 			if book.PageCount > 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "   Pages: %d\n", book.PageCount)
+				printToStdoutf(cmd.OutOrStdout(), "   Pages: %d\n", book.PageCount)
 			}
 
 			// Display rating
 			if book.AverageRating > 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "   Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
+				printToStdoutf(cmd.OutOrStdout(), "   Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
 			}
 
 			// Display genres
@@ -170,17 +173,17 @@ Example:
 				for _, genre := range book.CachedGenres {
 					genres = append(genres, genre.Name)
 				}
-				fmt.Fprintf(cmd.OutOrStdout(), "   Genres: %s\n", strings.Join(genres, ", "))
+				printToStdoutf(cmd.OutOrStdout(), "   Genres: %s\n", strings.Join(genres, ", "))
 			}
 
 			// Display Hardcover URL
-			fmt.Fprintf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", book.Slug)
+			printToStdoutf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", book.Slug)
 
 			// Display ID for further queries
-			fmt.Fprintf(cmd.OutOrStdout(), "   ID: %s\n", book.ID)
+			printToStdoutf(cmd.OutOrStdout(), "   ID: %s\n", book.ID)
 
 			if i < len(response.Search.Results)-1 {
-				fmt.Fprintln(cmd.OutOrStdout())
+				printToStdoutLn(cmd.OutOrStdout())
 			}
 		}
 
@@ -188,7 +191,8 @@ Example:
 	},
 }
 
-func init() {
+// setupSearchCommands registers the search commands with the root command
+func setupSearchCommands() {
 	searchCmd.AddCommand(searchBooksCmd)
 	rootCmd.AddCommand(searchCmd)
 }

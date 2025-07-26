@@ -35,13 +35,13 @@ func TestLoadConfig_FromFile(t *testing.T) {
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
-	err := os.MkdirAll(configDir, 0755)
+	err := os.MkdirAll(configDir, 0o755)
 	require.NoError(t, err)
 
 	// Create config file
 	configContent := `api_key: test-api-key-from-file
 base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0600)
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
 	// Mock the home directory for testing
@@ -125,13 +125,13 @@ func TestLoadConfig_EnvironmentOverridesFile(t *testing.T) {
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
-	err := os.MkdirAll(configDir, 0755)
+	err := os.MkdirAll(configDir, 0o755)
 	require.NoError(t, err)
 
 	// Create config file with one API key
 	configContent := `api_key: file-api-key
 base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0600)
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
 	// Set environment variable with different API key
@@ -158,14 +158,14 @@ func TestLoadConfig_InvalidYAML(t *testing.T) {
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
-	err := os.MkdirAll(configDir, 0755)
+	err := os.MkdirAll(configDir, 0o755)
 	require.NoError(t, err)
 
 	// Create config file with invalid YAML
 	configContent := `api_key: test-api-key
 base_url: https://api.hardcover.app/v1/graphql
 invalid_yaml: [unclosed bracket`
-	err = os.WriteFile(configPath, []byte(configContent), 0600)
+	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
 	// Mock the home directory for testing

@@ -214,6 +214,9 @@ func TestMeCmd_CommandProperties(t *testing.T) {
 }
 
 func TestMeCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupMeCommands()
+
 	// Test the command is properly registered
 	found := false
 	for _, cmd := range rootCmd.Commands() {

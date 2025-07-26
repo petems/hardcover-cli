@@ -32,6 +32,15 @@ Examples:
   hardcover book get 12345               # Get details for book with ID 12345`,
 }
 
+// SetupCommands initializes all commands and their relationships
+func SetupCommands() {
+	setupRootCommand()
+	setupMeCommands()
+	setupSearchCommands()
+	setupBookCommands()
+	setupConfigCommands()
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -41,7 +50,8 @@ func Execute() {
 	}
 }
 
-func init() {
+// setupRootCommand configures the root command with flags and initialization
+func setupRootCommand() {
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -49,7 +59,8 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
-	rootCmd.PersistentFlags().StringP("api-key", "k", "", "Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+	rootCmd.PersistentFlags().StringP("api-key", "k", "",
+		"Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -65,7 +76,7 @@ func initConfig() {
 	}
 
 	// Override with command-line flag if provided
-	if apiKey, _ := rootCmd.PersistentFlags().GetString("api-key"); apiKey != "" {
+	if apiKey, err := rootCmd.PersistentFlags().GetString("api-key"); err == nil && apiKey != "" {
 		cfg.APIKey = apiKey
 	}
 

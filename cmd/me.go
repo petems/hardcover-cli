@@ -43,7 +43,10 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf("API key is required. Set it using:\n  export HARDCOVER_API_KEY=\"your-api-key\"\n  or\n  hardcover config set-api-key \"your-api-key\"")
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
 		}
 
 		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
@@ -66,23 +69,24 @@ Example:
 		}
 
 		// Display the user information
-		fmt.Fprintf(cmd.OutOrStdout(), "User Profile:\n")
-		fmt.Fprintf(cmd.OutOrStdout(), "  ID: %s\n", response.Me.ID)
-		fmt.Fprintf(cmd.OutOrStdout(), "  Username: %s\n", response.Me.Username)
+		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", response.Me.ID)
+		printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", response.Me.Username)
 		if response.Me.Email != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Email: %s\n", response.Me.Email)
+			printToStdoutf(cmd.OutOrStdout(), "  Email: %s\n", response.Me.Email)
 		}
 		if response.Me.CreatedAt != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Created: %s\n", response.Me.CreatedAt)
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", response.Me.CreatedAt)
 		}
 		if response.Me.UpdatedAt != "" {
-			fmt.Fprintf(cmd.OutOrStdout(), "  Updated: %s\n", response.Me.UpdatedAt)
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", response.Me.UpdatedAt)
 		}
 
 		return nil
 	},
 }
 
-func init() {
+// setupMeCommands registers the me command with the root command
+func setupMeCommands() {
 	rootCmd.AddCommand(meCmd)
 }

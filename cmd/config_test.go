@@ -54,12 +54,12 @@ func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
 
-	// Test with no arguments
-	err := configSetAPIKeyCmd.RunE(cmd, []string{})
+	// Test with no arguments - this should fail validation before reaching RunE
+	err := configSetAPIKeyCmd.Args(cmd, []string{})
 	require.Error(t, err)
 
-	// Test with too many arguments
-	err = configSetAPIKeyCmd.RunE(cmd, []string{"arg1", "arg2"})
+	// Test with too many arguments - this should fail validation before reaching RunE
+	err = configSetAPIKeyCmd.Args(cmd, []string{"arg1", "arg2"})
 	require.Error(t, err)
 }
 
@@ -291,6 +291,9 @@ func TestConfigShowPathCmd_CommandProperties(t *testing.T) {
 }
 
 func TestConfigCmd_Integration(t *testing.T) {
+	// Setup commands for testing
+	setupConfigCommands()
+
 	// Test the command is properly registered
 	found := false
 	for _, cmd := range rootCmd.Commands() {
