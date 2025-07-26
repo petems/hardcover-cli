@@ -1,8 +1,6 @@
 module hardcover-cli
 
-go 1.22.5
-
-toolchain go1.24.2
+go 1.23
 
 require (
 	github.com/Khan/genqlient v0.8.1
