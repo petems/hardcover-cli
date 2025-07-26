@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+
 	"hardcover-cli/internal/client"
 )
 
@@ -22,20 +23,20 @@ type Genre struct {
 
 // Book represents a book from the API
 type Book struct {
-	ID                  string        `json:"id"`
-	Title               string        `json:"title"`
-	Slug                string        `json:"slug"`
-	ISBN                string        `json:"isbn"`
-	PublicationYear     int           `json:"publicationYear"`
-	PageCount           int           `json:"pageCount"`
-	CachedContributors  []Contributor `json:"cached_contributors"`
-	CachedGenres        []Genre       `json:"cached_genres"`
-	Image               string        `json:"image"`
-	AverageRating       float64       `json:"averageRating"`
-	RatingsCount        int           `json:"ratingsCount"`
-	Description         string        `json:"description"`
-	CreatedAt           string        `json:"createdAt"`
-	UpdatedAt           string        `json:"updatedAt"`
+	Image              string        `json:"image"`
+	Title              string        `json:"title"`
+	Slug               string        `json:"slug"`
+	ISBN               string        `json:"isbn"`
+	UpdatedAt          string        `json:"updatedAt"`
+	CreatedAt          string        `json:"createdAt"`
+	ID                 string        `json:"id"`
+	Description        string        `json:"description"`
+	CachedContributors []Contributor `json:"cached_contributors"`
+	CachedGenres       []Genre       `json:"cached_genres"`
+	AverageRating      float64       `json:"averageRating"`
+	RatingsCount       int           `json:"ratingsCount"`
+	PageCount          int           `json:"pageCount"`
+	PublicationYear    int           `json:"publicationYear"`
 }
 
 // BookSearchResults represents the search results for books
@@ -129,12 +130,12 @@ Example:
 		}
 
 		// Display the search results
-		fmt.Printf("Search Results for \"%s\":\n", query)
-		fmt.Printf("Found %d books\n\n", response.Search.TotalCount)
+		fmt.Fprintf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
+		fmt.Fprintf(cmd.OutOrStdout(), "Found %d books\n\n", response.Search.TotalCount)
 
 		for i, book := range response.Search.Results {
-			fmt.Printf("%d. %s\n", i+1, book.Title)
-			
+			fmt.Fprintf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.Title)
+
 			// Display authors
 			if len(book.CachedContributors) > 0 {
 				var authors []string
@@ -144,23 +145,23 @@ Example:
 					}
 				}
 				if len(authors) > 0 {
-					fmt.Printf("   Authors: %s\n", strings.Join(authors, ", "))
+					fmt.Fprintf(cmd.OutOrStdout(), "   Authors: %s\n", strings.Join(authors, ", "))
 				}
 			}
 
 			// Display publication year
 			if book.PublicationYear > 0 {
-				fmt.Printf("   Published: %d\n", book.PublicationYear)
+				fmt.Fprintf(cmd.OutOrStdout(), "   Published: %d\n", book.PublicationYear)
 			}
 
 			// Display page count
 			if book.PageCount > 0 {
-				fmt.Printf("   Pages: %d\n", book.PageCount)
+				fmt.Fprintf(cmd.OutOrStdout(), "   Pages: %d\n", book.PageCount)
 			}
 
 			// Display rating
 			if book.AverageRating > 0 {
-				fmt.Printf("   Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
+				fmt.Fprintf(cmd.OutOrStdout(), "   Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
 			}
 
 			// Display genres
@@ -169,17 +170,17 @@ Example:
 				for _, genre := range book.CachedGenres {
 					genres = append(genres, genre.Name)
 				}
-				fmt.Printf("   Genres: %s\n", strings.Join(genres, ", "))
+				fmt.Fprintf(cmd.OutOrStdout(), "   Genres: %s\n", strings.Join(genres, ", "))
 			}
 
 			// Display Hardcover URL
-			fmt.Printf("   URL: https://hardcover.app/books/%s\n", book.Slug)
-			
+			fmt.Fprintf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", book.Slug)
+
 			// Display ID for further queries
-			fmt.Printf("   ID: %s\n", book.ID)
-			
+			fmt.Fprintf(cmd.OutOrStdout(), "   ID: %s\n", book.ID)
+
 			if i < len(response.Search.Results)-1 {
-				fmt.Println()
+				fmt.Fprintln(cmd.OutOrStdout())
 			}
 		}
 

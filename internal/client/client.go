@@ -12,9 +12,9 @@ import (
 
 // Client represents a GraphQL client
 type Client struct {
-	endpoint string
-	apiKey   string
 	httpClient *http.Client
+	endpoint   string
+	apiKey     string
 }
 
 // NewClient creates a new GraphQL client
@@ -30,8 +30,8 @@ func NewClient(endpoint, apiKey string) *Client {
 
 // GraphQLRequest represents a GraphQL request
 type GraphQLRequest struct {
-	Query     string                 `json:"query"`
 	Variables map[string]interface{} `json:"variables,omitempty"`
+	Query     string                 `json:"query"`
 }
 
 // GraphQLResponse represents a GraphQL response
@@ -77,7 +77,7 @@ func (c *Client) Execute(ctx context.Context, query string, variables map[string
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("User-Agent", "hardcover-cli/1.0.0")
-	
+
 	if c.apiKey != "" {
 		httpReq.Header.Set("Authorization", "Bearer "+c.apiKey)
 	}

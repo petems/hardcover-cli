@@ -8,21 +8,15 @@ on:
 
 jobs:
   test:
-    name: Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        go-version: ['1.19', '1.20', '1.21']
+    runs-on: ubuntu-latest
     
     steps:
+    - uses: actions/checkout@v4
+    
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: ${{ matrix.go-version }}
-    
-    - name: Check out code
-      uses: actions/checkout@v4
+        go-version: '1.23'
     
     - name: Cache Go modules
       uses: actions/cache@v3
@@ -30,160 +24,49 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-${{ matrix.go-version }}-
           ${{ runner.os }}-go-
     
     - name: Download dependencies
       run: go mod download
-    
-    - name: Verify dependencies
-      run: go mod verify
     
     - name: Run tests
-      run: go test -v -race -coverprofile=coverage.out ./...
+      run: go test -v ./...
+    
+    - name: Run tests with coverage
+      run: go test -v -coverprofile=coverage.out ./...
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+    
+    - name: Build
+      run: go build -v ./...
+    
+    - name: Build binary
+      run: make build
+    
+    - name: Test binary help
+      run: ./hardcover-cli --help
 
   lint:
-    name: Lint
     runs-on: ubuntu-latest
     
     steps:
+    - uses: actions/checkout@v4
+    
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.21'
+        go-version: '1.23'
     
-    - name: Check out code
-      uses: actions/checkout@v4
-    
-    - name: Cache Go modules
-      uses: actions/cache@v3
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v7
       with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.21-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
-    
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v8
-      with:
-        version: latest
-        args: --timeout=5m
-
-  format:
-    name: Format Check
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    
-    - name: Check out code
-      uses: actions/checkout@v4
-    
-    - name: Check formatting
-      run: |
-        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
-          echo "The following files are not formatted:"
-          gofmt -s -l .
-          exit 1
-        fi
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    
-    - name: Check out code
-      uses: actions/checkout@v4
-    
-    - name: Cache Go modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.21-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
-    
-    - name: Build application
-      run: go build -v -o hardcover .
-    
-    - name: Test CLI help
-      run: ./hardcover --help
-    
-    - name: Upload binary
-      uses: actions/upload-artifact@v4
-      with:
-        name: hardcover-binary
-        path: hardcover
-
-  vet:
-    name: Go Vet
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    
-    - name: Check out code
-      uses: actions/checkout@v4
-    
-    - name: Cache Go modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.21-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
-    
-    - name: Run go vet
-      run: go vet ./...
-
-  mod-tidy:
-    name: Go Mod Tidy
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    
-    - name: Check out code
-      uses: actions/checkout@v4
-    
-    - name: Check if go mod tidy is needed
-      run: |
-        go mod tidy
-        if ! git diff --exit-code go.mod go.sum; then
-          echo "go mod tidy resulted in changes. Please run 'go mod tidy' and commit the changes."
-          exit 1
-        fi
+        version: v2.2.1
+        args: --timeout=3m

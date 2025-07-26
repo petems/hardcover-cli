@@ -34,28 +34,28 @@ Example:
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		apiKey := args[0]
-		
+
 		// Load existing config or create new one
 		cfg, err := config.LoadConfig()
 		if err != nil {
 			cfg = config.DefaultConfig()
 		}
-		
+
 		// Update the API key
 		cfg.APIKey = apiKey
-		
+
 		// Save the configuration
 		if err := config.SaveConfig(cfg); err != nil {
 			return fmt.Errorf("failed to save configuration: %w", err)
 		}
-		
+
 		fmt.Printf("API key has been set and saved to configuration file.\n")
-		
+
 		configPath, err := config.GetConfigPath()
 		if err == nil {
 			fmt.Printf("Configuration file: %s\n", configPath)
 		}
-		
+
 		return nil
 	},
 }
@@ -77,7 +77,7 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to load configuration: %w", err)
 		}
-		
+
 		if cfg.APIKey == "" {
 			fmt.Printf("No API key is currently set.\n")
 			fmt.Printf("Set it using:\n")
@@ -86,7 +86,7 @@ Example:
 			fmt.Printf("  export HARDCOVER_API_KEY=\"your-api-key\"\n")
 			return nil
 		}
-		
+
 		// Show only the first and last few characters for security
 		if len(cfg.APIKey) > 10 {
 			masked := cfg.APIKey[:4] + "..." + cfg.APIKey[len(cfg.APIKey)-4:]
@@ -94,7 +94,7 @@ Example:
 		} else {
 			fmt.Printf("API key: %s\n", cfg.APIKey)
 		}
-		
+
 		// Show the source of the API key
 		if os.Getenv("HARDCOVER_API_KEY") != "" {
 			fmt.Printf("Source: Environment variable (HARDCOVER_API_KEY)\n")
@@ -104,7 +104,7 @@ Example:
 				fmt.Printf("Source: Configuration file (%s)\n", configPath)
 			}
 		}
-		
+
 		return nil
 	},
 }
@@ -122,9 +122,9 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to get configuration path: %w", err)
 		}
-		
+
 		fmt.Printf("Configuration file path: %s\n", configPath)
-		
+
 		// Check if file exists
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
 			fmt.Printf("Configuration file does not exist yet.\n")
@@ -132,7 +132,7 @@ Example:
 		} else {
 			fmt.Printf("Configuration file exists.\n")
 		}
-		
+
 		return nil
 	},
 }

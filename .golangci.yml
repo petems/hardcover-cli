@@ -1,149 +1,112 @@
+version: "2"
 run:
-  timeout: 5m
   issues-exit-code: 1
   tests: true
-  modules-download-mode: readonly
-
-output:
-  format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true
-
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-  
-  govet:
-    check-shadowing: true
-    enable-all: true
-  
-  golint:
-    min-confidence: 0.8
-  
-  gofmt:
-    simplify: true
-  
-  goimports:
-    local-prefixes: hardcover-cli
-  
-  gocyclo:
-    min-complexity: 15
-  
-  maligned:
-    suggest-new: true
-  
-  dupl:
-    threshold: 100
-  
-  goconst:
-    min-len: 3
-    min-occurrences: 3
-  
-  misspell:
-    locale: US
-  
-  lll:
-    line-length: 120
-  
-  unused:
-    check-exported: false
-  
-  unparam:
-    check-exported: false
-  
-  nakedret:
-    max-func-lines: 30
-  
-  prealloc:
-    simple: true
-    range-loops: true
-    for-loops: false
-  
-  gocritic:
-    enabled-tags:
-      - performance
-      - style
-      - experimental
-      - diagnostic
-    disabled-checks:
-      - wrapperFunc
-      - dupImport
-      - ifElseChain
-
 linters:
   enable:
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - dupl
-    - errcheck
-    - exportloopref
     - exhaustive
     - funlen
     - gochecknoinits
     - goconst
     - gocritic
     - gocyclo
-    - gofmt
-    - goimports
-    - golint
-    - gomnd
     - goprintffuncname
     - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - interfacer
     - lll
     - misspell
+    - mnd
     - nakedret
     - noctx
     - nolintlint
+    - revive
     - rowserrcheck
-    - scopelint
     - staticcheck
-    - structcheck
-    - stylecheck
-    - typecheck
     - unconvert
     - unparam
-    - unused
-    - varcheck
     - whitespace
-  
   disable:
-    - maligned  # deprecated
-    - gochecknoglobals  # too strict for CLI applications
-
+    - gochecknoglobals
+  settings:
+    dupl:
+      threshold: 100
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+    gocritic:
+      disabled-checks:
+        - wrapperFunc
+        - dupImport
+        - ifElseChain
+      enabled-tags:
+        - performance
+        - style
+        - experimental
+        - diagnostic
+    gocyclo:
+      min-complexity: 15
+    govet:
+      enable-all: true
+    lll:
+      line-length: 120
+    misspell:
+      locale: US
+    nakedret:
+      max-func-lines: 30
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: false
+    revive:
+      confidence: 0.8
+    unparam:
+      check-exported: false
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - dupl
+          - errcheck
+          - funlen
+          - gocyclo
+          - gosec
+        path: _test\.go
+      - linters:
+          - lll
+        source: '^//go:generate '
+      - linters:
+          - staticcheck
+        text: 'SA9003:'
+      - linters:
+          - staticcheck
+        text: 'SA1019:'
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
 issues:
-  exclude-rules:
-    # Exclude some linters from running on tests files.
-    - path: _test\.go
-      linters:
-        - gocyclo
-        - errcheck
-        - dupl
-        - gosec
-        - funlen
-    
-    # Exclude lll issues for long lines with go:generate
-    - linters:
-        - lll
-      source: "^//go:generate "
-    
-    # Exclude known false positives
-    - linters:
-        - staticcheck
-      text: "SA9003:"
-    
-    # Exclude some staticcheck messages
-    - linters:
-        - staticcheck
-      text: "SA1019:"
-  
-  exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0
   new: false
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gofmt:
+      simplify: true
+    goimports:
+      local-prefixes:
+        - hardcover-cli
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

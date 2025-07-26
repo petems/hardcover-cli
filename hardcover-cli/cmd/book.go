@@ -96,7 +96,7 @@ Example:
 		fmt.Printf("Book Details:\n")
 		fmt.Printf("  Title: %s\n", book.Title)
 		fmt.Printf("  ID: %s\n", book.ID)
-		
+
 		if book.Description != "" {
 			fmt.Printf("  Description: %s\n", book.Description)
 		}
@@ -105,7 +105,7 @@ Example:
 		if len(book.CachedContributors) > 0 {
 			var authors []string
 			var otherContributors []string
-			
+
 			for _, contributor := range book.CachedContributors {
 				if contributor.Role == "" || contributor.Role == "author" || contributor.Role == "Author" {
 					authors = append(authors, contributor.Name)
@@ -113,11 +113,11 @@ Example:
 					otherContributors = append(otherContributors, fmt.Sprintf("%s (%s)", contributor.Name, contributor.Role))
 				}
 			}
-			
+
 			if len(authors) > 0 {
 				fmt.Printf("  Authors: %s\n", strings.Join(authors, ", "))
 			}
-			
+
 			if len(otherContributors) > 0 {
 				fmt.Printf("  Contributors: %s\n", strings.Join(otherContributors, ", "))
 			}

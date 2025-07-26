@@ -14,7 +14,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.21'
+        go-version: '1.23'
     
     - name: Check out code
       uses: actions/checkout@v4
@@ -25,9 +25,9 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-1.23-
           ${{ runner.os }}-go-
     
     - name: Download dependencies
@@ -59,7 +59,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.21'
+        go-version: '1.23'
     
     - name: Check out code
       uses: actions/checkout@v4
@@ -70,9 +70,9 @@ jobs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-1.21-
+          ${{ runner.os }}-go-1.23-
           ${{ runner.os }}-go-
     
     - name: Download dependencies

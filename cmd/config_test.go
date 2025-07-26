@@ -10,39 +10,40 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"hardcover-cli/internal/config"
 )
 
 func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := configSetAPIKeyCmd.RunE(cmd, []string{"test-api-key-123"})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "API key has been set and saved to configuration file")
 	assert.Contains(t, outputStr, "Configuration file:")
-	
+
 	// Verify config file was created and contains correct data
 	configPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
 	_, err = os.Stat(configPath)
 	require.NoError(t, err)
-	
+
 	// Load config and verify
 	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
@@ -52,11 +53,11 @@ func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
 func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Test with no arguments
 	err := configSetAPIKeyCmd.RunE(cmd, []string{})
 	require.Error(t, err)
-	
+
 	// Test with too many arguments
 	err = configSetAPIKeyCmd.RunE(cmd, []string{"arg1", "arg2"})
 	require.Error(t, err)
@@ -65,12 +66,12 @@ func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
 func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	// Create config with API key
 	cfg := &config.Config{
 		APIKey:  "test-api-key-123456789",
@@ -78,21 +79,21 @@ func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
 	}
 	err := config.SaveConfig(cfg)
 	require.NoError(t, err)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err = configGetAPIKeyCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output shows masked API key
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "API key: test...9789")
+	assert.Contains(t, outputStr, "API key: test...6789")
 	assert.Contains(t, outputStr, "Source: Configuration file")
 }
 
@@ -101,55 +102,55 @@ func TestConfigGetAPIKeyCmd_WithEnvironmentVariable(t *testing.T) {
 	expectedAPIKey := "env-api-key-123456789"
 	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
 	defer os.Unsetenv("HARDCOVER_API_KEY")
-	
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := configGetAPIKeyCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output shows masked API key from environment
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "API key: env-...9789")
+	assert.Contains(t, outputStr, "API key: env-...6789")
 	assert.Contains(t, outputStr, "Source: Environment variable")
 }
 
 func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
 	// Make sure no environment variable is set
 	os.Unsetenv("HARDCOVER_API_KEY")
-	
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := configGetAPIKeyCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output shows no API key message
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "No API key is currently set")
@@ -160,12 +161,12 @@ func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
 func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	// Create config with short API key
 	cfg := &config.Config{
 		APIKey:  "short",
@@ -173,18 +174,18 @@ func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
 	}
 	err := config.SaveConfig(cfg)
 	require.NoError(t, err)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err = configGetAPIKeyCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output shows full API key for short keys
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "API key: short")
@@ -193,23 +194,23 @@ func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
 func TestConfigShowPathCmd_Success(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := configShowPathCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
@@ -220,12 +221,12 @@ func TestConfigShowPathCmd_Success(t *testing.T) {
 func TestConfigShowPathCmd_FileExists(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	// Create config file
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
@@ -233,18 +234,18 @@ func TestConfigShowPathCmd_FileExists(t *testing.T) {
 	}
 	err := config.SaveConfig(cfg)
 	require.NoError(t, err)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err = configShowPathCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
@@ -295,7 +296,7 @@ func TestConfigCmd_Integration(t *testing.T) {
 	for _, cmd := range rootCmd.Commands() {
 		if cmd.Use == "config" {
 			found = true
-			
+
 			// Check that subcommands are registered
 			subCommands := []string{"set-api-key <api_key>", "get-api-key", "show-path"}
 			for _, expectedSub := range subCommands {
@@ -317,12 +318,12 @@ func TestConfigCmd_Integration(t *testing.T) {
 func TestConfigSetAPIKeyCmd_UpdatesExistingConfig(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
-	
+
 	// Mock the home directory for testing
 	oldHome := os.Getenv("HOME")
 	os.Setenv("HOME", tempDir)
 	defer os.Setenv("HOME", oldHome)
-	
+
 	// Create initial config
 	cfg := &config.Config{
 		APIKey:  "old-api-key",
@@ -330,14 +331,14 @@ func TestConfigSetAPIKeyCmd_UpdatesExistingConfig(t *testing.T) {
 	}
 	err := config.SaveConfig(cfg)
 	require.NoError(t, err)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Execute command to update API key
 	err = configSetAPIKeyCmd.RunE(cmd, []string{"new-api-key"})
 	require.NoError(t, err)
-	
+
 	// Verify config was updated
 	updatedCfg, err := config.LoadConfig()
 	require.NoError(t, err)

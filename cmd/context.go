@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+
 	"hardcover-cli/internal/config"
 )
 

@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"hardcover-cli/internal/client"
 	"hardcover-cli/internal/config"
 )
@@ -21,14 +22,14 @@ func TestMeCmd_Success(t *testing.T) {
 		// Verify request
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
-		
+
 		// Verify GraphQL query
 		var req client.GraphQLRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
 		require.NoError(t, err)
 		assert.Contains(t, req.Query, "query GetCurrentUser")
 		assert.Contains(t, req.Query, "me")
-		
+
 		// Send response
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
@@ -45,25 +46,25 @@ func TestMeCmd_Success(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "User Profile:")
@@ -81,10 +82,10 @@ func TestMeCmd_MissingAPIKey(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -95,7 +96,7 @@ func TestMeCmd_NoConfig(t *testing.T) {
 	// Create command without config
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -117,17 +118,17 @@ func TestMeCmd_APIError(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -141,17 +142,17 @@ func TestMeCmd_HTTPError(t *testing.T) {
 		w.Write([]byte("Unauthorized"))
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -173,25 +174,25 @@ func TestMeCmd_PartialData(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output contains required fields but not optional ones
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "ID: user123")
@@ -235,11 +236,11 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 			"updatedAt": "2023-01-02T00:00:00Z"
 		}
 	}`
-	
+
 	var response GetCurrentUserResponse
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
-	
+
 	assert.Equal(t, "user123", response.Me.ID)
 	assert.Equal(t, "testuser", response.Me.Username)
 	assert.Equal(t, "test@example.com", response.Me.Email)
@@ -256,7 +257,7 @@ func TestUser_StructFields(t *testing.T) {
 		CreatedAt: "2023-01-01T00:00:00Z",
 		UpdatedAt: "2023-01-02T00:00:00Z",
 	}
-	
+
 	assert.Equal(t, "user123", user.ID)
 	assert.Equal(t, "testuser", user.Username)
 	assert.Equal(t, "test@example.com", user.Email)
