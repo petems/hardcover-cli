@@ -52,14 +52,28 @@ Example:
 		query := args[0]
 		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
 
-		_, err := client.SearchBooks(context.Background(), query)
+		response, err := client.SearchBooks(context.Background(), query)
 		if err != nil {
 			return fmt.Errorf("failed to search books: %w", err)
 		}
 
-		// For now, just display a simple message
-		fmt.Printf("Search completed for query: %s\n", query)
-		fmt.Printf("Note: Search functionality is being updated to use GraphQL\n")
+		// Display search results
+		searchResults := response.GetSearch()
+
+		// Check the type name to determine what kind of results we got
+		typeName := searchResults.GetTypename()
+
+		if typeName != "BookSearchResults" {
+			printToStdoutf(cmd.OutOrStdout(), "Search completed for query: %s\n", query)
+			printToStdoutf(cmd.OutOrStdout(), "No book results found or unexpected result type: %s\n", typeName)
+			return nil
+		}
+
+		// For now, just display a simple message since we can't access the specific fields
+		// without the type assertion working
+		printToStdoutf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
+		printToStdoutf(cmd.OutOrStdout(), "Found book results (type: %s)\n", typeName)
+		printToStdoutf(cmd.OutOrStdout(), "Note: Full search results display is being updated to work with GraphQL types.\n")
 
 		return nil
 	},

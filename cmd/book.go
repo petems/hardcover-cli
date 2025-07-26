@@ -66,40 +66,40 @@ Example:
 		book := response.GetBook()
 
 		// Display detailed book information
-		fmt.Printf("Book Details:\n")
-		fmt.Printf("  Title: %s\n", book.GetTitle())
-		fmt.Printf("  ID: %s\n", book.GetId())
+		printToStdoutf(cmd.OutOrStdout(), "Book Details:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  Title: %s\n", book.GetTitle())
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", book.GetId())
 
 		if book.GetDescription() != "" {
-			fmt.Printf("  Description: %s\n", book.GetDescription())
+			printToStdoutf(cmd.OutOrStdout(), "  Description: %s\n", book.GetDescription())
 		}
 
 		if book.GetSlug() != "" {
-			fmt.Printf("  Slug: %s\n", book.GetSlug())
+			printToStdoutf(cmd.OutOrStdout(), "  Slug: %s\n", book.GetSlug())
 		}
 
 		if book.GetIsbn() != "" {
-			fmt.Printf("  ISBN: %s\n", book.GetIsbn())
+			printToStdoutf(cmd.OutOrStdout(), "  ISBN: %s\n", book.GetIsbn())
 		}
 
 		if book.GetPublicationYear() > 0 {
-			fmt.Printf("  Publication Year: %d\n", book.GetPublicationYear())
+			printToStdoutf(cmd.OutOrStdout(), "  Publication Year: %d\n", book.GetPublicationYear())
 		}
 
 		if book.GetPageCount() > 0 {
-			fmt.Printf("  Page Count: %d\n", book.GetPageCount())
+			printToStdoutf(cmd.OutOrStdout(), "  Page Count: %d\n", book.GetPageCount())
 		}
 
 		// Display contributors
 		contributors := book.GetCached_contributors()
 		if len(contributors) > 0 {
-			fmt.Printf("  Contributors:\n")
+			printToStdoutf(cmd.OutOrStdout(), "  Contributors:\n")
 			for _, contributor := range contributors {
 				role := contributor.GetRole()
 				if role != "" {
-					fmt.Printf("    - %s (%s)\n", contributor.GetName(), role)
+					printToStdoutf(cmd.OutOrStdout(), "    - %s (%s)\n", contributor.GetName(), role)
 				} else {
-					fmt.Printf("    - %s\n", contributor.GetName())
+					printToStdoutf(cmd.OutOrStdout(), "    - %s\n", contributor.GetName())
 				}
 			}
 		}
@@ -111,30 +111,31 @@ Example:
 			for _, genre := range genres {
 				genreNames = append(genreNames, genre.GetName())
 			}
-			fmt.Printf("  Genres: %s\n", strings.Join(genreNames, ", "))
+			printToStdoutf(cmd.OutOrStdout(), "  Genres: %s\n", strings.Join(genreNames, ", "))
 		}
 
 		// Display ratings
 		if book.GetRatingsCount() > 0 {
-			fmt.Printf("  Average Rating: %.2f (%d ratings)\n", book.GetAverageRating(), book.GetRatingsCount())
+			printToStdoutf(cmd.OutOrStdout(), "  Average Rating: %.2f (%d ratings)\n",
+				book.GetAverageRating(), book.GetRatingsCount())
 		}
 
 		// Display image URL
 		if book.GetImage() != "" {
-			fmt.Printf("  Image: %s\n", book.GetImage())
+			printToStdoutf(cmd.OutOrStdout(), "  Image: %s\n", book.GetImage())
 		}
 
 		// Display creation/update timestamps
 		if book.GetCreatedAt() != "" {
-			fmt.Printf("  Created: %s\n", book.GetCreatedAt())
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", book.GetCreatedAt())
 		}
 
 		if book.GetUpdatedAt() != "" {
-			fmt.Printf("  Updated: %s\n", book.GetUpdatedAt())
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", book.GetUpdatedAt())
 		}
 
 		// Display Hardcover.app URL
-		fmt.Printf("  Hardcover URL: https://hardcover.app/books/%s\n", book.GetSlug())
+		printToStdoutf(cmd.OutOrStdout(), "  Hardcover URL: https://hardcover.app/books/%s\n", book.GetSlug())
 
 		return nil
 	},

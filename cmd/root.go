@@ -54,7 +54,7 @@ func Execute() {
 	}
 
 	// Override with command-line flag if provided
-	if apiKey, err := rootCmd.PersistentFlags().GetString("api-key"); err == nil && apiKey != "" {
+	if apiKey, flagErr := rootCmd.PersistentFlags().GetString("api-key"); flagErr == nil && apiKey != "" {
 		cfg.APIKey = apiKey
 	}
 

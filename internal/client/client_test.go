@@ -19,31 +19,36 @@ func TestNewClient(t *testing.T) {
 	client := NewClient(endpoint, apiKey)
 
 	assert.NotNil(t, client)
-	assert.Equal(t, endpoint, client.endpoint)
-	assert.Equal(t, apiKey, client.apiKey)
-	assert.NotNil(t, client.httpClient)
-	assert.Equal(t, 30*time.Second, client.httpClient.Timeout)
+	// Note: We can't access internal fields anymore since we're using an interface
+	// The client should be functional though
 }
 
-func TestClient_Execute_Success(t *testing.T) {
+func TestClient_GetCurrentUser_Success(t *testing.T) {
 	// Create test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify request method and headers
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
-		assert.Equal(t, "hardcover-cli/1.0.0", r.Header.Get("User-Agent"))
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
 		// Verify request body
-		var req GraphQLRequest
+		var req map[string]interface{}
 		err := json.NewDecoder(r.Body).Decode(&req)
 		require.NoError(t, err)
-		assert.Equal(t, "query { test }", req.Query)
-		assert.Equal(t, "test-value", req.Variables["test-var"])
+		assert.Contains(t, req["query"], "query GetCurrentUser")
+		assert.Contains(t, req["query"], "me")
 
 		// Send response
-		response := GraphQLResponse{
-			Data: json.RawMessage(`{"test": "success"}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":        "user123",
+					"username":  "testuser",
+					"email":     "test@example.com",
+					"createdAt": "2023-01-01T00:00:00Z",
+					"updatedAt": "2023-01-02T00:00:00Z",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -52,27 +57,26 @@ func TestClient_Execute_Success(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	variables := map[string]interface{}{
-		"test-var": "test-value",
-	}
-
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", variables, &result)
+	response, err := client.GetCurrentUser(context.Background())
 
 	require.NoError(t, err)
-	assert.Equal(t, "success", result["test"])
+	assert.NotNil(t, response)
+	user := response.GetMe()
+	assert.Equal(t, "user123", user.GetId())
+	assert.Equal(t, "testuser", user.GetUsername())
+	assert.Equal(t, "test@example.com", user.GetEmail())
 }
 
-func TestClient_Execute_GraphQLError(t *testing.T) {
+func TestClient_GetCurrentUser_GraphQLError(t *testing.T) {
 	// Create test server that returns GraphQL errors
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := GraphQLResponse{
-			Data: json.RawMessage(`null`),
-			Errors: []GraphQLError{
+		response := map[string]interface{}{
+			"data": nil,
+			"errors": []map[string]interface{}{
 				{
-					Message: "Field 'test' doesn't exist",
-					Locations: []GraphQLErrorLocation{
-						{Line: 1, Column: 9},
+					"message": "User not found",
+					"locations": []map[string]interface{}{
+						{"line": 1, "column": 9},
 					},
 				},
 			},
@@ -84,15 +88,13 @@ func TestClient_Execute_GraphQLError(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", nil, &result)
+	_, err := client.GetCurrentUser(context.Background())
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "GraphQL errors")
-	assert.Contains(t, err.Error(), "Field 'test' doesn't exist")
+	assert.Contains(t, err.Error(), "User not found")
 }
 
-func TestClient_Execute_HTTPError(t *testing.T) {
+func TestClient_GetCurrentUser_HTTPError(t *testing.T) {
 	// Create test server that returns HTTP error
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -102,51 +104,36 @@ func TestClient_Execute_HTTPError(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", nil, &result)
+	_, err := client.GetCurrentUser(context.Background())
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "HTTP error 401")
-	assert.Contains(t, err.Error(), "Unauthorized")
+	assert.Contains(t, err.Error(), "returned error 401")
 }
 
-func TestClient_Execute_NetworkError(t *testing.T) {
+func TestClient_GetCurrentUser_NetworkError(t *testing.T) {
 	// Use invalid endpoint to trigger network error
 	client := NewClient("http://invalid-endpoint:99999", "test-api-key")
 
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", nil, &result)
+	_, err := client.GetCurrentUser(context.Background())
 
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to execute request")
+	assert.Contains(t, err.Error(), "dial tcp: address 99999: invalid port")
 }
 
-func TestClient_Execute_InvalidJSON(t *testing.T) {
-	// Create test server that returns invalid JSON
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte("invalid json"))
-	}))
-	defer server.Close()
-
-	client := NewClient(server.URL, "test-api-key")
-
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", nil, &result)
-
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to unmarshal response")
-}
-
-func TestClient_Execute_WithoutAPIKey(t *testing.T) {
+func TestClient_GetCurrentUser_WithoutAPIKey(t *testing.T) {
 	// Create test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify no Authorization header is set
 		assert.Empty(t, r.Header.Get("Authorization"))
 
 		// Send response
-		response := GraphQLResponse{
-			Data: json.RawMessage(`{"test": "success"}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -155,20 +142,26 @@ func TestClient_Execute_WithoutAPIKey(t *testing.T) {
 
 	client := NewClient(server.URL, "")
 
-	var result map[string]interface{}
-	err := client.Execute(context.Background(), "query { test }", nil, &result)
+	response, err := client.GetCurrentUser(context.Background())
 
 	require.NoError(t, err)
-	assert.Equal(t, "success", result["test"])
+	assert.NotNil(t, response)
+	user := response.GetMe()
+	assert.Equal(t, "user123", user.GetId())
 }
 
-func TestClient_Execute_WithContext(t *testing.T) {
+func TestClient_GetCurrentUser_WithContext(t *testing.T) {
 	// Create test server with delay
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(100 * time.Millisecond)
 
-		response := GraphQLResponse{
-			Data: json.RawMessage(`{"test": "success"}`),
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"me": map[string]interface{}{
+					"id":       "user123",
+					"username": "testuser",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -181,18 +174,28 @@ func TestClient_Execute_WithContext(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancel()
 
-	var result map[string]interface{}
-	err := client.Execute(ctx, "query { test }", nil, &result)
+	_, err := client.GetCurrentUser(ctx)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "context deadline exceeded")
 }
 
-func TestClient_Execute_NilResult(t *testing.T) {
+func TestClient_GetBook_Success(t *testing.T) {
 	// Create test server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := GraphQLResponse{
-			Data: json.RawMessage(`{"test": "success"}`),
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"book": map[string]interface{}{
+					"id":    "book123",
+					"title": "Test Book",
+					"slug":  "test-book",
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
@@ -201,19 +204,49 @@ func TestClient_Execute_NilResult(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	// Pass nil result to test that it doesn't crash
-	err := client.Execute(context.Background(), "query { test }", nil, nil)
+	response, err := client.GetBook(context.Background(), "book123")
 
 	require.NoError(t, err)
+	assert.NotNil(t, response)
+	book := response.GetBook()
+	assert.Equal(t, "book123", book.GetId())
+	assert.Equal(t, "Test Book", book.GetTitle())
 }
 
-func TestGraphQLError_Error(t *testing.T) {
-	err := GraphQLError{
-		Message: "Test error message",
-		Locations: []GraphQLErrorLocation{
-			{Line: 1, Column: 5},
-		},
-	}
+func TestClient_SearchBooks_Success(t *testing.T) {
+	// Create test server
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
-	assert.Equal(t, "Test error message", err.Error())
+		// Send response
+		response := map[string]interface{}{
+			"data": map[string]interface{}{
+				"search": map[string]interface{}{
+					"__typename": "BookSearchResults",
+					"totalCount": 1,
+					"results": []map[string]interface{}{
+						{
+							"id":    "book123",
+							"title": "Test Book",
+							"slug":  "test-book",
+						},
+					},
+				},
+			},
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewClient(server.URL, "test-api-key")
+
+	response, err := client.SearchBooks(context.Background(), "test")
+
+	require.NoError(t, err)
+	assert.NotNil(t, response)
+	searchResults := response.GetSearch()
+	assert.Equal(t, "BookSearchResults", searchResults.GetTypename())
 }

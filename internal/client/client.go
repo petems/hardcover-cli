@@ -8,6 +8,11 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+const (
+	// DefaultTimeout is the default HTTP client timeout
+	DefaultTimeout = 30 * time.Second
+)
+
 // HardcoverClient defines the interface for interacting with Hardcover API
 type HardcoverClient interface {
 	GetCurrentUser(ctx context.Context) (*GetCurrentUserResponse, error)
@@ -23,7 +28,7 @@ type Client struct {
 // NewClient creates a new GraphQL client using genqlient
 func NewClient(endpoint, apiKey string) HardcoverClient {
 	httpClient := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: DefaultTimeout,
 	}
 
 	// Create a graphql client with auth headers

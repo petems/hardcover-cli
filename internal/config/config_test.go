@@ -9,6 +9,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	testAPIKeyFromEnv    = "test-api-key-from-env"
+	testAPIKeyFromFile   = "test-api-key-from-file"
+	defaultConfigContent = `api_key: test-api-key-from-file
+base_url: https://api.hardcover.app/v1/graphql`
+)
+
 func TestDefaultConfig(t *testing.T) {
 	cfg := DefaultConfig()
 	assert.NotNil(t, cfg)
@@ -18,13 +25,12 @@ func TestDefaultConfig(t *testing.T) {
 
 func TestLoadConfig_FromEnvironment(t *testing.T) {
 	// Set environment variable
-	expectedAPIKey := "test-api-key-from-env"
-	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
+	os.Setenv("HARDCOVER_API_KEY", testAPIKeyFromEnv)
 	defer os.Unsetenv("HARDCOVER_API_KEY")
 
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
-	assert.Equal(t, expectedAPIKey, cfg.APIKey)
+	assert.Equal(t, testAPIKeyFromEnv, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
@@ -39,9 +45,7 @@ func TestLoadConfig_FromFile(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create config file
-	configContent := `api_key: test-api-key-from-file
-base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
 	require.NoError(t, err)
 
 	// Mock the home directory for testing
@@ -51,7 +55,7 @@ base_url: https://api.hardcover.app/v1/graphql`
 
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
-	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
@@ -191,9 +195,7 @@ func TestLoadConfig_EmptyEnvironmentVariable(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create config file with API key
-	configContent := `api_key: test-api-key-from-file
-base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
 	require.NoError(t, err)
 
 	// Set empty environment variable (this was the bug)
@@ -209,7 +211,7 @@ base_url: https://api.hardcover.app/v1/graphql`
 	require.NoError(t, err)
 
 	// Should load from config file even with empty environment variable
-	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
@@ -225,9 +227,7 @@ func TestLoadConfig_WhitespaceEnvironmentVariable(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create config file with API key
-	configContent := `api_key: test-api-key-from-file
-base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
 	require.NoError(t, err)
 
 	// Set whitespace-only environment variable
@@ -243,11 +243,12 @@ base_url: https://api.hardcover.app/v1/graphql`
 	require.NoError(t, err)
 
 	// Should load from config file even with whitespace-only environment variable
-	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
-// TestLoadConfig_EnvironmentVariableOverridesFile tests that non-empty environment variables properly override config file
+// TestLoadConfig_EnvironmentVariableOverridesFile tests that non-empty environment variables
+// properly override config file
 func TestLoadConfig_EnvironmentVariableOverridesFile(t *testing.T) {
 	// Create temporary directory for config
 	tempDir := t.TempDir()
@@ -259,13 +260,11 @@ func TestLoadConfig_EnvironmentVariableOverridesFile(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create config file with API key
-	configContent := `api_key: test-api-key-from-file
-base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
 	require.NoError(t, err)
 
 	// Set non-empty environment variable
-	envAPIKey := "test-api-key-from-env"
+	envAPIKey := testAPIKeyFromEnv
 	os.Setenv("HARDCOVER_API_KEY", envAPIKey)
 	defer os.Unsetenv("HARDCOVER_API_KEY")
 
@@ -318,9 +317,7 @@ func TestLoadConfig_ConfigFileOnly(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create config file with API key
-	configContent := `api_key: test-api-key-from-file
-base_url: https://api.hardcover.app/v1/graphql`
-	err = os.WriteFile(configPath, []byte(configContent), 0o600)
+	err = os.WriteFile(configPath, []byte(defaultConfigContent), 0o600)
 	require.NoError(t, err)
 
 	// Mock the home directory for testing
@@ -332,14 +329,14 @@ base_url: https://api.hardcover.app/v1/graphql`
 	require.NoError(t, err)
 
 	// Should load from config file
-	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
+	assert.Equal(t, testAPIKeyFromFile, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
 // TestLoadConfig_EnvironmentVariableOnly tests loading from environment variable when no config file exists
 func TestLoadConfig_EnvironmentVariableOnly(t *testing.T) {
 	// Set environment variable
-	expectedAPIKey := "test-api-key-from-env"
+	expectedAPIKey := testAPIKeyFromEnv
 	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
 	defer os.Unsetenv("HARDCOVER_API_KEY")
 

@@ -44,17 +44,17 @@ Example:
 
 		// Display the user information using the generated types
 		user := response.GetMe()
-		fmt.Printf("User Profile:\n")
-		fmt.Printf("  ID: %s\n", user.GetId())
-		fmt.Printf("  Username: %s\n", user.GetUsername())
+		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", user.GetId())
+		printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", user.GetUsername())
 		if user.GetEmail() != "" {
-			fmt.Printf("  Email: %s\n", user.GetEmail())
+			printToStdoutf(cmd.OutOrStdout(), "  Email: %s\n", user.GetEmail())
 		}
 		if user.GetCreatedAt() != "" {
-			fmt.Printf("  Created: %s\n", user.GetCreatedAt())
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", user.GetCreatedAt())
 		}
 		if user.GetUpdatedAt() != "" {
-			fmt.Printf("  Updated: %s\n", user.GetUpdatedAt())
+			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", user.GetUpdatedAt())
 		}
 
 		return nil
