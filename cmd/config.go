@@ -34,13 +34,6 @@ Example:
   hardcover config set-api-key "your-api-key-here"`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return fmt.Errorf("API key is required")
-		}
-		if len(args) > 1 {
-			return fmt.Errorf("too many arguments; expected exactly one API key")
-		}
-
 		apiKey := args[0]
 
 		// Load existing config or create new one
