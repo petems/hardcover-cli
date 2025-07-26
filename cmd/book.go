@@ -44,7 +44,7 @@ Example:
   hardcover book get "book-slug-or-id"`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-// Removed redundant validation of args length as cobra.ExactArgs(1) already enforces it.
+		// Removed redundant validation of args length as cobra.ExactArgs(1) already enforces it.
 
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
