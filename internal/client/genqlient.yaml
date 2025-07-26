@@ -1,4 +1,10 @@
+# Local schema file (for development)
 schema: schema.graphql
+
+# Remote schema endpoint (for production/updates)
+# Uncomment and update the URL when you have the actual Hardcover GraphQL endpoint
+# schema: https://api.hardcover.app/v1/graphql
+
 operations:
   - queries.graphql
 generated: generated.go
