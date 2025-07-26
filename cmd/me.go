@@ -43,7 +43,7 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf(apiKeyRequiredMsg)
+			return fmt.Errorf("%s", apiKeyRequiredMsg)
 		}
 
 		client := client.NewClient(cfg.BaseURL, cfg.APIKey)

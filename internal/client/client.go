@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const (
+	// Default HTTP client timeout for GraphQL requests
+	defaultHTTPTimeout = 30 * time.Second
+)
+
 // Client represents a GraphQL client
 type Client struct {
 	httpClient *http.Client
@@ -23,7 +28,7 @@ func NewClient(endpoint, apiKey string) *Client {
 		endpoint: endpoint,
 		apiKey:   apiKey,
 		httpClient: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: defaultHTTPTimeout,
 		},
 	}
 }
@@ -87,7 +92,11 @@ func (c *Client) Execute(ctx context.Context, query string, variables map[string
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			// Log error but don't return it since we might already have another error to return
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

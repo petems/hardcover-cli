@@ -84,7 +84,7 @@ Example:
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf(apiKeyRequiredMsg)
+			return fmt.Errorf("%s", apiKeyRequiredMsg)
 		}
 
 		query := args[0]

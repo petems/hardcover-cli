@@ -89,7 +89,7 @@ Example:
 		}
 
 		// Show only the first and last few characters for security
-		if len(cfg.APIKey) > 10 {
+		if len(cfg.APIKey) > apiKeyMaskingThreshold {
 			masked := cfg.APIKey[:4] + "..." + cfg.APIKey[len(cfg.APIKey)-4:]
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", masked)
 		} else {
