@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -44,7 +45,24 @@ func SetupCommands() {
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
+	// Load configuration and set context before executing
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+		// Continue with default config
+		cfg = config.DefaultConfig()
+	}
+
+	// Override with command-line flag if provided
+	if apiKey, flagErr := rootCmd.PersistentFlags().GetString("api-key"); flagErr == nil && apiKey != "" {
+		cfg.APIKey = apiKey
+	}
+
+	// Set context on root command with a proper context
+	ctx := withConfig(context.Background(), cfg)
+	rootCmd.SetContext(ctx)
+
+	err = rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
