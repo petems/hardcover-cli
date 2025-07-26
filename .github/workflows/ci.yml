@@ -52,7 +52,7 @@ jobs:
       run: make build
     
     - name: Test binary help
-      run: ./hardcover-cli --help
+      run: ./bin/hardcover-cli --help
 
   lint:
     runs-on: ubuntu-latest
