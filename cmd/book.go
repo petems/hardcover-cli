@@ -44,12 +44,7 @@ Example:
   hardcover book get "book-slug-or-id"`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return fmt.Errorf("book ID is required")
-		}
-		if len(args) > 1 {
-			return fmt.Errorf("too many arguments; expected exactly one book ID")
-		}
+// Removed redundant validation of args length as cobra.ExactArgs(1) already enforces it.
 
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
