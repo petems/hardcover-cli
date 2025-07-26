@@ -21,7 +21,7 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		// Verify request
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
-		
+
 		// Verify GraphQL query
 		var req client.GraphQLRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -29,7 +29,7 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		assert.Contains(t, req.Query, "query SearchBooks")
 		assert.Contains(t, req.Query, "search")
 		assert.Equal(t, "golang", req.Variables["query"])
-		
+
 		// Send response
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
@@ -95,25 +95,25 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Search Results for \"golang\":")
@@ -136,10 +136,10 @@ func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
 	require.Error(t, err)
@@ -161,25 +161,25 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"nonexistent"})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Found 0 books")
@@ -200,17 +200,17 @@ func TestSearchBooksCmd_APIError(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
 	require.Error(t, err)
@@ -242,25 +242,25 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer server.Close()
-	
+
 	// Create command with test context
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"simple"})
 	require.NoError(t, err)
-	
+
 	// Verify output contains minimal information
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Simple Book")
@@ -288,14 +288,14 @@ func TestSearchBooksCmd_RequiresArgument(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Test with no arguments
 	err := searchBooksCmd.RunE(cmd, []string{})
 	require.Error(t, err)
-	
+
 	// Test with too many arguments
 	err = searchBooksCmd.RunE(cmd, []string{"arg1", "arg2"})
 	require.Error(t, err)
@@ -361,14 +361,14 @@ func TestSearchBooksResponse_JSONUnmarshal(t *testing.T) {
 			]
 		}
 	}`
-	
+
 	var response SearchBooksResponse
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
-	
+
 	assert.Equal(t, 1, response.Search.TotalCount)
 	assert.Len(t, response.Search.Results, 1)
-	
+
 	book := response.Search.Results[0]
 	assert.Equal(t, "book1", book.ID)
 	assert.Equal(t, "Test Book", book.Title)

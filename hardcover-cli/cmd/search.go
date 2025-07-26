@@ -23,20 +23,20 @@ type Genre struct {
 
 // Book represents a book from the API
 type Book struct {
-	ID                  string        `json:"id"`
-	Title               string        `json:"title"`
-	Slug                string        `json:"slug"`
-	ISBN                string        `json:"isbn"`
-	PublicationYear     int           `json:"publicationYear"`
-	PageCount           int           `json:"pageCount"`
-	CachedContributors  []Contributor `json:"cached_contributors"`
-	CachedGenres        []Genre       `json:"cached_genres"`
-	Image               string        `json:"image"`
-	AverageRating       float64       `json:"averageRating"`
-	RatingsCount        int           `json:"ratingsCount"`
-	Description         string        `json:"description"`
-	CreatedAt           string        `json:"createdAt"`
-	UpdatedAt           string        `json:"updatedAt"`
+	ID                 string        `json:"id"`
+	Title              string        `json:"title"`
+	Slug               string        `json:"slug"`
+	ISBN               string        `json:"isbn"`
+	PublicationYear    int           `json:"publicationYear"`
+	PageCount          int           `json:"pageCount"`
+	CachedContributors []Contributor `json:"cached_contributors"`
+	CachedGenres       []Genre       `json:"cached_genres"`
+	Image              string        `json:"image"`
+	AverageRating      float64       `json:"averageRating"`
+	RatingsCount       int           `json:"ratingsCount"`
+	Description        string        `json:"description"`
+	CreatedAt          string        `json:"createdAt"`
+	UpdatedAt          string        `json:"updatedAt"`
 }
 
 // BookSearchResults represents the search results for books
@@ -135,7 +135,7 @@ Example:
 
 		for i, book := range response.Search.Results {
 			fmt.Printf("%d. %s\n", i+1, book.Title)
-			
+
 			// Display authors
 			if len(book.CachedContributors) > 0 {
 				var authors []string
@@ -175,10 +175,10 @@ Example:
 
 			// Display Hardcover URL
 			fmt.Printf("   URL: https://hardcover.app/books/%s\n", book.Slug)
-			
+
 			// Display ID for further queries
 			fmt.Printf("   ID: %s\n", book.ID)
-			
+
 			if i < len(response.Search.Results)-1 {
 				fmt.Println()
 			}
