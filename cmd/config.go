@@ -35,28 +35,28 @@ Example:
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		apiKey := args[0]
-		
+
 		// Load existing config or create new one
 		cfg, err := config.LoadConfig()
 		if err != nil {
 			cfg = config.DefaultConfig()
 		}
-		
+
 		// Update the API key
 		cfg.APIKey = apiKey
-		
+
 		// Save the configuration
 		if err := config.SaveConfig(cfg); err != nil {
 			return fmt.Errorf("failed to save configuration: %w", err)
 		}
-		
+
 		fmt.Fprintf(cmd.OutOrStdout(), "API key has been set and saved to configuration file.\n")
-		
+
 		configPath, err := config.GetConfigPath()
 		if err == nil {
 			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file: %s\n", configPath)
 		}
-		
+
 		return nil
 	},
 }
@@ -78,7 +78,7 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to load configuration: %w", err)
 		}
-		
+
 		// Display the API key information
 		if cfg.APIKey == "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "No API key is currently set.\n")
@@ -88,7 +88,7 @@ Example:
 			fmt.Fprintf(cmd.OutOrStdout(), "  export HARDCOVER_API_KEY=\"your-api-key\"\n")
 			return nil
 		}
-		
+
 		// Mask the API key if the --show-full flag is not set
 		showFull, _ := cmd.Flags().GetBool("show-full")
 		if !showFull && len(cfg.APIKey) > 8 {
@@ -97,7 +97,7 @@ Example:
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "API key: %s\n", cfg.APIKey)
 		}
-		
+
 		// Show the source of the API key
 		envAPIKey := os.Getenv("HARDCOVER_API_KEY")
 		if envAPIKey != "" {
@@ -108,7 +108,7 @@ Example:
 				fmt.Fprintf(cmd.OutOrStdout(), "Source: Configuration file (%s)\n", configPath)
 			}
 		}
-		
+
 		return nil
 	},
 }
@@ -126,9 +126,9 @@ Example:
 		if err != nil {
 			return fmt.Errorf("failed to get configuration path: %w", err)
 		}
-		
+
 		fmt.Fprintf(cmd.OutOrStdout(), "Configuration file path: %s\n", configPath)
-		
+
 		// Check if file exists
 		if _, err := os.Stat(configPath); os.IsNotExist(err) {
 			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file does not exist yet.\n")
@@ -136,7 +136,7 @@ Example:
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file exists.\n")
 		}
-		
+
 		return nil
 	},
 }

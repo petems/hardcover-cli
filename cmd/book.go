@@ -61,23 +61,23 @@ Example:
 		fmt.Fprintf(cmd.OutOrStdout(), "Book Details:\n")
 		fmt.Fprintf(cmd.OutOrStdout(), "  Title: %s\n", book.GetTitle())
 		fmt.Fprintf(cmd.OutOrStdout(), "  ID: %s\n", book.GetId())
-		
+
 		if book.GetDescription() != "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Description: %s\n", book.GetDescription())
 		}
-		
+
 		if book.GetSlug() != "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Slug: %s\n", book.GetSlug())
 		}
-		
+
 		if book.GetIsbn() != "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "  ISBN: %s\n", book.GetIsbn())
 		}
-		
+
 		if book.GetPublicationYear() > 0 {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Publication Year: %d\n", book.GetPublicationYear())
 		}
-		
+
 		if book.GetPageCount() > 0 {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Page Count: %d\n", book.GetPageCount())
 		}
@@ -120,7 +120,7 @@ Example:
 		if book.GetCreatedAt() != "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Created: %s\n", book.GetCreatedAt())
 		}
-		
+
 		if book.GetUpdatedAt() != "" {
 			fmt.Fprintf(cmd.OutOrStdout(), "  Updated: %s\n", book.GetUpdatedAt())
 		}

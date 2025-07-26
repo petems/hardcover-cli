@@ -78,22 +78,22 @@ func TestMeCmd_Success(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Use mock client
 	withMockClient(mockClient)
 	defer restoreOriginalClient()
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "User Profile:")
@@ -111,10 +111,10 @@ func TestMeCmd_MissingAPIKey(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -125,7 +125,7 @@ func TestMeCmd_NoConfig(t *testing.T) {
 	// Create command without config
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -146,14 +146,14 @@ func TestMeCmd_APIError(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Use mock client
 	withMockClient(mockClient)
 	defer restoreOriginalClient()
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
@@ -181,22 +181,22 @@ func TestMeCmd_PartialData(t *testing.T) {
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 	ctx := withConfig(context.Background(), cfg)
-	
+
 	cmd := &cobra.Command{}
 	cmd.SetContext(ctx)
-	
+
 	// Capture output
 	var output bytes.Buffer
 	cmd.SetOut(&output)
-	
+
 	// Use mock client
 	withMockClient(mockClient)
 	defer restoreOriginalClient()
-	
+
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.NoError(t, err)
-	
+
 	// Verify output contains required fields but not optional ones
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "User Profile:")

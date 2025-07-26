@@ -227,7 +227,7 @@ func TestBookGetCmd_PartialData(t *testing.T) {
 	assert.Contains(t, outputStr, "Title: Minimal Book")
 	assert.Contains(t, outputStr, "ID: book456")
 	assert.Contains(t, outputStr, "Hardcover URL: https://hardcover.app/books/minimal-book")
-	
+
 	// Should not contain empty optional fields
 	assert.NotContains(t, outputStr, "Description:")
 	assert.NotContains(t, outputStr, "ISBN:")

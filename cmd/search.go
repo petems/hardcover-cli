@@ -56,26 +56,29 @@ Example:
 
 		// Handle the union type using interface methods
 		searchResults := response.GetSearch()
-		
+
 		// Check typename to determine the concrete type
 		typename := searchResults.GetTypename()
-		
+
 		if typename == "BookSearchResults" {
 			// Use reflection to access the fields we need
 			// Since genqlient generates interfaces, we need to work with the interface methods
 			// The SearchBooksSearchBookSearchResults should have the methods we need
-			
+
 			// For now, let's use a simple approach - check if we can cast to the interface
 			if bookResults, ok := searchResults.(interface {
 				GetTotalCount() int
-				GetResults() []interface{ 
+				GetResults() []interface {
 					GetId() string
 					GetTitle() string
 					GetSlug() string
 					GetIsbn() string
 					GetPublicationYear() int
 					GetPageCount() int
-					GetCached_contributors() []interface{ GetName() string; GetRole() string }
+					GetCached_contributors() []interface {
+						GetName() string
+						GetRole() string
+					}
 					GetCached_genres() []interface{ GetName() string }
 					GetImage() string
 					GetAverageRating() float64
@@ -96,7 +99,7 @@ Example:
 				for i, book := range books {
 					fmt.Fprintf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.GetTitle())
 					fmt.Fprintf(cmd.OutOrStdout(), "   ID: %s\n", book.GetId())
-					
+
 					// Display contributors
 					contributors := book.GetCached_contributors()
 					if len(contributors) > 0 {
