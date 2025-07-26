@@ -7,12 +7,12 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "UTC"
+      timezone: "Etc/UTC"
     open-pull-requests-limit: 5
     assignees:
-      - "your-username"
+      - "petems"
     reviewers:
-      - "your-username"
+      - "petems"
     labels:
       - "dependencies"
       - "go"
@@ -28,12 +28,12 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-      timezone: "UTC"
+      timezone: "Etc/UTC"
     open-pull-requests-limit: 3
     assignees:
-      - "your-username"
+      - "petems"
     reviewers:
-      - "your-username"
+      - "petems"
     labels:
       - "dependencies"
       - "github-actions"
