@@ -17,13 +17,24 @@ GENERATED_FILE := $(GRAPHQL_DIR)/generated.go
 # Default GraphQL endpoint (update this with the actual Hardcover API endpoint)
 GRAPHQL_ENDPOINT ?= https://api.hardcover.app/v1/graphql
 
-.PHONY: all build test lint install clean help release fmt graphql-fetch graphql-generate graphql-update
+# Use latest version of genqlient
+GENQLIENT_LATEST := go run github.com/Khan/genqlient@latest
 
-all: build
+.PHONY: all build build-dev build-prod test lint install clean help release fmt graphql-fetch graphql-generate graphql-update
 
-## Build the binary
-build:
-	@echo "Building $(APP) version $(VERSION)"
+all: build-prod
+
+## Build the binary (production build - no development features)
+build: build-prod
+
+## Build the binary with development features (includes schema command and generated code)
+build-dev:
+	@echo "Building $(APP) version $(VERSION) with development features"
+	$(GO) build -tags dev -o bin/$(APP)-dev $(BUILD_FLAGS) .
+
+## Build the binary for production (excludes development features)
+build-prod:
+	@echo "Building $(APP) version $(VERSION) for production"
 	$(GO) build -o bin/$(APP) $(BUILD_FLAGS) .
 
 ## Run tests
@@ -39,7 +50,7 @@ fmt:
 	$(GO) fmt ./...
 
 ## Install binary into $GOBIN or default $GOPATH/bin
-install: build
+install: build-prod
 	@echo "Installing $(APP)..."
 	install -m 0755 bin/$(APP) $(GOBIN) || install -m 0755 bin/$(APP) $(GOPATH)/bin
 
@@ -49,63 +60,29 @@ clean:
 	rm -rf bin/
 	$(GO) clean -cache ./...
 
-## Fetch latest GraphQL schema from remote endpoint
+## Fetch latest GraphQL schema from remote endpoint using the CLI
 graphql-fetch:
-	@echo "Fetching latest GraphQL schema from $(GRAPHQL_ENDPOINT)..."
-	@if [ -z "$(GRAPHQL_ENDPOINT)" ]; then \
-		echo "Error: GRAPHQL_ENDPOINT is not set. Please set it to the actual Hardcover API endpoint."; \
-		echo "Example: make graphql-fetch GRAPHQL_ENDPOINT=https://api.hardcover.app/graphql"; \
-		exit 1; \
+	@echo "Fetching latest GraphQL schema using hardcover-cli..."
+	@if [ ! -f bin/$(APP)-dev ]; then \
+		echo "Building hardcover-cli with dev features first..."; \
+		$(MAKE) build-dev; \
 	fi
-	@echo "Downloading schema from $(GRAPHQL_ENDPOINT)..."
-	@echo "Note: This requires the GraphQL endpoint to support introspection queries."
-	@if [ -n "$(HARDCOVER_API_KEY)" ]; then \
-		echo "Using API key for authentication..."; \
-		curl -s -H "Content-Type: application/json" \
-			-H "Authorization: Bearer $(HARDCOVER_API_KEY)" \
-			-d '{"query":"query IntrospectionQuery{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}' \
-			$(GRAPHQL_ENDPOINT) > /tmp/schema_response.json; \
-	else \
-		echo "No API key found. Trying without authentication..."; \
-		curl -s -H "Content-Type: application/json" \
-			-d '{"query":"query IntrospectionQuery{__schema{queryType{name}mutationType{name}subscriptionType{name}types{...FullType}directives{name description locations args{...InputValue}}}}fragment FullType on __Type{kind name description fields(includeDeprecated:true){name description args{...InputValue}type{...TypeRef}isDeprecated deprecationReason}inputFields{...InputValue}interfaces{...TypeRef}enumValues(includeDeprecated:true){name description isDeprecated deprecationReason}possibleTypes{...TypeRef}}fragment InputValue on __InputValue{name description type{...TypeRef}defaultValue}fragment TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name ofType{kind name}}}}}}}}"}' \
-			$(GRAPHQL_ENDPOINT) > /tmp/schema_response.json; \
-	fi
-	@if [ ! -s /tmp/schema_response.json ]; then \
-		echo "Error: Empty response from $(GRAPHQL_ENDPOINT)"; \
-		exit 1; \
-	fi
-	@echo "Converting introspection result to GraphQL SDL..."
-	@if command -v jq >/dev/null 2>&1; then \
-		jq -r '.data.__schema | to_entries | map(select(.key != "__typename")) | from_entries | {data: {__schema: .}}' /tmp/schema_response.json > /tmp/schema_processed.json; \
-	else \
-		echo "Warning: jq not found, using raw response"; \
-		cp /tmp/schema_response.json /tmp/schema_processed.json; \
-	fi
-	@if command -v gqlgen-introspect >/dev/null 2>&1; then \
-		gqlgen-introspect /tmp/schema_processed.json > $(SCHEMA_FILE); \
-	elif command -v go >/dev/null 2>&1; then \
-		go run github.com/vektah/gqlparser/v2/cmd/gqlgen-introspect /tmp/schema_processed.json > $(SCHEMA_FILE); \
-	else \
-		echo "Error: Neither gqlgen-introspect nor go command found"; \
-		echo "Please install gqlgen-introspect or ensure go is available"; \
-		exit 1; \
-	fi
-	@rm -f /tmp/schema_response.json /tmp/schema_processed.json
+	@bin/$(APP)-dev schema --output $(SCHEMA_FILE)
 	@echo "Schema updated successfully: $(SCHEMA_FILE)"
 
-## Generate Go code from GraphQL schema and queries
+## Generate Go code from GraphQL schema and queries using latest version
 graphql-generate:
-	@echo "Generating Go code from GraphQL schema..."
+	@echo "Generating Go code from GraphQL schema using latest version of genqlient..."
 	@if [ ! -f $(GENQLIENT_CONFIG) ]; then \
 		echo "Error: genqlient config not found at $(GENQLIENT_CONFIG)"; \
 		exit 1; \
 	fi
-	@echo "Ensuring genqlient dependencies are installed..."
-	@$(GO) mod tidy
-	@$(GO) get github.com/Khan/genqlient/generate@v0.8.1
-	@$(GO) get github.com/vektah/gqlparser/v2/validator@v2.5.19
-	$(GENQLIENT) $(GENQLIENT_CONFIG)
+	@if [ ! -f $(SCHEMA_FILE) ]; then \
+		echo "Error: Schema file not found at $(SCHEMA_FILE)"; \
+		echo "Run 'make graphql-fetch' first to download the schema"; \
+		exit 1; \
+	fi
+	$(GENQLIENT_LATEST) $(GENQLIENT_CONFIG)
 	@echo "Generated Go code: $(GENERATED_FILE)"
 
 ## Fetch latest schema and regenerate code (complete update)

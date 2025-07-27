@@ -20,11 +20,27 @@ A comprehensive command-line interface for interacting with the Hardcover.app Gr
 
 ### Build from Source
 
+#### Production Build (Recommended for End Users)
+
 ```bash
 git clone <repository-url>
 cd hardcover-cli
-go build -o hardcover main.go
+make build-prod
+# or
+go build -o hardcover .
 ```
+
+#### Development Build (Includes Schema Management)
+
+```bash
+git clone <repository-url>
+cd hardcover-cli
+make build-dev
+# or
+go build -tags dev -o hardcover-dev .
+```
+
+The development build includes additional features for schema management and code generation, while the production build excludes these development-only features for a smaller, cleaner binary.
 
 ## Configuration
 
@@ -272,7 +288,27 @@ query GetBook($id: ID!) {
 }
 ```
 
-## Contributing
+## Development
+
+### GraphQL Schema Management
+
+For developers working on the GraphQL client, see [GRAPHQL_SCHEMA_UPDATE.md](GRAPHQL_SCHEMA_UPDATE.md) for detailed instructions on:
+
+- Fetching the latest schema from the live endpoint
+- Regenerating Go client code
+- Troubleshooting schema updates
+- Best practices for schema management
+
+### API Coverage
+
+See [API_COVERAGE.md](API_COVERAGE.md) for a comprehensive overview of:
+
+- Currently implemented features vs available API capabilities
+- Missing features and implementation priorities
+- Technical considerations and limitations
+- Links to official API documentation
+
+### Contributing
 
 1. Fork the repository
 2. Create a feature branch
