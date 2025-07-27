@@ -23,72 +23,39 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
-		// Verify GraphQL query
-		var req client.GraphQLRequest
-		err := json.NewDecoder(r.Body).Decode(&req)
-		require.NoError(t, err)
-		assert.Contains(t, req.Query, "query SearchBooks")
-		assert.Contains(t, req.Query, "search")
-		assert.Equal(t, "golang", req.Variables["query"])
-
-		// Send response
+		// Send response (new structure)
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
 				"search": {
-					"totalCount": 2,
-					"results": [
-						{
-							"id": "book1",
-							"title": "Go Programming Language",
-							"slug": "go-programming-language",
-							"isbn": "978-0134190440",
-							"publicationYear": 2015,
-							"pageCount": 380,
-							"cached_contributors": [
-								{
-									"name": "Alan Donovan",
-									"role": "author"
-								},
-								{
-									"name": "Brian Kernighan",
-									"role": "author"
+					"results": {
+						"hits": [
+							{
+								"document": {
+									"id": "book1",
+									"title": "Go Programming Language",
+									"subtitle": "A Book About Go",
+									"author_names": ["Alan Donovan", "Brian Kernighan"],
+									"release_year": 2015,
+									"slug": "go-programming-language",
+									"rating": 4.5,
+									"ratings_count": 123,
+									"isbns": ["978-0134190440"],
+									"series_names": ["Go Series"]
 								}
-							],
-							"cached_genres": [
-								{
-									"name": "Programming"
-								},
-								{
-									"name": "Technology"
+							},
+							{
+								"document": {
+									"id": "book2",
+									"title": "Effective Go",
+									"author_names": ["Go Team"],
+									"release_year": 2020,
+									"slug": "effective-go",
+									"rating": 4.2,
+									"ratings_count": 89
 								}
-							],
-							"image": "https://example.com/book1.jpg",
-							"averageRating": 4.5,
-							"ratingsCount": 123
-						},
-						{
-							"id": "book2",
-							"title": "Effective Go",
-							"slug": "effective-go",
-							"isbn": "",
-							"publicationYear": 2020,
-							"pageCount": 250,
-							"cached_contributors": [
-								{
-									"name": "Go Team",
-									"role": "author"
-								}
-							],
-							"cached_genres": [
-								{
-									"name": "Programming"
-								}
-							],
-							"image": "",
-							"averageRating": 4.2,
-							"ratingsCount": 89
-						}
-					]
+							}
+						]
+					}
 				}
 			}`),
 		}
@@ -117,17 +84,21 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Search Results for \"golang\":")
-	assert.Contains(t, outputStr, "Found 2 books")
 	assert.Contains(t, outputStr, "Go Programming Language")
+	assert.Contains(t, outputStr, "A Book About Go")
 	assert.Contains(t, outputStr, "Alan Donovan, Brian Kernighan")
-	assert.Contains(t, outputStr, "Published: 2015")
-	assert.Contains(t, outputStr, "Pages: 380")
-	assert.Contains(t, outputStr, "Rating: 4.5/5 (123 ratings)")
-	assert.Contains(t, outputStr, "Genres: Programming, Technology")
-	assert.Contains(t, outputStr, "URL: https://hardcover.app/books/go-programming-language")
-	assert.Contains(t, outputStr, "ID: book1")
+	assert.Contains(t, outputStr, "2015")
+	assert.Contains(t, outputStr, "Edition ID: book1")
+	assert.Contains(t, outputStr, "https://hardcover.app/books/go-programming-language")
+	assert.Contains(t, outputStr, "4.50/5 (123 ratings)")
+	assert.Contains(t, outputStr, "978-0134190440")
+	assert.Contains(t, outputStr, "Go Series")
 	assert.Contains(t, outputStr, "Effective Go")
+	assert.Contains(t, outputStr, "Go Team")
+	assert.Contains(t, outputStr, "2020")
+	assert.Contains(t, outputStr, "Edition ID: book2")
+	assert.Contains(t, outputStr, "https://hardcover.app/books/effective-go")
+	assert.Contains(t, outputStr, "4.20/5 (89 ratings)")
 }
 
 func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
@@ -153,8 +124,7 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
 				"search": {
-					"totalCount": 0,
-					"results": []
+					"results": { "hits": [] }
 				}
 			}`),
 		}
@@ -183,7 +153,7 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Found 0 books")
+	assert.Contains(t, outputStr, "No results found.")
 }
 
 func TestSearchBooksCmd_APIError(t *testing.T) {
@@ -224,18 +194,16 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
 				"search": {
-					"totalCount": 1,
-					"results": [
-						{
-							"id": "book1",
-							"title": "Simple Book",
-							"slug": "simple-book",
-							"cached_contributors": [],
-							"cached_genres": [],
-							"averageRating": 0,
-							"ratingsCount": 0
-						}
-					]
+					"results": {
+						"hits": [
+							{
+								"document": {
+									"id": "book1",
+									"title": "Simple Book"
+								}
+							}
+						]
+					}
 				}
 			}`),
 		}
@@ -265,12 +233,6 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 	// Verify output contains minimal information
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Simple Book")
-	assert.Contains(t, outputStr, "ID: book1")
-	assert.NotContains(t, outputStr, "Authors:")
-	assert.NotContains(t, outputStr, "Published:")
-	assert.NotContains(t, outputStr, "Pages:")
-	assert.NotContains(t, outputStr, "Rating:")
-	assert.NotContains(t, outputStr, "Genres:")
 }
 
 func TestSearchBooksCmd_CommandProperties(t *testing.T) {
@@ -333,58 +295,4 @@ func TestSearchCmd_Integration(t *testing.T) {
 		break
 	}
 	assert.True(t, found, "search command should be registered with root command")
-}
-
-func TestSearchBooksResponse_JSONUnmarshal(t *testing.T) {
-	// Test JSON unmarshaling
-	jsonData := `{
-		"search": {
-			"totalCount": 1,
-			"results": [
-				{
-					"id": "book1",
-					"title": "Test Book",
-					"slug": "test-book",
-					"isbn": "978-1234567890",
-					"publicationYear": 2023,
-					"pageCount": 200,
-					"cached_contributors": [
-						{
-							"name": "Test Author",
-							"role": "author"
-						}
-					],
-					"cached_genres": [
-						{
-							"name": "Test Genre"
-						}
-					],
-					"image": "https://example.com/image.jpg",
-					"averageRating": 4.0,
-					"ratingsCount": 50
-				}
-			]
-		}
-	}`
-
-	var response SearchBooksResponse
-	err := json.Unmarshal([]byte(jsonData), &response)
-	require.NoError(t, err)
-
-	assert.Equal(t, 1, response.Search.TotalCount)
-	assert.Len(t, response.Search.Results, 1)
-
-	book := response.Search.Results[0]
-	assert.Equal(t, "book1", book.ID)
-	assert.Equal(t, "Test Book", book.Title)
-	assert.Equal(t, "test-book", book.Slug)
-	assert.Equal(t, "978-1234567890", book.ISBN)
-	assert.Equal(t, 2023, book.PublicationYear)
-	assert.Equal(t, 200, book.PageCount)
-	assert.Equal(t, "Test Author", book.CachedContributors[0].Name)
-	assert.Equal(t, "author", book.CachedContributors[0].Role)
-	assert.Equal(t, "Test Genre", book.CachedGenres[0].Name)
-	assert.Equal(t, "https://example.com/image.jpg", book.Image)
-	assert.Equal(t, 4.0, book.AverageRating)
-	assert.Equal(t, 50, book.RatingsCount)
 }

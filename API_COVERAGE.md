@@ -13,25 +13,109 @@ This document outlines the current API coverage of the Hardcover CLI implementat
   - Supports pagination and result count
   - **Implementation**: `cmd/search.go` with GraphQL query
 
+**Live Example:**
+```bash
+$ hardcover search books "golang"
+1. Building RESTful Web services with Go: Learn how to build powerful RESTful APIs with Golang that scale gracefully
+   Subtitle: Learn how to build powerful RESTful APIs with Golang that scale gracefully
+   Authors: Naren Yellavula
+   Edition ID: 1676108
+   URL: https://hardcover.app/books/building-restful-web-services-with-go
+
+-----------------------------
+2. Mastering Go: Create Golang production applications using network libraries, concurrency, machine learning, and advanced data structures
+   Subtitle: Create Golang production applications using network libraries, concurrency, machine learning, and advanced data structures
+   Authors: Mihalis Tsoukalos
+   Year: 2019
+   Edition ID: 1863717
+   URL: https://hardcover.app/books/mastering-go-create-golang-production-applications-using-network-libraries-concurrency-machine-learning-and-advanced-data-structures
+   Rating: 4.00/5 (1 ratings)
+   ISBNs: 1838555323, 9781838555320
+
+-----------------------------
+```
+
 #### 📚 Book Management
-- ✅ **Get Book Details** (`hardcover book get <id>`)
-  - Retrieve comprehensive book information
-  - Includes authors, contributors, genres, ratings
-  - Publication details (year, pages, ISBN)
-  - Cover image and timestamps
-  - **Implementation**: `cmd/book.go` with GraphQL query
+- ✅ **Search Books** (`hardcover search books <query>`)
+  - Search for books by title, author, or other criteria
+  - Returns book details with authors, ratings, genres
+  - Supports pagination and result count
+  - **Implementation**: `cmd/search.go` with GraphQL query
+
+**Live Example:**
+```bash
+$ hardcover search books "golang"
+1. Building RESTful Web services with Go
+   Subtitle: Learn how to build powerful RESTful APIs with Golang that scale gracefully
+   Authors: Naren Yellavula
+   Edition ID: 1676108
+   URL: https://hardcover.app/books/building-restful-web-services-with-go
+
+-----------------------------
+2. Mastering Go
+   Subtitle: Create Golang production applications using network libraries, concurrency, machine learning, and advanced data structures
+   Authors: Mihalis Tsoukalos
+   Year: 2019
+   Edition ID: 1863717
+   URL: https://hardcover.app/books/mastering-go-create-golang-production-applications-using-network-libraries-concurrency-machine-learning-and-advanced-data-structures
+   Rating: 4.00/5 (1 ratings)
+   ISBNs: 1838555323, 9781838555320
+
+-----------------------------
+```
 
 #### 👤 User Management
 - ✅ **Get Current User Profile** (`hardcover me`)
-  - User ID, username, email
-  - Account creation and update timestamps
+  - User ID, username
   - **Implementation**: `cmd/me.go` with GraphQL query
+
+**Live Example:**
+```bash
+$ hardcover me
+User Profile:
+  ID: 12345
+  Username: johndoe
+```
+
+- ✅ **Search Users** (`hardcover search users <query>`)
+  - Search for users by name, username, or location
+  - Returns user profiles with stats and metadata
+  - **Implementation**: `cmd/search.go` with GraphQL query
+
+**Live Example:**
+```bash
+$ hardcover search users "john"
+1. johndoe
+   Name: John Doe
+   Location: New York, NY
+   Books: 150
+   Followers: 45
+   Following: 23
+   Pro: Yes
+   Has Image: Yes
+
+-----------------------------
+```
 
 #### ⚙️ Configuration
 - ✅ **API Key Management**
   - Set/get API key via config file
   - Environment variable support
   - **Implementation**: `cmd/config.go`
+
+**Live Examples:**
+```bash
+# Set API key
+$ hardcover config set-api-key "your-api-key-here"
+
+# Get API key (masked for security)
+$ hardcover config get-api-key
+Current API key: hc_************************
+
+# Show config file path
+$ hardcover config show-path
+Configuration file: /home/user/.hardcover/config.yaml
+```
 
 ### ❌ Missing Features
 
@@ -41,12 +125,14 @@ This document outlines the current API coverage of the Hardcover CLI implementat
   - Author details and bibliography
   - **Missing**: No implementation in search commands
 
-- ❌ **User Search** (`hardcover search users <query>`)
-  - Search for users by username
-  - User profiles and activity
-  - **Missing**: No implementation in search commands
-
 #### 📚 Book Management
+- ❌ **Get Book Details** (`hardcover book get <id>`)
+  - Retrieve comprehensive book information
+  - Includes authors, contributors, genres, ratings
+  - Publication details (year, pages, ISBN)
+  - Cover image and timestamps
+  - **Missing**: No implementation in book commands
+
 - ❌ **Book Listing** (`hardcover book list`)
   - List all books with pagination
 
@@ -110,12 +196,11 @@ This document outlines the current API coverage of the Hardcover CLI implementat
 ### High Priority (Core Functionality)
 1. **🔍 Complete Search API**
    - Implement author search (`hardcover search authors <query>`)
-   - Implement user search (`hardcover search users <query>`)
    - Add search result filtering and sorting
 
-2. **📚 Restore Book Listing**
-   - Re-implement `hardcover book list` with manual HTTP
-   - Add pagination and filtering support
+2. **📚 Book Details**
+   - Implement `hardcover book get <id>` command
+   - Display comprehensive book information
    - Use proper API structure from documentation
 
 3. **👥 Author Management**
@@ -153,7 +238,7 @@ This document outlines the current API coverage of the Hardcover CLI implementat
 
 ### Guides
 - [Getting All Books in Library](https://docs.hardcover.app/api/guides/gettingallbooksinlibrary/) ❌ **Not Implemented**
-- [Getting Book Details](https://docs.hardcover.app/api/guides/gettingbookdetails/) ✅ **Implemented**
+- [Getting Book Details](https://docs.hardcover.app/api/guides/gettingbookdetails/) ❌ **Not Implemented**
 - [Searching](https://docs.hardcover.app/api/guides/searching/) ✅ **Partially Implemented**
 
 ### GraphQL Schemas
@@ -162,13 +247,13 @@ This document outlines the current API coverage of the Hardcover CLI implementat
 - [Editions Schema](https://docs.hardcover.app/api/graphql/schemas/editions/) ❌ **Not Implemented**
 - [Activities Schema](https://docs.hardcover.app/api/graphql/schemas/activities/) ❌ **Not Implemented**
 - [Characters Schema](https://docs.hardcover.app/api/graphql/schemas/characters/) ❌ **Not Implemented**
-- [Users Schema](https://docs.hardcover.app/api/graphql/schemas/users/) ✅ **Partially Implemented**
+- [Users Schema](https://docs.hardcover.app/api/graphql/schemas/users/) ✅ **Implemented**
 
 ## 🛠️ Technical Debt
 
 ### Immediate Fixes Needed
 1. **GraphQL Schema Issues**: Fundamental mismatches prevent auto-generation
-2. **Book List Restoration**: Re-implement removed book listing functionality
+2. **Book Details Implementation**: Add book details retrieval functionality
 3. **Error Handling**: Add proper error handling for API failures
 4. **Rate Limiting**: Implement rate limit handling
 
@@ -187,8 +272,8 @@ This document outlines the current API coverage of the Hardcover CLI implementat
 ## 📊 Coverage Statistics
 
 - **Total API Endpoints**: ~15-20 estimated
-- **Implemented**: 3 endpoints (15-20%)
-- **Partially Implemented**: 1 endpoint (5-10%)
+- **Implemented**: 4 endpoints (20-25%)
+- **Partially Implemented**: 0 endpoints (0%)
 - **Missing**: 11-16 endpoints (70-80%)
 - **Removed**: 1 endpoint (book listing)
 
@@ -229,6 +314,6 @@ This document outlines the current API coverage of the Hardcover CLI implementat
 
 ---
 
-*Last updated: $(date)*
-*Coverage: 20% of estimated API endpoints*
+*Last updated: July 27, 2025*
+*Coverage: 25% of estimated API endpoints*
 *Status: GraphQL auto-generation abandoned, using manual HTTP implementations* 

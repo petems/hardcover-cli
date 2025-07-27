@@ -17,7 +17,7 @@ var configCmd = &cobra.Command{
 
 Available subcommands:
   set-api-key    Set your Hardcover.app API key
-  get-api-key    Display your current API key
+  get-api-key    Display your current API key (masked for security)
   show-path      Show the path to the configuration file`,
 }
 

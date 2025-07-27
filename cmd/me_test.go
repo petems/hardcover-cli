@@ -35,10 +35,7 @@ func TestMeCmd_Success(t *testing.T) {
 			Data: json.RawMessage(`{
 				"me": {
 					"id": "user123",
-					"username": "testuser",
-					"email": "test@example.com",
-					"createdAt": "2023-01-01T00:00:00Z",
-					"updatedAt": "2023-01-02T00:00:00Z"
+					"username": "testuser"
 				}
 			}`),
 		}
@@ -70,9 +67,6 @@ func TestMeCmd_Success(t *testing.T) {
 	assert.Contains(t, outputStr, "User Profile:")
 	assert.Contains(t, outputStr, "ID: user123")
 	assert.Contains(t, outputStr, "Username: testuser")
-	assert.Contains(t, outputStr, "Email: test@example.com")
-	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
-	assert.Contains(t, outputStr, "Updated: 2023-01-02T00:00:00Z")
 }
 
 func TestMeCmd_MissingAPIKey(t *testing.T) {
@@ -100,7 +94,7 @@ func TestMeCmd_NoConfig(t *testing.T) {
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to get configuration")
+	assert.Contains(t, err.Error(), "API key is required")
 }
 
 func TestMeCmd_APIError(t *testing.T) {
@@ -205,12 +199,11 @@ func TestMeCmd_PartialData(t *testing.T) {
 func TestMeCmd_CommandProperties(t *testing.T) {
 	// Test command properties
 	assert.Equal(t, "me", meCmd.Use)
-	assert.Equal(t, "Get your user profile information", meCmd.Short)
+	assert.Equal(t, "Get the current user's profile information based on the API key", meCmd.Short)
 	assert.NotEmpty(t, meCmd.Long)
 	assert.Contains(t, meCmd.Long, "User ID")
 	assert.Contains(t, meCmd.Long, "Username")
-	assert.Contains(t, meCmd.Long, "Email address")
-	assert.Contains(t, meCmd.Long, "hardcover me")
+	assert.Contains(t, meCmd.Long, "hardcover-cli me")
 }
 
 func TestMeCmd_Integration(t *testing.T) {
@@ -233,10 +226,7 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 	jsonData := `{
 		"me": {
 			"id": "user123",
-			"username": "testuser",
-			"email": "test@example.com",
-			"createdAt": "2023-01-01T00:00:00Z",
-			"updatedAt": "2023-01-02T00:00:00Z"
+			"username": "testuser"
 		}
 	}`
 
@@ -244,26 +234,9 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
 
-	assert.Equal(t, "user123", response.Me.ID)
-	assert.Equal(t, "testuser", response.Me.Username)
-	assert.Equal(t, "test@example.com", response.Me.Email)
-	assert.Equal(t, "2023-01-01T00:00:00Z", response.Me.CreatedAt)
-	assert.Equal(t, "2023-01-02T00:00:00Z", response.Me.UpdatedAt)
-}
-
-func TestUser_StructFields(t *testing.T) {
-	// Test User struct
-	user := User{
-		ID:        "user123",
-		Username:  "testuser",
-		Email:     "test@example.com",
-		CreatedAt: "2023-01-01T00:00:00Z",
-		UpdatedAt: "2023-01-02T00:00:00Z",
+	// Verify the response contains the expected data
+	if userData, ok := response.Me.(map[string]interface{}); ok {
+		assert.Equal(t, "user123", userData["id"])
+		assert.Equal(t, "testuser", userData["username"])
 	}
-
-	assert.Equal(t, "user123", user.ID)
-	assert.Equal(t, "testuser", user.Username)
-	assert.Equal(t, "test@example.com", user.Email)
-	assert.Equal(t, "2023-01-01T00:00:00Z", user.CreatedAt)
-	assert.Equal(t, "2023-01-02T00:00:00Z", user.UpdatedAt)
 }

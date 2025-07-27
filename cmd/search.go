@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spf13/cobra"
-
 	"hardcover-cli/internal/client"
+
+	"github.com/spf13/cobra"
 )
 
 // Contributor represents a book contributor
@@ -21,22 +21,65 @@ type Genre struct {
 	Name string `json:"name"`
 }
 
-// Book represents a book from the API
+// Contribution represents a contribution to a book
+type Contribution struct {
+	Author Author `json:"author"`
+}
+
+// Author represents an author from the API
+type Author struct {
+	Name string `json:"name"`
+}
+
+// SearchUser represents a user from the search API
+type SearchUser struct {
+	Image              interface{} `json:"image"`
+	ID                 string      `json:"id"`
+	Username           string      `json:"username"`
+	Name               string      `json:"name"`
+	Location           string      `json:"location"`
+	Flair              string      `json:"flair"`
+	BooksCount         int         `json:"books_count"`
+	FollowersCount     int         `json:"followers_count"`
+	FollowedUsersCount int         `json:"followed_users_count"`
+	Pro                bool        `json:"pro"`
+}
+
+// Book represents a book from the search API
 type Book struct {
-	Image              string        `json:"image"`
-	Title              string        `json:"title"`
-	Slug               string        `json:"slug"`
-	ISBN               string        `json:"isbn"`
-	UpdatedAt          string        `json:"updatedAt"`
-	CreatedAt          string        `json:"createdAt"`
-	ID                 string        `json:"id"`
-	Description        string        `json:"description"`
-	CachedContributors []Contributor `json:"cached_contributors"`
-	CachedGenres       []Genre       `json:"cached_genres"`
-	AverageRating      float64       `json:"averageRating"`
-	RatingsCount       int           `json:"ratingsCount"`
-	PageCount          int           `json:"pageCount"`
-	PublicationYear    int           `json:"publicationYear"`
+	ID                     string   `json:"id"`
+	FeaturedSeries         string   `json:"featured_series"`
+	CoverColor             string   `json:"cover_color"`
+	Slug                   string   `json:"slug"`
+	Description            string   `json:"description"`
+	Subtitle               string   `json:"subtitle"`
+	Title                  string   `json:"title"`
+	ContributionTypes      []string `json:"contribution_types"`
+	AuthorNames            []string `json:"author_names"`
+	Contributions          []string `json:"contributions"`
+	Tags                   []string `json:"tags"`
+	Moods                  []string `json:"moods"`
+	ContentWarnings        []string `json:"content_warnings"`
+	ISBNs                  []string `json:"isbns"`
+	Genres                 []string `json:"genres"`
+	SeriesNames            []string `json:"series_names"`
+	AlternativeTitles      []string `json:"alternative_titles"`
+	RatingsCount           int      `json:"ratings_count"`
+	ListsCount             int      `json:"lists_count"`
+	ReleaseYear            int      `json:"release_year"`
+	Rating                 float64  `json:"rating"`
+	UsersCount             int      `json:"users_count"`
+	UsersReadCount         int      `json:"users_read_count"`
+	ReviewsCount           int      `json:"reviews_count"`
+	Pages                  int      `json:"pages"`
+	PromptsCount           int      `json:"prompts_count"`
+	ActivitiesCount        int      `json:"activities_count"`
+	AudioSeconds           int      `json:"audio_seconds"`
+	ReleaseDateI           int      `json:"release_date_i"`
+	FeaturedSeriesPosition int      `json:"featured_series_position"`
+	HasAudiobook           bool     `json:"has_audiobook"`
+	HasEbook               bool     `json:"has_ebook"`
+	Compilation            bool     `json:"compilation"`
 }
 
 // BookSearchResults represents the search results for books
@@ -47,17 +90,37 @@ type BookSearchResults struct {
 
 // SearchBooksResponse represents the response from the SearchBooks query
 type SearchBooksResponse struct {
-	Search BookSearchResults `json:"search"`
+	Search struct {
+		Query     string   `json:"query"`
+		QueryType string   `json:"query_type"`
+		IDs       []string `json:"ids"`
+		Results   []Book   `json:"results"`
+		Page      int      `json:"page"`
+		PerPage   int      `json:"per_page"`
+	} `json:"search"`
+}
+
+// SearchUsersResponse represents the response from the SearchUsers query
+type SearchUsersResponse struct {
+	Search struct {
+		Query     string       `json:"query"`
+		QueryType string       `json:"query_type"`
+		IDs       []string     `json:"ids"`
+		Results   []SearchUser `json:"results"`
+		Page      int          `json:"page"`
+		PerPage   int          `json:"per_page"`
+	} `json:"search"`
 }
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
 	Short: "Search for content on Hardcover.app",
-	Long: `Search for various types of content on Hardcover.app including books, authors, and users.
+	Long: `Search for books and users on Hardcover.app.
 	
 Available subcommands:
-  books    Search for books by title, author, or other criteria`,
+  books    Search for books by title, author, or other criteria
+  users    Search for users by name, username, or location`,
 }
 
 // searchBooksCmd represents the search books command
@@ -67,10 +130,12 @@ var searchBooksCmd = &cobra.Command{
 	Long: `Search for books based on title, author, or other criteria.
 	
 The search will return matching books with their:
-- Title and author information
-- Publication details
-- Ratings and genres
-- Hardcover.app URL
+- Title and subtitle
+- Author names
+- Publication year
+- Edition ID and URL
+- Rating and ratings count
+- ISBNs and series information
 
 Example:
   hardcover search books "golang programming"
@@ -93,32 +158,16 @@ Example:
 		query := args[0]
 		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
 
+		// Use GraphQL query as shown in the documentation
 		const gqlQuery = `
 			query SearchBooks($query: String!) {
-				search(query: $query, type: BOOKS) {
-					... on BookSearchResults {
-						totalCount
-						results {
-							... on Book {
-								id
-								title
-								slug
-								isbn
-								publicationYear
-								pageCount
-								cached_contributors {
-									name
-									role
-								}
-								cached_genres {
-									name
-								}
-								image
-								averageRating
-								ratingsCount
-							}
-						}
-					}
+				search(query: $query, query_type: "Book", per_page: 25, page: 1) {
+					ids
+					results
+					query
+					query_type
+					page
+					per_page
 				}
 			}
 		`
@@ -127,66 +176,220 @@ Example:
 			"query": query,
 		}
 
-		var response SearchBooksResponse
+		var response map[string]interface{}
 		if err := client.Execute(context.Background(), gqlQuery, variables, &response); err != nil {
 			return fmt.Errorf("failed to search books: %w", err)
 		}
 
-		// Display the search results
-		printToStdoutf(cmd.OutOrStdout(), "Search Results for \"%s\":\n", query)
-		printToStdoutf(cmd.OutOrStdout(), "Found %d books\n\n", response.Search.TotalCount)
-
-		for i, book := range response.Search.Results {
-			printToStdoutf(cmd.OutOrStdout(), "%d. %s\n", i+1, book.Title)
-
-			// Display authors
-			if len(book.CachedContributors) > 0 {
-				var authors []string
-				for _, contributor := range book.CachedContributors {
-					if contributor.Role == "" || contributor.Role == "author" || contributor.Role == "Author" {
-						authors = append(authors, contributor.Name)
+		if searchData, ok := response["search"].(map[string]interface{}); ok {
+			if resultsMap, ok := searchData["results"].(map[string]interface{}); ok {
+				if hits, ok := resultsMap["hits"].([]interface{}); ok && len(hits) > 0 {
+					for i, hit := range hits {
+						hitMap, ok := hit.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						book, ok := hitMap["document"].(map[string]interface{})
+						if !ok {
+							continue
+						}
+						// Title
+						if title, ok := book["title"].(string); ok {
+							printToStdoutf(cmd.OutOrStdout(), "%d. %s\n", i+1, title)
+						}
+						// Subtitle
+						if subtitle, ok := book["subtitle"].(string); ok && subtitle != "" {
+							printToStdoutf(cmd.OutOrStdout(), "   Subtitle: %s\n", subtitle)
+						}
+						// Author names
+						if authors, ok := book["author_names"].([]interface{}); ok && len(authors) > 0 {
+							authorStrs := make([]string, 0, len(authors))
+							for _, a := range authors {
+								if s, ok := a.(string); ok {
+									authorStrs = append(authorStrs, s)
+								}
+							}
+							printToStdoutf(cmd.OutOrStdout(), "   Authors: %s\n", strings.Join(authorStrs, ", "))
+						}
+						// Year
+						if year, ok := book["release_year"].(float64); ok && year > 0 {
+							printToStdoutf(cmd.OutOrStdout(), "   Year: %.0f\n", year)
+						}
+						// Edition ID
+						if id, ok := book["id"].(string); ok {
+							printToStdoutf(cmd.OutOrStdout(), "   Edition ID: %s\n", id)
+						}
+						// Slug (URL)
+						if slug, ok := book["slug"].(string); ok && slug != "" {
+							printToStdoutf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", slug)
+						}
+						// Rating
+						if rating, ok := book["rating"].(float64); ok && rating > 0 {
+							if ratingsCount, ok := book["ratings_count"].(float64); ok {
+								printToStdoutf(cmd.OutOrStdout(), "   Rating: %.2f/5 (%.0f ratings)\n", rating, ratingsCount)
+							}
+						}
+						// ISBNs
+						if isbns, ok := book["isbns"].([]interface{}); ok && len(isbns) > 0 {
+							isbnStrs := make([]string, 0, len(isbns))
+							for _, s := range isbns {
+								if str, ok := s.(string); ok {
+									isbnStrs = append(isbnStrs, str)
+								}
+							}
+							printToStdoutf(cmd.OutOrStdout(), "   ISBNs: %s\n", strings.Join(isbnStrs, ", "))
+						}
+						// Series names
+						if series, ok := book["series_names"].([]interface{}); ok && len(series) > 0 {
+							seriesStrs := make([]string, 0, len(series))
+							for _, s := range series {
+								if str, ok := s.(string); ok {
+									seriesStrs = append(seriesStrs, str)
+								}
+							}
+							printToStdoutf(cmd.OutOrStdout(), "   Series: %s\n", strings.Join(seriesStrs, ", "))
+						}
+						printToStdoutLn(cmd.OutOrStdout())
+						printToStdoutf(cmd.OutOrStdout(), "-----------------------------\n")
 					}
-				}
-				if len(authors) > 0 {
-					printToStdoutf(cmd.OutOrStdout(), "   Authors: %s\n", strings.Join(authors, ", "))
+					return nil
 				}
 			}
+			printToStdoutf(cmd.OutOrStdout(), "No results found.\n")
+			return nil
+		}
+		printToStdoutf(cmd.OutOrStdout(), "No results found or unexpected response.\n")
+		return nil
+	},
+}
 
-			// Display publication year
-			if book.PublicationYear > 0 {
-				printToStdoutf(cmd.OutOrStdout(), "   Published: %d\n", book.PublicationYear)
-			}
+// searchUsersCmd represents the search users command
+var searchUsersCmd = &cobra.Command{
+	Use:   "users <query>",
+	Short: "Search for users",
+	Long: `Search for users based on name, username, or location.
+	
+The search will return matching users with their:
+- Username and name
+- Location and custom flair
+- Books count, followers, and following counts
+- Pro supporter status
+- Profile image availability
 
-			// Display page count
-			if book.PageCount > 0 {
-				printToStdoutf(cmd.OutOrStdout(), "   Pages: %d\n", book.PageCount)
-			}
-
-			// Display rating
-			if book.AverageRating > 0 {
-				printToStdoutf(cmd.OutOrStdout(), "   Rating: %.1f/5 (%d ratings)\n", book.AverageRating, book.RatingsCount)
-			}
-
-			// Display genres
-			if len(book.CachedGenres) > 0 {
-				var genres []string
-				for _, genre := range book.CachedGenres {
-					genres = append(genres, genre.Name)
-				}
-				printToStdoutf(cmd.OutOrStdout(), "   Genres: %s\n", strings.Join(genres, ", "))
-			}
-
-			// Display Hardcover URL
-			printToStdoutf(cmd.OutOrStdout(), "   URL: https://hardcover.app/books/%s\n", book.Slug)
-
-			// Display ID for further queries
-			printToStdoutf(cmd.OutOrStdout(), "   ID: %s\n", book.ID)
-
-			if i < len(response.Search.Results)-1 {
-				printToStdoutLn(cmd.OutOrStdout())
-			}
+Example:
+  hardcover search users "adam"
+  hardcover search users "john smith"
+  hardcover search users "new york"`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cfg, ok := getConfig(cmd.Context())
+		if !ok {
+			return fmt.Errorf("failed to get configuration")
 		}
 
+		if cfg.APIKey == "" {
+			return fmt.Errorf("API key is required. Set it using:\n" +
+				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
+				"  or\n" +
+				"  hardcover config set-api-key \"your-api-key\"")
+		}
+
+		query := args[0]
+		client := client.NewClient(cfg.BaseURL, cfg.APIKey)
+
+		// Use GraphQL query for user search
+		const gqlQuery = `
+			query SearchUsers($query: String!) {
+				search(query: $query, query_type: "User", per_page: 25, page: 1) {
+					ids
+					results
+					query
+					query_type
+					page
+					per_page
+				}
+			}
+		`
+
+		variables := map[string]interface{}{
+			"query": query,
+		}
+
+		var response map[string]interface{}
+		if err := client.Execute(context.Background(), gqlQuery, variables, &response); err != nil {
+			return fmt.Errorf("failed to search users: %w", err)
+		}
+
+		if searchData, ok := response["search"].(map[string]interface{}); ok {
+			if resultsMap, ok := searchData["results"].(map[string]interface{}); ok {
+				if hits, ok := resultsMap["hits"].([]interface{}); ok && len(hits) > 0 {
+					for i, hit := range hits {
+						hitMap, ok := hit.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						user, ok := hitMap["document"].(map[string]interface{})
+						if !ok {
+							continue
+						}
+
+						// Username
+						if username, ok := user["username"].(string); ok {
+							printToStdoutf(cmd.OutOrStdout(), "%d. %s\n", i+1, username)
+						}
+
+						// Name
+						if name, ok := user["name"].(string); ok && name != "" {
+							printToStdoutf(cmd.OutOrStdout(), "   Name: %s\n", name)
+						}
+
+						// Location
+						if location, ok := user["location"].(string); ok && location != "" {
+							printToStdoutf(cmd.OutOrStdout(), "   Location: %s\n", location)
+						}
+
+						// Flair
+						if flair, ok := user["flair"].(string); ok && flair != "" {
+							printToStdoutf(cmd.OutOrStdout(), "   Flair: %s\n", flair)
+						}
+
+						// Books count
+						if booksCount, ok := user["books_count"].(float64); ok {
+							printToStdoutf(cmd.OutOrStdout(), "   Books: %d\n", int(booksCount))
+						}
+
+						// Followers count
+						if followersCount, ok := user["followers_count"].(float64); ok {
+							printToStdoutf(cmd.OutOrStdout(), "   Followers: %d\n", int(followersCount))
+						}
+
+						// Following count
+						if followedUsersCount, ok := user["followed_users_count"].(float64); ok {
+							printToStdoutf(cmd.OutOrStdout(), "   Following: %d\n", int(followedUsersCount))
+						}
+
+						// Pro status
+						if pro, ok := user["pro"].(bool); ok {
+							if pro {
+								printToStdoutf(cmd.OutOrStdout(), "   Pro: Yes\n")
+							}
+						}
+
+						// Image
+						if image, ok := user["image"]; ok && image != nil {
+							printToStdoutf(cmd.OutOrStdout(), "   Has Image: Yes\n")
+						}
+
+						printToStdoutLn(cmd.OutOrStdout())
+						printToStdoutf(cmd.OutOrStdout(), "-----------------------------\n")
+					}
+					return nil
+				}
+			}
+			printToStdoutf(cmd.OutOrStdout(), "No results found.\n")
+			return nil
+		}
+		printToStdoutf(cmd.OutOrStdout(), "No results found or unexpected response.\n")
 		return nil
 	},
 }
@@ -194,5 +397,6 @@ Example:
 // setupSearchCommands registers the search commands with the root command
 func setupSearchCommands() {
 	searchCmd.AddCommand(searchBooksCmd)
+	searchCmd.AddCommand(searchUsersCmd)
 	rootCmd.AddCommand(searchCmd)
 }

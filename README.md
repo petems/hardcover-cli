@@ -6,16 +6,33 @@ A comprehensive command-line interface for interacting with the Hardcover.app Gr
 
 - **User Profile Management**: Get your authenticated user profile information
 - **Book Search**: Search for books by title, author, or other criteria
-- **Book Details**: Retrieve detailed information about specific books
+- **User Search**: Search for users by name, username, or location
 - **Configuration Management**: Easy setup and management of API keys
 - **High Test Coverage**: Comprehensive unit tests for all functionality
 - **Well-Documented**: Clear help text and documentation for all commands
+
+## Current Status
+
+This CLI tool is actively developed and currently supports core functionality for interacting with the Hardcover.app API. Some features are still in development due to API schema inconsistencies.
+
+### ✅ Working Features
+- Book search with detailed results
+- User search with profile information
+- User profile retrieval
+- Configuration management
+- Comprehensive test coverage
+
+### ⚠️ Known Issues
+- Limited to read-only operations (no write operations implemented)
+- Some API endpoints may have GraphQL schema inconsistencies
+
+For detailed API coverage information, see [API_COVERAGE.md](API_COVERAGE.md).
 
 ## Installation
 
 ### Prerequisites
 
-- Go 1.19 or later
+- Go 1.23 or later
 - A Hardcover.app account and API key
 
 ### Build from Source
@@ -57,9 +74,13 @@ hardcover me
 Displays your user profile information including:
 - User ID
 - Username
-- Email address
-- Account creation date
-- Last updated date
+
+**Example Output:**
+```
+User Profile:
+  ID: 12345
+  Username: johndoe
+```
 
 #### Search for Books
 
@@ -70,26 +91,71 @@ hardcover search books "machine learning"
 ```
 
 Returns matching books with:
-- Title and author information
-- Publication details
-- Ratings and genres
-- Hardcover.app URL
+- Title and subtitle
+- Author names
+- Publication year
+- Edition ID and URL
+- Rating and ratings count
+- ISBNs and series information
 
-#### Get Book Details
+**Example Output:**
+```
+1. Building RESTful Web services with Go
+   Subtitle: Learn how to build powerful RESTful APIs with Golang that scale gracefully
+   Authors: Naren Yellavula
+   Edition ID: 1676108
+   URL: https://hardcover.app/books/building-restful-web-services-with-go
 
-```bash
-hardcover book get 12345
-hardcover book get "book-slug-or-id"
+-----------------------------
+2. Mastering Go
+   Subtitle: Create Golang production applications using network libraries, concurrency, machine learning, and advanced data structures
+   Authors: Mihalis Tsoukalos
+   Year: 2019
+   Edition ID: 1863717
+   URL: https://hardcover.app/books/mastering-go-create-golang-production-applications-using-network-libraries-concurrency-machine-learning-and-advanced-data-structures
+   Rating: 4.00/5 (1 ratings)
+   ISBNs: 1838555323, 9781838555320
+
+-----------------------------
 ```
 
-Displays comprehensive book information including:
-- Title and description
-- Author(s) and contributors
-- Publication details (year, page count, ISBN)
-- Genres and categories
-- Ratings and reviews summary
-- Cover image URL
-- Hardcover.app URL
+#### Search for Users
+
+```bash
+hardcover search users "john"
+hardcover search users "adam smith"
+hardcover search users "new york"
+```
+
+Returns matching users with:
+- Username and name
+- Location and custom flair
+- Books count, followers, and following counts
+- Pro supporter status
+- Profile image availability
+
+**Example Output:**
+```
+1. johndoe
+   Name: John Doe
+   Location: New York, NY
+   Books: 150
+   Followers: 45
+   Following: 23
+   Pro: Yes
+   Has Image: Yes
+
+-----------------------------
+2. adam_smith
+   Name: Adam Smith
+   Location: San Francisco, CA
+   Books: 89
+   Followers: 12
+   Following: 67
+   Has Image: Yes
+
+-----------------------------
+```
 
 ### Configuration Commands
 
@@ -99,17 +165,29 @@ Displays comprehensive book information including:
 hardcover config set-api-key "your-api-key-here"
 ```
 
-#### Get Current API Key
+#### Get API Key
 
 ```bash
 hardcover config get-api-key
 ```
 
-#### Show Configuration File Path
+**Example Output:**
+```
+Current API key: hc_************************
+```
+
+#### Show Config Path
 
 ```bash
 hardcover config show-path
 ```
+
+**Example Output:**
+```
+Configuration file: /home/user/.hardcover/config.yaml
+```
+
+
 
 ### Global Options
 
@@ -119,14 +197,14 @@ hardcover config show-path
 
 ## Examples
 
-### Search and Get Book Details
+### Search for Books and Users
 
 ```bash
 # Search for Go programming books
 hardcover search books "golang"
 
-# Get details for a specific book (use the ID from search results)
-hardcover book get 67890
+# Search for users named John
+hardcover search users "john"
 ```
 
 ### Profile Management
@@ -151,8 +229,7 @@ hardcover-cli/
 ├── cmd/                    # CLI command implementations
 │   ├── root.go            # Root command and CLI setup
 │   ├── me.go              # User profile command
-│   ├── search.go          # Search commands
-│   ├── book.go            # Book-related commands
+│   ├── search.go          # Search commands (books and users)
 │   ├── config.go          # Configuration commands
 │   └── *_test.go          # Unit tests
 ├── internal/
@@ -244,30 +321,17 @@ query SearchBooks($query: String!) {
 }
 ```
 
-#### Get Book Details
+#### Search Users
 
 ```graphql
-query GetBook($id: ID!) {
-  book(id: $id) {
-    id
-    title
-    description
-    slug
-    isbn
-    publicationYear
-    pageCount
-    cached_contributors {
-      name
-      role
-    }
-    cached_genres {
-      name
-    }
-    image
-    averageRating
-    ratingsCount
-    createdAt
-    updatedAt
+query SearchUsers($query: String!) {
+  search(query: $query, query_type: "User", per_page: 25, page: 1) {
+    ids
+    results
+    query
+    query_type
+    page
+    per_page
   }
 }
 ```
@@ -285,11 +349,38 @@ query GetBook($id: ID!) {
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## Troubleshooting
+
+### Common Issues
+
+**API Key Not Set:**
+```bash
+Error: API key is required. Set it using:
+  export HARDCOVER_API_KEY="your-api-key"
+  or
+  hardcover config set-api-key "your-api-key"
+```
+
+**API Key Not Set:**
+```bash
+Error: API key is required. Set it using:
+  export HARDCOVER_API_KEY="your-api-key"
+  or
+  hardcover config set-api-key "your-api-key"
+```
+
+**Search Errors:**
+```bash
+Error: failed to search books: GraphQL errors: [some error message]
+```
+This may indicate API schema changes or temporary service issues.
+
+### Getting Help
 
 For issues and questions:
 - Check the help text: `hardcover --help`
 - Review the documentation above
+- Check [API_COVERAGE.md](API_COVERAGE.md) for implementation status
 - File an issue in the repository
 
 ## Changelog
@@ -298,6 +389,6 @@ For issues and questions:
 - Initial release
 - User profile management
 - Book search functionality
-- Book details retrieval
+- User search functionality
 - Configuration management
 - Comprehensive test coverage

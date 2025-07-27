@@ -9,33 +9,21 @@ import (
 	"hardcover-cli/internal/client"
 )
 
-// User represents the user structure from the API
-type User struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-}
-
 // GetCurrentUserResponse represents the response from the GetCurrentUser query
 type GetCurrentUserResponse struct {
-	Me User `json:"me"`
+	Me interface{} `json:"me"` // Use interface{} to handle both single User and []User
 }
 
 // meCmd represents the me command
 var meCmd = &cobra.Command{
 	Use:   "me",
-	Short: "Get your user profile information",
+	Short: "Get the current user's profile information based on the API key",
 	Long: `Fetches and displays the authenticated user's profile information including:
 - User ID
 - Username
-- Email address
-- Account creation date
-- Last updated date
 
 Example:
-  hardcover me`,
+  hardcover-cli me`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
@@ -56,9 +44,6 @@ Example:
 				me {
 					id
 					username
-					email
-					createdAt
-					updatedAt
 				}
 			}
 		`
@@ -70,16 +55,21 @@ Example:
 
 		// Display the user information
 		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
-		printToStdoutf(cmd.OutOrStdout(), "  ID: %s\n", response.Me.ID)
-		printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", response.Me.Username)
-		if response.Me.Email != "" {
-			printToStdoutf(cmd.OutOrStdout(), "  Email: %s\n", response.Me.Email)
-		}
-		if response.Me.CreatedAt != "" {
-			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", response.Me.CreatedAt)
-		}
-		if response.Me.UpdatedAt != "" {
-			printToStdoutf(cmd.OutOrStdout(), "  Updated: %s\n", response.Me.UpdatedAt)
+
+		// Handle the response which could be a single user or array
+		switch me := response.Me.(type) {
+		case map[string]interface{}:
+			printToStdoutf(cmd.OutOrStdout(), "  ID: %v\n", me["id"])
+			printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", me["username"])
+		case []interface{}:
+			if len(me) > 0 {
+				if user, ok := me[0].(map[string]interface{}); ok {
+					printToStdoutf(cmd.OutOrStdout(), "  ID: %v\n", user["id"])
+					printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", user["username"])
+				}
+			}
+		default:
+			return fmt.Errorf("unexpected response format for user data")
 		}
 
 		return nil

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,13 +11,14 @@ import (
 )
 
 var cfgFile string
+var globalConfig *config.Config // Global config storage
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "hardcover",
+	Use:   "hardcover-cli",
 	Short: "A CLI tool for interacting with the Hardcover.app GraphQL API",
 	Long: `Hardcover CLI is a command-line interface for interacting with the Hardcover.app GraphQL API.
-It allows you to search for books, get book details, and manage your profile.
+It allows you to search for books and users, manage your profile, and configure API settings.
 
 Before using the CLI, you need to set your Hardcover.app API key:
 
@@ -29,7 +31,8 @@ Before using the CLI, you need to set your Hardcover.app API key:
 Examples:
   hardcover me                           # Get your user profile
   hardcover search books "golang"        # Search for books about golang
-  hardcover book get 12345               # Get details for book with ID 12345`,
+  hardcover search users "john"          # Search for users named john
+  hardcover config set-api-key "key"     # Set your API key`,
 }
 
 // SetupCommands initializes all commands and their relationships
@@ -37,7 +40,6 @@ func SetupCommands() {
 	setupRootCommand()
 	setupMeCommands()
 	setupSearchCommands()
-	setupBookCommands()
 	setupConfigCommands()
 }
 
@@ -72,6 +74,7 @@ func initConfig() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
+		globalConfig = config.DefaultConfig()
 		return
 	}
 
@@ -80,6 +83,14 @@ func initConfig() {
 		cfg.APIKey = apiKey
 	}
 
-	// Store config in a way that subcommands can access it
-	rootCmd.SetContext(withConfig(rootCmd.Context(), cfg))
+	// Store config globally
+	globalConfig = cfg
+}
+
+// getConfig retrieves the configuration - updated to use global config
+func getConfig(_ context.Context) (*config.Config, bool) {
+	if globalConfig != nil {
+		return globalConfig, true
+	}
+	return nil, false
 }
