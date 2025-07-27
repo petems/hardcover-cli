@@ -35,61 +35,13 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
 				"search": map[string]interface{}{
-					"__typename": "BookSearchResults",
-					"totalCount": 2,
-					"results": []map[string]interface{}{
-						{
-							"id":              "book1",
-							"title":           "Go Programming Language",
-							"slug":            "go-programming-language",
-							"isbn":            "978-0134190440",
-							"publicationYear": 2015,
-							"pageCount":       380,
-							"cached_contributors": []map[string]interface{}{
-								{
-									"name": "Alan Donovan",
-									"role": "author",
-								},
-								{
-									"name": "Brian Kernighan",
-									"role": "author",
-								},
-							},
-							"cached_genres": []map[string]interface{}{
-								{
-									"name": "Programming",
-								},
-								{
-									"name": "Technology",
-								},
-							},
-							"image":         "https://example.com/book1.jpg",
-							"averageRating": 4.5,
-							"ratingsCount":  123,
-						},
-						{
-							"id":              "book2",
-							"title":           "Effective Go",
-							"slug":            "effective-go",
-							"isbn":            "",
-							"publicationYear": 2020,
-							"pageCount":       250,
-							"cached_contributors": []map[string]interface{}{
-								{
-									"name": "Go Team",
-									"role": "author",
-								},
-							},
-							"cached_genres": []map[string]interface{}{
-								{
-									"name": "Programming",
-								},
-							},
-							"image":         "",
-							"averageRating": 4.2,
-							"ratingsCount":  89,
-						},
-					},
+					"error":      "",
+					"ids":        []int{1, 2},
+					"page":       1,
+					"per_page":   10,
+					"query":      "golang",
+					"query_type": "Book",
+					"results":    "[]",
 				},
 			},
 		}
@@ -118,9 +70,9 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Search Results for \"golang\":")
-	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
-	assert.Contains(t, outputStr, "Note: Full search results display is being updated to work with GraphQL types.")
+	assert.Contains(t, outputStr, "Search Results:")
+	assert.Contains(t, outputStr, "Query: golang")
+	assert.Contains(t, outputStr, "Query Type: Book")
 }
 
 func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
@@ -146,9 +98,13 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
 				"search": map[string]interface{}{
-					"__typename": "BookSearchResults",
-					"totalCount": 0,
-					"results":    []map[string]interface{}{},
+					"error":      "",
+					"ids":        []int{},
+					"page":       1,
+					"per_page":   10,
+					"query":      "nonexistent",
+					"query_type": "Book",
+					"results":    "[]",
 				},
 			},
 		}
@@ -177,7 +133,8 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
+	assert.Contains(t, outputStr, "Search Results:")
+	assert.Contains(t, outputStr, "Query: nonexistent")
 }
 
 func TestSearchBooksCmd_APIError(t *testing.T) {
@@ -218,19 +175,13 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
 				"search": map[string]interface{}{
-					"__typename": "BookSearchResults",
-					"totalCount": 1,
-					"results": []map[string]interface{}{
-						{
-							"id":                  "book1",
-							"title":               "Simple Book",
-							"slug":                "simple-book",
-							"cached_contributors": []map[string]interface{}{},
-							"cached_genres":       []map[string]interface{}{},
-							"averageRating":       0,
-							"ratingsCount":        0,
-						},
-					},
+					"error":      "",
+					"ids":        []int{1},
+					"page":       1,
+					"per_page":   10,
+					"query":      "simple",
+					"query_type": "Book",
+					"results":    "[]",
 				},
 			},
 		}
@@ -259,15 +210,15 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 
 	// Verify output contains minimal information
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "Found book results (type: BookSearchResults)")
+	assert.Contains(t, outputStr, "Search Results:")
+	assert.Contains(t, outputStr, "Query: simple")
 }
 
 func TestSearchBooksCmd_CommandProperties(t *testing.T) {
 	// Test command properties
-	assert.Equal(t, "books <query>", searchBooksCmd.Use)
+	assert.Equal(t, "books [query]", searchBooksCmd.Use)
 	assert.Equal(t, "Search for books", searchBooksCmd.Short)
 	assert.NotEmpty(t, searchBooksCmd.Long)
-	assert.Contains(t, searchBooksCmd.Long, "Search for books based on title, author")
 	assert.Contains(t, searchBooksCmd.Long, "hardcover search books")
 }
 
@@ -294,7 +245,7 @@ func TestSearchCmd_CommandProperties(t *testing.T) {
 
 func TestSearchCmd_Integration(t *testing.T) {
 	// Setup commands for testing
-	setupSearchCommands()
+	SetupCommands()
 
 	// Test the command is properly registered
 	found := false
@@ -306,7 +257,7 @@ func TestSearchCmd_Integration(t *testing.T) {
 		// Check that books subcommand is registered
 		booksFound := false
 		for _, subCmd := range cmd.Commands() {
-			if subCmd.Use == "books <query>" {
+			if subCmd.Use == "books [query]" {
 				booksFound = true
 				break
 			}

@@ -32,12 +32,14 @@ func TestMeCmd_Success(t *testing.T) {
 		// Send response
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"me": map[string]interface{}{
-					"id":        "user123",
-					"username":  "testuser",
-					"email":     "test@example.com",
-					"createdAt": "2023-01-01T00:00:00Z",
-					"updatedAt": "2023-01-02T00:00:00Z",
+				"me": []map[string]interface{}{
+					{
+						"id":         123,
+						"username":   "testuser",
+						"email":      "test@example.com",
+						"created_at": "2023-01-01T00:00:00Z",
+						"updated_at": "2023-01-02T00:00:00Z",
+					},
 				},
 			},
 		}
@@ -67,7 +69,7 @@ func TestMeCmd_Success(t *testing.T) {
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "User Profile:")
-	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.Contains(t, outputStr, "Username: testuser")
 	assert.Contains(t, outputStr, "Email: test@example.com")
 	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
@@ -163,9 +165,11 @@ func TestMeCmd_PartialData(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"me": map[string]interface{}{
-					"id":       "user123",
-					"username": "testuser",
+				"me": []map[string]interface{}{
+					{
+						"id":       123,
+						"username": "testuser",
+					},
 				},
 			},
 		}
@@ -194,7 +198,7 @@ func TestMeCmd_PartialData(t *testing.T) {
 
 	// Verify output contains required fields but not optional ones
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.Contains(t, outputStr, "Username: testuser")
 	assert.NotContains(t, outputStr, "Email:")
 	assert.NotContains(t, outputStr, "Created:")
@@ -214,7 +218,7 @@ func TestMeCmd_CommandProperties(t *testing.T) {
 
 func TestMeCmd_Integration(t *testing.T) {
 	// Setup commands for testing
-	setupMeCommands()
+	SetupCommands()
 
 	// Test the command is properly registered
 	found := false

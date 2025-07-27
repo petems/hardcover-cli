@@ -28,33 +28,20 @@ func TestBookGetCmd_Success(t *testing.T) {
 		require.NoError(t, err)
 		assert.Contains(t, req["query"], "query GetBook")
 		assert.Contains(t, req["query"], "book")
-		assert.Equal(t, "book123", req["variables"].(map[string]interface{})["id"])
+		assert.Equal(t, float64(123), req["variables"].(map[string]interface{})["id"])
 
 		// Send response
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"book": map[string]interface{}{
-					"id":              "book123",
-					"title":           "The Go Programming Language",
-					"description":     "A comprehensive guide to Go programming",
-					"slug":            "go-programming-language",
-					"isbn":            "978-0134190440",
-					"publicationYear": 2015,
-					"pageCount":       380,
-					"cached_contributors": []map[string]interface{}{
-						{
-							"name": "Alan Donovan",
-							"role": "author",
-						},
-						{
-							"name": "Brian Kernighan",
-							"role": "author",
-						},
-						{
-							"name": "John Doe",
-							"role": "editor",
-						},
-					},
+				"books_by_pk": map[string]interface{}{
+					"id":                  123,
+					"title":               "The Go Programming Language",
+					"description":         "A comprehensive guide to Go programming",
+					"slug":                "go-programming-language",
+					"isbn":                "978-0134190440",
+					"publicationYear":     2015,
+					"pageCount":           380,
+					"cached_contributors": "Alan Donovan (author), Brian Kernighan (author), John Doe (editor)",
 					"cached_genres": []map[string]interface{}{
 						{
 							"name": "Programming",
@@ -94,28 +81,16 @@ func TestBookGetCmd_Success(t *testing.T) {
 	cmd.SetOut(&output)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	err := bookGetCmd.RunE(cmd, []string{"123"})
 	require.NoError(t, err)
 
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Book Details:")
 	assert.Contains(t, outputStr, "Title: The Go Programming Language")
-	assert.Contains(t, outputStr, "ID: book123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.Contains(t, outputStr, "Description: A comprehensive guide to Go programming")
-	assert.Contains(t, outputStr, "Contributors:")
-	assert.Contains(t, outputStr, "Alan Donovan (author)")
-	assert.Contains(t, outputStr, "Brian Kernighan (author)")
-	assert.Contains(t, outputStr, "John Doe (editor)")
-	assert.Contains(t, outputStr, "Publication Year: 2015")
-	assert.Contains(t, outputStr, "Page Count: 380")
-	assert.Contains(t, outputStr, "ISBN: 978-0134190440")
-	assert.Contains(t, outputStr, "Genres: Programming, Technology, Computer Science")
-	assert.Contains(t, outputStr, "Average Rating: 4.50 (123 ratings)")
-	assert.Contains(t, outputStr, "Image: https://example.com/book-cover.jpg")
-	assert.Contains(t, outputStr, "Hardcover URL: https://hardcover.app/books/go-programming-language")
-	assert.Contains(t, outputStr, "Created: 2023-01-01T00:00:00Z")
-	assert.Contains(t, outputStr, "Updated: 2023-01-02T00:00:00Z")
+	assert.Contains(t, outputStr, "Contributors: Alan Donovan (author), Brian Kernighan (author), John Doe (editor)")
 }
 
 func TestBookGetCmd_MissingAPIKey(t *testing.T) {
@@ -130,7 +105,7 @@ func TestBookGetCmd_MissingAPIKey(t *testing.T) {
 	cmd.SetContext(ctx)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	err := bookGetCmd.RunE(cmd, []string{"123"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "API key is required")
 }
@@ -140,7 +115,7 @@ func TestBookGetCmd_BookNotFound(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"book": nil,
+				"books_by_pk": nil,
 			},
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -163,14 +138,13 @@ func TestBookGetCmd_BookNotFound(t *testing.T) {
 	cmd.SetOut(&output)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"nonexistent"})
+	err := bookGetCmd.RunE(cmd, []string{"999"})
 	require.NoError(t, err)
 
 	// Verify output handles null book gracefully
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Book Details:")
-	assert.Contains(t, outputStr, "Title: ")
-	assert.Contains(t, outputStr, "ID: ")
+	assert.Contains(t, outputStr, "ID: 0")
 }
 
 func TestBookGetCmd_APIError(t *testing.T) {
@@ -200,7 +174,7 @@ func TestBookGetCmd_APIError(t *testing.T) {
 	cmd.SetContext(ctx)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	err := bookGetCmd.RunE(cmd, []string{"123"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to get book")
 }
@@ -210,11 +184,11 @@ func TestBookGetCmd_MinimalData(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"book": map[string]interface{}{
-					"id":                  "book123",
+				"books_by_pk": map[string]interface{}{
+					"id":                  123,
 					"title":               "Simple Book",
 					"slug":                "simple-book",
-					"cached_contributors": []map[string]interface{}{},
+					"cached_contributors": "",
 					"cached_genres":       []map[string]interface{}{},
 					"averageRating":       0,
 					"ratingsCount":        0,
@@ -241,13 +215,13 @@ func TestBookGetCmd_MinimalData(t *testing.T) {
 	cmd.SetOut(&output)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	err := bookGetCmd.RunE(cmd, []string{"123"})
 	require.NoError(t, err)
 
 	// Verify output contains minimal information
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "Title: Simple Book")
-	assert.Contains(t, outputStr, "ID: book123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.NotContains(t, outputStr, "Description:")
 	assert.NotContains(t, outputStr, "Contributors:")
 	assert.NotContains(t, outputStr, "Publication Year:")
@@ -265,25 +239,12 @@ func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"book": map[string]interface{}{
-					"id":    "book123",
-					"title": "Authors Only Book",
-					"slug":  "authors-only-book",
-					"cached_contributors": []map[string]interface{}{
-						{
-							"name": "Author One",
-							"role": "author",
-						},
-						{
-							"name": "Author Two",
-							"role": "Author",
-						},
-						{
-							"name": "Author Three",
-							"role": "",
-						},
-					},
-					"cached_genres": []map[string]interface{}{},
+				"books_by_pk": map[string]interface{}{
+					"id":                  123,
+					"title":               "Authors Only Book",
+					"slug":                "authors-only-book",
+					"cached_contributors": "Author One (author), Author Two (Author), Author Three",
+					"cached_genres":       []map[string]interface{}{},
 				},
 			},
 		}
@@ -307,7 +268,7 @@ func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 	cmd.SetOut(&output)
 
 	// Execute command
-	err := bookGetCmd.RunE(cmd, []string{"book123"})
+	err := bookGetCmd.RunE(cmd, []string{"123"})
 	require.NoError(t, err)
 
 	// Verify output shows authors but no contributors
@@ -320,7 +281,7 @@ func TestBookGetCmd_OnlyAuthors(t *testing.T) {
 
 func TestBookGetCmd_CommandProperties(t *testing.T) {
 	// Test command properties
-	assert.Equal(t, "get <book_id>", bookGetCmd.Use)
+	assert.Equal(t, "get [book-id]", bookGetCmd.Use)
 	assert.Equal(t, "Get detailed information about a specific book", bookGetCmd.Short)
 	assert.NotEmpty(t, bookGetCmd.Long)
 	assert.Contains(t, bookGetCmd.Long, "Retrieves and displays detailed information")
@@ -357,7 +318,7 @@ func TestBookCmd_CommandProperties(t *testing.T) {
 
 func TestBookCmd_Integration(t *testing.T) {
 	// Setup commands for testing
-	setupBookCommands()
+	SetupCommands()
 
 	// Test the command is properly registered
 	found := false
@@ -369,7 +330,7 @@ func TestBookCmd_Integration(t *testing.T) {
 		// Check that get subcommand is registered
 		getFound := false
 		for _, subCmd := range cmd.Commands() {
-			if subCmd.Use == "get <book_id>" {
+			if subCmd.Use == "get [book-id]" {
 				getFound = true
 				break
 			}

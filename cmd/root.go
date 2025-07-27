@@ -40,6 +40,7 @@ func SetupCommands() {
 	setupSearchCommands()
 	setupBookCommands()
 	setupConfigCommands()
+	setupSchemaCommands()
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -72,17 +73,21 @@ func Execute() {
 func setupRootCommand() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	// Check if flags are already added to prevent re-registration
+	if rootCmd.PersistentFlags().Lookup("config") == nil {
+		rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
+	}
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
-	rootCmd.PersistentFlags().StringP("api-key", "k", "",
-		"Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+	if rootCmd.PersistentFlags().Lookup("api-key") == nil {
+		rootCmd.PersistentFlags().StringP("api-key", "k", "",
+			"Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+	}
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	if rootCmd.Flags().Lookup("toggle") == nil {
+		rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
