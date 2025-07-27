@@ -1,10 +1,26 @@
-# Local schema file (for development)
+# Local schema file (for development/offline use)
 schema: schema.graphql
 
 # Remote schema endpoint (for production/updates)
-# Uncomment and update the URL when you have the actual Hardcover GraphQL endpoint
 # schema: https://api.hardcover.app/v1/graphql
 
 operations:
   - queries.graphql
 generated: generated.go
+
+# Bindings for custom scalars
+bindings:
+  citext:
+    type: string
+  timestamptz:
+    type: string
+  jsonb:
+    type: string
+  numeric:
+    type: float64
+  timestamp:
+    type: string
+  date:
+    type: string
+  json:
+    type: string

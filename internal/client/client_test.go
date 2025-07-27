@@ -41,12 +41,14 @@ func TestClient_GetCurrentUser_Success(t *testing.T) {
 		// Send response
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"me": map[string]interface{}{
-					"id":        "user123",
-					"username":  "testuser",
-					"email":     "test@example.com",
-					"createdAt": "2023-01-01T00:00:00Z",
-					"updatedAt": "2023-01-02T00:00:00Z",
+				"me": []map[string]interface{}{
+					{
+						"id":         123,
+						"username":   "testuser",
+						"email":      "test@example.com",
+						"created_at": "2023-01-01T00:00:00Z",
+						"updated_at": "2023-01-02T00:00:00Z",
+					},
 				},
 			},
 		}
@@ -61,8 +63,10 @@ func TestClient_GetCurrentUser_Success(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotNil(t, response)
-	user := response.GetMe()
-	assert.Equal(t, "user123", user.GetId())
+	users := response.GetMe()
+	require.Len(t, users, 1)
+	user := users[0]
+	assert.Equal(t, 123, user.GetId())
 	assert.Equal(t, "testuser", user.GetUsername())
 	assert.Equal(t, "test@example.com", user.GetEmail())
 }
@@ -129,9 +133,11 @@ func TestClient_GetCurrentUser_WithoutAPIKey(t *testing.T) {
 		// Send response
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"me": map[string]interface{}{
-					"id":       "user123",
-					"username": "testuser",
+				"me": []map[string]interface{}{
+					{
+						"id":       123,
+						"username": "testuser",
+					},
 				},
 			},
 		}
@@ -146,8 +152,10 @@ func TestClient_GetCurrentUser_WithoutAPIKey(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotNil(t, response)
-	user := response.GetMe()
-	assert.Equal(t, "user123", user.GetId())
+	users := response.GetMe()
+	require.Len(t, users, 1)
+	user := users[0]
+	assert.Equal(t, 123, user.GetId())
 }
 
 func TestClient_GetCurrentUser_WithContext(t *testing.T) {
@@ -157,9 +165,11 @@ func TestClient_GetCurrentUser_WithContext(t *testing.T) {
 
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"me": map[string]interface{}{
-					"id":       "user123",
-					"username": "testuser",
+				"me": []map[string]interface{}{
+					{
+						"id":       123,
+						"username": "testuser",
+					},
 				},
 			},
 		}
@@ -190,8 +200,8 @@ func TestClient_GetBook_Success(t *testing.T) {
 		// Send response
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
-				"book": map[string]interface{}{
-					"id":    "book123",
+				"books_by_pk": map[string]interface{}{
+					"id":    123,
 					"title": "Test Book",
 					"slug":  "test-book",
 				},
@@ -204,12 +214,12 @@ func TestClient_GetBook_Success(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	response, err := client.GetBook(context.Background(), "book123")
+	response, err := client.GetBook(context.Background(), 123)
 
 	require.NoError(t, err)
 	assert.NotNil(t, response)
-	book := response.GetBook()
-	assert.Equal(t, "book123", book.GetId())
+	book := response.GetBooks_by_pk()
+	assert.Equal(t, 123, book.GetId())
 	assert.Equal(t, "Test Book", book.GetTitle())
 }
 
@@ -224,15 +234,13 @@ func TestClient_SearchBooks_Success(t *testing.T) {
 		response := map[string]interface{}{
 			"data": map[string]interface{}{
 				"search": map[string]interface{}{
-					"__typename": "BookSearchResults",
-					"totalCount": 1,
-					"results": []map[string]interface{}{
-						{
-							"id":    "book123",
-							"title": "Test Book",
-							"slug":  "test-book",
-						},
-					},
+					"error":      "",
+					"ids":        []int{123},
+					"page":       1,
+					"per_page":   10,
+					"query":      "test",
+					"query_type": "Book",
+					"results":    "[]",
 				},
 			},
 		}
@@ -243,10 +251,11 @@ func TestClient_SearchBooks_Success(t *testing.T) {
 
 	client := NewClient(server.URL, "test-api-key")
 
-	response, err := client.SearchBooks(context.Background(), "test")
+	response, err := client.SearchBooks(context.Background(), "test", "Book", 10, 1)
 
 	require.NoError(t, err)
 	assert.NotNil(t, response)
 	searchResults := response.GetSearch()
-	assert.Equal(t, "BookSearchResults", searchResults.GetTypename())
+	assert.Equal(t, "test", searchResults.GetQuery())
+	assert.Equal(t, "Book", searchResults.GetQuery_type())
 }

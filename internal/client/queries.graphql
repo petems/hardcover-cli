@@ -8,33 +8,29 @@ query GetCurrentUser {
   }
 }
 
-query SearchBooks($query: String!) {
-  search(query: $query, type: BOOKS) {
-    ... on BookSearchResults {
-      totalCount
-      results {
-        ... on Book {
-          id
-          title
-          slug
-          isbn
-          publicationYear
-          pageCount
-          cached_contributors {
-            name
-            role
-          }
-          cached_genres {
-            name
-          }
-          image
-          averageRating
-          ratingsCount
-        }
-      }
-    }
-  }
-}
+# NOTE: This search query is not used because the GraphQL introspection schema doesn't properly
+# expose the search field parameters. The actual search functionality is implemented manually
+# in cmd/search.go using direct HTTP requests to work around the schema mismatch issue.
+# See: https://docs.hardcover.app/api/guides/searching/ for the actual API structure.
+#
+# query SearchBooks($query: String!, $searchType: SearchType = BOOKS) {
+#   search(query: $query, type: $searchType) {
+#     ... on BookSearchResults {
+#       totalCount
+#       results {
+#         id
+#         title
+#         description
+#         slug
+#         isbn
+#         publicationYear
+#         pageCount
+#         averageRating
+#         ratingsCount
+#       }
+#     }
+#   }
+# }
 
 query GetBook($id: ID!) {
   book(id: $id) {
@@ -55,7 +51,6 @@ query GetBook($id: ID!) {
     image
     averageRating
     ratingsCount
-    createdAt
-    updatedAt
   }
 }
+

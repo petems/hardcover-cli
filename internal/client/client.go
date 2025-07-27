@@ -17,7 +17,10 @@ const (
 type HardcoverClient interface {
 	GetCurrentUser(ctx context.Context) (*GetCurrentUserResponse, error)
 	GetBook(ctx context.Context, id string) (*GetBookResponse, error)
-	SearchBooks(ctx context.Context, query string) (*SearchBooksResponse, error)
+	// NOTE: SearchBooks is intentionally not included in this interface because
+	// the GraphQL introspection schema doesn't properly expose search parameters.
+	// Search functionality is implemented manually in cmd/search.go using direct HTTP requests.
+	// See: https://docs.hardcover.app/api/guides/searching/ for the actual API structure.
 }
 
 // Client represents a GraphQL client that uses genqlient
@@ -63,12 +66,12 @@ func (c *Client) GetCurrentUser(ctx context.Context) (*GetCurrentUserResponse, e
 	return GetCurrentUser(ctx, c.graphqlClient)
 }
 
-// GetBook gets a book by ID using genqlient
+// GetBook gets a specific book by ID using genqlient
 func (c *Client) GetBook(ctx context.Context, id string) (*GetBookResponse, error) {
 	return GetBook(ctx, c.graphqlClient, id)
 }
 
-// SearchBooks searches for books using genqlient
-func (c *Client) SearchBooks(ctx context.Context, query string) (*SearchBooksResponse, error) {
-	return SearchBooks(ctx, c.graphqlClient, query)
-}
+// NOTE: SearchBooks method is intentionally not implemented because the GraphQL introspection schema
+// doesn't properly expose search parameters. Search functionality is implemented manually in cmd/search.go
+// using direct HTTP requests to work around the schema mismatch issue.
+// See: https://docs.hardcover.app/api/guides/searching/ for the actual API structure.
