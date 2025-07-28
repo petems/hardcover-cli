@@ -1,0 +1,63 @@
+name: 'Go Tasks'
+description: 'Common Go tasks like testing, building, and linting'
+
+inputs:
+  task:
+    description: 'Task to run (test, build, lint, coverage)'
+    required: true
+  coverage-file:
+    description: 'Coverage file path'
+    required: false
+    default: 'coverage.out'
+  coverage-flags:
+    description: 'Coverage flags for Codecov'
+    required: false
+    default: 'unittests'
+  coverage-name:
+    description: 'Coverage name for Codecov'
+    required: false
+    default: 'codecov-umbrella'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run tests
+      if: inputs.task == 'test'
+      shell: bash
+      run: go test -v ./...
+
+    - name: Run tests with coverage
+      if: inputs.task == 'coverage'
+      shell: bash
+      run: go test -v -coverprofile=${{ inputs.coverage-file }} ./...
+
+    - name: Upload coverage to Codecov
+      if: inputs.task == 'coverage'
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./${{ inputs.coverage-file }}
+        flags: ${{ inputs.coverage-flags }}
+        name: ${{ inputs.coverage-name }}
+        fail_ci_if_error: false
+
+    - name: Build
+      if: inputs.task == 'build'
+      shell: bash
+      run: go build -v ./...
+
+    - name: Build binary
+      if: inputs.task == 'build'
+      shell: bash
+      run: make build
+
+    - name: Test binary help
+      if: inputs.task == 'build'
+      shell: bash
+      run: ./bin/hardcover-cli --help
+
+    - name: golangci-lint
+      if: inputs.task == 'lint'
+      uses: golangci/golangci-lint-action@v8
+      with:
+        version: v2.3.0
+        args: --timeout=3m 

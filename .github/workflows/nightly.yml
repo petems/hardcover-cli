@@ -12,13 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21'
-    
     - name: Check out code
       uses: actions/checkout@v4
+    
+    - name: Setup Go Environment
+      uses: ./.github/actions/setup-go
     
     - name: Update to latest dependencies
       run: |
@@ -26,24 +24,23 @@ jobs:
         go mod tidy
     
     - name: Run tests with race detection
-      run: go test -v -race -timeout=10m ./...
+      uses: ./.github/actions/go-tasks
+      with:
+        task: test
     
     - name: Run tests with coverage
-      run: go test -v -coverprofile=coverage.out ./...
-    
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
+      uses: ./.github/actions/go-tasks
       with:
-        file: ./coverage.out
-        flags: nightly
-        name: nightly-coverage
+        task: coverage
+        coverage-flags: nightly
+        coverage-name: nightly-coverage
 
   test-go-versions:
     name: Test Go Versions
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.19', '1.20', '1.21', '1.22']
+        go-version: ['1.20', '1.21', '1.22', '1.23']
     
     steps:
     - name: Set up Go ${{ matrix.go-version }}
@@ -69,37 +66,25 @@ jobs:
       run: go mod download
     
     - name: Run tests
-      run: go test -v ./...
+      uses: ./.github/actions/go-tasks
+      with:
+        task: test
     
     - name: Build application
-      run: go build -v .
+      uses: ./.github/actions/go-tasks
+      with:
+        task: build
 
   benchmark:
     name: Performance Benchmarks
     runs-on: ubuntu-latest
     
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21'
-    
     - name: Check out code
       uses: actions/checkout@v4
     
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.21-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
+    - name: Setup Go Environment
+      uses: ./.github/actions/setup-go
     
     - name: Run benchmarks
       run: |
@@ -119,30 +104,14 @@ jobs:
   integration-test:
     name: Integration Tests
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'your-username'  # Only run for main repo
+    if: github.repository_owner == 'petems'  # Only run for main repo
     
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21'
-    
     - name: Check out code
       uses: actions/checkout@v4
     
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.21-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.21-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
+    - name: Setup Go Environment
+      uses: ./.github/actions/setup-go
     
     - name: Build application
       run: go build -o hardcover .
