@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -72,7 +73,7 @@ Example:
 			printToStdoutf(cmd.OutOrStdout(), "  Location: %s\n", user.Location)
 		}
 		if user.Created_at != nil {
-			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", user.Created_at)
+			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", time.Time(*user.Created_at).Format("2006-01-02 15:04:05"))
 		}
 
 		return nil

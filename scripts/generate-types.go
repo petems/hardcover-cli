@@ -177,7 +177,17 @@ package client
 
 import (
 	"encoding/json"
+	"time"
 )
+
+// Scalar type definitions
+type Date time.Time
+type Timestamp time.Time
+type Timestamptz time.Time
+type Numeric float64
+type Float8 float64
+type Bigint int64
+type Smallint int16
 
 {{range .Types}}
 // {{.Name}} represents the {{.Name}} GraphQL type
@@ -391,7 +401,7 @@ func generateTypesFile(schema *GraphQLResponse) error {
 	// Filter out introspection types and conflicting types
 	var filteredTypes []Type
 	for _, t := range schema.Data.Schema.Types {
-		if shouldIncludeType(t) {
+		if shouldIncludeType(&t) {
 			filteredTypes = append(filteredTypes, t)
 		}
 	}
@@ -422,7 +432,7 @@ func generateTypesFile(schema *GraphQLResponse) error {
 	return nil
 }
 
-func shouldIncludeType(t Type) bool {
+func shouldIncludeType(t *Type) bool {
 	// Skip introspection types
 	if strings.HasPrefix(t.Name, "__") {
 		return false
@@ -464,15 +474,19 @@ func generateTypesGoFile(types []Type, timestamp string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create types file: %w", err)
 	}
-	defer typesFile.Close()
+	defer func() {
+		if closeErr := typesFile.Close(); closeErr != nil {
+			fmt.Printf("Warning: failed to close types file: %v\n", closeErr)
+		}
+	}()
 
 	// Execute template
 	data := struct {
-		Types     []Type
 		Timestamp string
+		Types     []Type
 	}{
-		Types:     types,
 		Timestamp: timestamp,
+		Types:     types,
 	}
 
 	if err := tmpl.Execute(typesFile, data); err != nil {
@@ -494,7 +508,11 @@ func generateSchemaFile(schema *GraphQLResponse, timestamp string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create schema file: %w", err)
 	}
-	defer schemaFile.Close()
+	defer func() {
+		if closeErr := schemaFile.Close(); closeErr != nil {
+			fmt.Printf("Warning: failed to close schema file: %v\n", closeErr)
+		}
+	}()
 
 	// Convert schema to string representation
 	schemaStr := convertSchemaToString(schema)
@@ -518,38 +536,46 @@ func generateSchemaFile(schema *GraphQLResponse, timestamp string) error {
 func convertSchemaToString(schema *GraphQLResponse) string {
 	var result strings.Builder
 
-	// Add basic scalars
-	result.WriteString("scalar ID\n")
-	result.WriteString("scalar String\n")
-	result.WriteString("scalar Int\n")
-	result.WriteString("scalar Float\n")
-	result.WriteString("scalar Boolean\n")
-	result.WriteString("scalar Date\n")
-	result.WriteString("scalar Timestamp\n")
-	result.WriteString("scalar Timestamptz\n")
-	result.WriteString("scalar Numeric\n")
-	result.WriteString("scalar Float8\n")
-	result.WriteString("scalar Bigint\n")
-	result.WriteString("scalar Smallint\n")
-	result.WriteString("scalar Citext\n")
-	result.WriteString("scalar Json\n")
-	result.WriteString("scalar Jsonb\n\n")
+	writeScalarDefinitions(&result)
 
 	// Group types by kind
-	scalars := make([]Type, 0)
-	objects := make([]Type, 0)
-	enums := make([]Type, 0)
-	inputs := make([]Type, 0)
-	unions := make([]Type, 0)
+	objects, enums, inputs, unions := groupTypesByKind(schema.Data.Schema.Types)
 
-	for _, t := range schema.Data.Schema.Types {
+	// Generate object types
+	writeObjectTypes(&result, objects)
+
+	// Generate enum types
+	writeEnumTypes(&result, enums)
+
+	// Generate input types
+	writeInputTypes(&result, inputs)
+
+	// Generate union types
+	writeUnionTypes(&result, unions)
+
+	return result.String()
+}
+
+func writeScalarDefinitions(result *strings.Builder) {
+	scalars := []string{
+		"ID", graphQLString, graphQLInt, graphQLFloat, graphQLBoolean,
+		graphQLDate, graphQLTimestamp, graphQLTimestamptz, graphQLNumeric,
+		graphQLFloat8, graphQLBigint, graphQLSmallint, "Citext", "Json", "Jsonb",
+	}
+
+	for _, scalar := range scalars {
+		fmt.Fprintf(result, "scalar %s\n", scalar)
+	}
+	fmt.Fprint(result, "\n")
+}
+
+func groupTypesByKind(types []Type) (objects, enums, inputs, unions []Type) {
+	for _, t := range types {
 		if strings.HasPrefix(t.Name, "__") {
 			continue // Skip introspection types
 		}
 
 		switch t.Kind {
-		case "SCALAR":
-			scalars = append(scalars, t)
 		case "OBJECT":
 			objects = append(objects, t)
 		case "ENUM":
@@ -560,59 +586,64 @@ func convertSchemaToString(schema *GraphQLResponse) string {
 			unions = append(unions, t)
 		}
 	}
+	return
+}
 
-	// Generate object types
+func writeObjectTypes(result *strings.Builder, objects []Type) {
 	for _, obj := range objects {
 		if len(obj.Fields) == 0 {
 			continue
 		}
 
-		result.WriteString(fmt.Sprintf("type %s {\n", obj.Name))
+		fmt.Fprintf(result, "type %s {\n", obj.Name)
 		for _, field := range obj.Fields {
 			if strings.HasPrefix(field.Name, "__") {
 				continue
 			}
-			result.WriteString(fmt.Sprintf("  %s: %s\n", field.Name, getGraphQLType(field.Type)))
+			fmt.Fprintf(result, "  %s: %s\n", field.Name, getGraphQLType(field.Type))
 		}
-		result.WriteString("}\n\n")
+		fmt.Fprint(result, "}\n\n")
 	}
+}
 
-	// Generate enum types
+func writeEnumTypes(result *strings.Builder, enums []Type) {
 	for _, enum := range enums {
 		if len(enum.EnumValues) == 0 {
 			continue
 		}
 
-		result.WriteString(fmt.Sprintf("enum %s {\n", enum.Name))
+		fmt.Fprintf(result, "enum %s {\n", enum.Name)
 		for _, value := range enum.EnumValues {
-			result.WriteString(fmt.Sprintf("  %s\n", value.Name))
+			fmt.Fprintf(result, "  %s\n", value.Name)
 		}
-		result.WriteString("}\n\n")
+		fmt.Fprint(result, "}\n\n")
 	}
+}
 
-	// Generate input types
+func writeInputTypes(result *strings.Builder, inputs []Type) {
 	for _, input := range inputs {
 		if len(input.Fields) == 0 {
 			continue
 		}
 
-		result.WriteString(fmt.Sprintf("input %s {\n", input.Name))
+		fmt.Fprintf(result, "input %s {\n", input.Name)
 		for _, field := range input.Fields {
 			if strings.HasPrefix(field.Name, "__") {
 				continue
 			}
-			result.WriteString(fmt.Sprintf("  %s: %s\n", field.Name, getGraphQLType(field.Type)))
+			fmt.Fprintf(result, "  %s: %s\n", field.Name, getGraphQLType(field.Type))
 		}
-		result.WriteString("}\n\n")
+		fmt.Fprint(result, "}\n\n")
 	}
+}
 
-	// Generate union types
+func writeUnionTypes(result *strings.Builder, unions []Type) {
 	for _, union := range unions {
 		if len(union.Fields) == 0 {
 			continue
 		}
 
-		result.WriteString(fmt.Sprintf("union %s = ", union.Name))
+		fmt.Fprintf(result, "union %s = ", union.Name)
 		types := make([]string, 0)
 		for _, field := range union.Fields {
 			if strings.HasPrefix(field.Name, "__") {
@@ -620,11 +651,8 @@ func convertSchemaToString(schema *GraphQLResponse) string {
 			}
 			types = append(types, field.Type.Name)
 		}
-		result.WriteString(strings.Join(types, " | "))
-		result.WriteString("\n\n")
+		fmt.Fprintf(result, "%s\n\n", strings.Join(types, " | "))
 	}
-
-	return result.String()
 }
 
 func getGraphQLType(typeRef TypeRef) string {
@@ -636,41 +664,32 @@ func getGraphQLType(typeRef TypeRef) string {
 		return "[" + getGraphQLType(*typeRef.OfType) + "]"
 	}
 
-	// Map GraphQL types to their proper names
-	switch typeRef.Name {
-	case "ID":
-		return "ID"
-	case "String":
-		return "String"
-	case "Int":
-		return "Int"
-	case "Float":
-		return "Float"
-	case "Boolean":
-		return "Boolean"
-	case "Date":
-		return "Date"
-	case "Timestamp":
-		return "Timestamp"
-	case "Timestamptz":
-		return "Timestamptz"
-	case "Numeric":
-		return "Numeric"
-	case "Float8":
-		return "Float8"
-	case "Bigint":
-		return "Bigint"
-	case "Smallint":
-		return "Smallint"
-	case "Citext":
-		return "Citext"
-	case "Json":
-		return "Json"
-	case "Jsonb":
-		return "Jsonb"
-	default:
-		return typeRef.Name
+	return getGraphQLTypeName(typeRef.Name)
+}
+
+var graphQLTypeMap = map[string]string{
+	"ID":               "ID",
+	graphQLString:      graphQLString,
+	graphQLInt:         graphQLInt,
+	graphQLFloat:       graphQLFloat,
+	graphQLBoolean:     graphQLBoolean,
+	graphQLDate:        graphQLDate,
+	graphQLTimestamp:   graphQLTimestamp,
+	graphQLTimestamptz: graphQLTimestamptz,
+	graphQLNumeric:     graphQLNumeric,
+	graphQLFloat8:      graphQLFloat8,
+	graphQLBigint:      graphQLBigint,
+	graphQLSmallint:    graphQLSmallint,
+	"Citext":           "Citext",
+	"Json":             "Json",
+	"Jsonb":            "Jsonb",
+}
+
+func getGraphQLTypeName(typeName string) string {
+	if mapped, exists := graphQLTypeMap[typeName]; exists {
+		return mapped
 	}
+	return typeName
 }
 
 const (
@@ -679,6 +698,19 @@ const (
 	asciiUppercaseMask = 32
 	// Directory permissions: owner read/write/execute, group read/execute
 	dirPermissions = 0o750
+
+	// GraphQL scalar type names
+	graphQLString      = "String"
+	graphQLInt         = "Int"
+	graphQLFloat       = "Float"
+	graphQLBoolean     = "Boolean"
+	graphQLDate        = "Date"
+	graphQLTimestamp   = "Timestamp"
+	graphQLTimestamptz = "Timestamptz"
+	graphQLNumeric     = "Numeric"
+	graphQLFloat8      = "Float8"
+	graphQLBigint      = "Bigint"
+	graphQLSmallint    = "Smallint"
 )
 
 func getGoType(typeRef TypeRef) string {
@@ -690,26 +722,32 @@ func getGoType(typeRef TypeRef) string {
 		return "[]" + getGoType(*typeRef.OfType)
 	}
 
-	switch typeRef.Name {
-	case "ID":
-		return goStringType
-	case "String":
-		return goStringType
-	case "Int":
-		return "int"
-	case "Float":
-		return "float64"
-	case "Boolean":
-		return "bool"
-	case "json":
-		return "*json.RawMessage"
-	case "jsonb":
-		return "*json.RawMessage"
-	case "citext":
-		return goStringType
-	default:
-		return "*" + toCamelCase(typeRef.Name)
+	return getGoTypeName(typeRef.Name)
+}
+
+var goTypeMap = map[string]string{
+	"ID":               goStringType,
+	graphQLString:      goStringType,
+	graphQLInt:         "int",
+	graphQLFloat:       "float64",
+	graphQLBoolean:     "bool",
+	graphQLDate:        "*Date",
+	graphQLTimestamp:   "*Timestamp",
+	graphQLTimestamptz: "*Timestamptz",
+	graphQLNumeric:     "*Numeric",
+	graphQLFloat8:      "*Float8",
+	graphQLBigint:      "*Bigint",
+	graphQLSmallint:    "*Smallint",
+	"json":             "*json.RawMessage",
+	"jsonb":            "*json.RawMessage",
+	"citext":           goStringType,
+}
+
+func getGoTypeName(typeName string) string {
+	if mapped, exists := goTypeMap[typeName]; exists {
+		return mapped
 	}
+	return "*" + toCamelCase(typeName)
 }
 
 func toCamelCase(s string) string {

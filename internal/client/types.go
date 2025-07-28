@@ -1,11 +1,21 @@
 // Code generated from GraphQL schema, DO NOT EDIT.
-// Generated at: 2025-07-28 01:59:29 BST
+// Generated at: 2025-07-28 02:03:06 BST
 
 package client
 
 import (
 	"encoding/json"
+	"time"
 )
+
+// Scalar type definitions
+type Date time.Time
+type Timestamp time.Time
+type Timestamptz time.Time
+type Numeric float64
+type Float8 float64
+type Bigint int64
+type Smallint int16
 
 
 // AuthorIdType represents the AuthorIdType GraphQL type
