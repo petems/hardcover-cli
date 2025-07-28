@@ -15,13 +15,9 @@ import (
 )
 
 func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -40,7 +36,7 @@ func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
 	assert.Contains(t, outputStr, "Configuration file:")
 
 	// Verify config file was created and contains correct data
-	configPath := tempDirMgr.GetConfigPath()
+	configPath := ctm.GetConfigPath()
 	_, err = os.Stat(configPath)
 	require.NoError(t, err)
 
@@ -64,20 +60,16 @@ func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	// Create config with API key
 	cfg := &testutil.Config{
 		APIKey:  "test-api-key-123456789",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
-	tempDirMgr.CreateConfig(t, cfg)
+	ctm.CreateConfig(cfg)
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -97,15 +89,12 @@ func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_WithEnvironmentVariable(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	expectedAPIKey := "env-api-key-123456789"
-	envMgr.SetEnv("HARDCOVER_API_KEY", expectedAPIKey)
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	ctm.SetEnv("HARDCOVER_API_KEY", expectedAPIKey)
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -125,13 +114,9 @@ func TestConfigGetAPIKeyCmd_WithEnvironmentVariable(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -152,20 +137,16 @@ func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	// Create config with short API key
 	cfg := &testutil.Config{
 		APIKey:  "short",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
-	tempDirMgr.CreateConfig(t, cfg)
+	ctm.CreateConfig(cfg)
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -184,13 +165,9 @@ func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
 }
 
 func TestConfigShowPathCmd_Success(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -205,26 +182,22 @@ func TestConfigShowPathCmd_Success(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	expectedPath := tempDirMgr.GetConfigPath()
+	expectedPath := ctm.GetConfigPath()
 	assert.Contains(t, outputStr, "Configuration file path: "+expectedPath)
 	assert.Contains(t, outputStr, "Configuration file does not exist yet")
 }
 
 func TestConfigShowPathCmd_FileExists(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	// Create config file
 	cfg := &testutil.Config{
 		APIKey:  "test-api-key",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
-	tempDirMgr.CreateConfig(t, cfg)
+	ctm.CreateConfig(cfg)
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
@@ -239,7 +212,7 @@ func TestConfigShowPathCmd_FileExists(t *testing.T) {
 
 	// Verify output
 	outputStr := output.String()
-	expectedPath := tempDirMgr.GetConfigPath()
+	expectedPath := ctm.GetConfigPath()
 	assert.Contains(t, outputStr, "Configuration file path: "+expectedPath)
 	assert.Contains(t, outputStr, "Configuration file exists")
 	assert.NotContains(t, outputStr, "does not exist yet")
@@ -310,20 +283,16 @@ func TestConfigCmd_Integration(t *testing.T) {
 }
 
 func TestConfigSetAPIKeyCmd_UpdatesExistingConfig(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	// Create initial config
 	cfg := &testutil.Config{
 		APIKey:  "old-api-key",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
-	tempDirMgr.CreateConfig(t, cfg)
+	ctm.CreateConfig(cfg)
 
 	cmd := &cobra.Command{}
 	cmd.SetContext(context.Background())
