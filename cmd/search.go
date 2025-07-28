@@ -27,7 +27,7 @@ type SearchUser struct {
 	Pro                bool        `json:"pro"`
 }
 
-// SearchUsersResponse represents the response from the SearchUsers query
+// SearchUsersResponse represents the response from the SearchUsers query.
 type SearchUsersResponse struct {
 	Search struct {
 		Query     string       `json:"query"`

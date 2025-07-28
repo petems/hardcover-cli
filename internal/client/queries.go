@@ -1,8 +1,8 @@
 package client
 
-// GraphQL query constants
+// GraphQL query constants.
 const (
-	// GetCurrentUserQuery fetches the current user's profile information
+	// GetCurrentUserQuery fetches the current user's profile information.
 	GetCurrentUserQuery = `
 query GetCurrentUser {
   me {
@@ -18,7 +18,7 @@ query GetCurrentUser {
 }
 `
 
-	// SearchBooksQuery searches for books by query string
+	// SearchBooksQuery searches for books by query string.
 	SearchBooksQuery = `
 query SearchBooks($query: String!) {
   search(query: $query, type: BOOKS) {
@@ -49,7 +49,7 @@ query SearchBooks($query: String!) {
 }
 `
 
-	// GetBookQuery fetches a specific book by ID
+	// GetBookQuery fetches a specific book by ID.
 	GetBookQuery = `
 query GetBook($id: ID!) {
   book(id: $id) {

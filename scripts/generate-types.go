@@ -1,9 +1,11 @@
+// Package main provides a tool for generating Go types from GraphQL schema introspection.
 package main
 
 import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -221,7 +223,9 @@ func main() {
 		cfg, err := config.LoadConfig()
 		if err != nil {
 			fmt.Printf("Failed to load config: %v\n", err)
-			fmt.Println("Please set HARDCOVER_API_KEY environment variable or configure via 'hardcover config set-api-key'")
+			fmt.Println(
+				"Please set HARDCOVER_API_KEY environment variable or configure via 'hardcover config set-api-key'",
+			)
 			os.Exit(1)
 		}
 
@@ -288,7 +292,7 @@ func testAPIKey(apiKey string) error {
 	// Create HTTP request
 	ctx := context.Background()
 	httpReq, err := http.NewRequestWithContext(
-		ctx, "POST", cfg.BaseURL, bytes.NewBuffer(jsonData))
+		ctx, http.MethodPost, cfg.BaseURL, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Errorf("failed to create test request: %w", err)
 	}
@@ -355,7 +359,7 @@ func fetchGraphQLSchema(apiKey string) (*GraphQLResponse, error) {
 	// Create HTTP request
 	ctx := context.Background()
 	httpReq, err := http.NewRequestWithContext(
-		ctx, "POST", cfg.BaseURL, bytes.NewBuffer(jsonData))
+		ctx, http.MethodPost, cfg.BaseURL, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -391,7 +395,7 @@ func fetchGraphQLSchema(apiKey string) (*GraphQLResponse, error) {
 
 	// Validate response structure
 	if gqlResp.Data.Schema.Types == nil {
-		return nil, fmt.Errorf("invalid GraphQL response: missing schema types")
+		return nil, errors.New("invalid GraphQL response: missing schema types")
 	}
 
 	return &gqlResp, nil
@@ -407,7 +411,7 @@ func generateTypesFile(schema *GraphQLResponse) error {
 	}
 
 	if len(filteredTypes) == 0 {
-		return fmt.Errorf("no valid types found in schema")
+		return errors.New("no valid types found in schema")
 	}
 
 	// Create output directory
@@ -569,7 +573,8 @@ func writeScalarDefinitions(result *strings.Builder) {
 	fmt.Fprint(result, "\n")
 }
 
-func groupTypesByKind(types []Type) (objects, enums, inputs, unions []Type) {
+func groupTypesByKind(types []Type) ([]Type, []Type, []Type, []Type) {
+	var objects, enums, inputs, unions []Type
 	for _, t := range types {
 		if strings.HasPrefix(t.Name, "__") {
 			continue // Skip introspection types
@@ -586,7 +591,7 @@ func groupTypesByKind(types []Type) (objects, enums, inputs, unions []Type) {
 			unions = append(unions, t)
 		}
 	}
-	return
+	return objects, enums, inputs, unions
 }
 
 func writeObjectTypes(result *strings.Builder, objects []Type) {
@@ -694,12 +699,12 @@ func getGraphQLTypeName(typeName string) string {
 
 const (
 	goStringType = "string"
-	// ASCII uppercase conversion: clear bit 5 (32) to convert lowercase to uppercase
+	// ASCII uppercase conversion: clear bit 5 (32) to convert lowercase to uppercase.
 	asciiUppercaseMask = 32
-	// Directory permissions: owner read/write/execute, group read/execute
+	// Directory permissions: owner read/write/execute, group read/execute.
 	dirPermissions = 0o750
 
-	// GraphQL scalar type names
+	// GraphQL scalar type names.
 	graphQLString      = "String"
 	graphQLInt         = "Int"
 	graphQLFloat       = "Float"

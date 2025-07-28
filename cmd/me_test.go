@@ -25,7 +25,7 @@ func TestMeCmd_Success(t *testing.T) {
 		// Verify GraphQL query
 		var req client.GraphQLRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		assert.Contains(t, req.Query, "query GetCurrentUser")
 		assert.Contains(t, req.Query, "me")
 
@@ -39,7 +39,8 @@ func TestMeCmd_Success(t *testing.T) {
 			}`),
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		err = json.NewEncoder(w).Encode(response)
+		assert.NoError(t, err)
 	}))
 	defer server.Close()
 
@@ -147,7 +148,7 @@ func TestMeCmd_HTTPError(t *testing.T) {
 
 func TestMeCmd_PartialData(t *testing.T) {
 	// Create test server with minimal user data
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{
 				"me": {
@@ -157,7 +158,8 @@ func TestMeCmd_PartialData(t *testing.T) {
 			}`),
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		err := json.NewEncoder(w).Encode(response)
+		assert.NoError(t, err)
 	}))
 	defer server.Close()
 

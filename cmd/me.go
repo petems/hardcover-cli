@@ -11,7 +11,7 @@ import (
 	"hardcover-cli/internal/client"
 )
 
-// meCmd represents the me command
+// meCmd represents the me command.
 var meCmd = &cobra.Command{
 	Use:   "me",
 	Short: "Get the current user's profile information based on the API key",
@@ -52,7 +52,7 @@ Example:
 		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
 
 		if response.Me == nil {
-			return fmt.Errorf("no user data received")
+			return errors.New("no user data received")
 		}
 
 		user := response.Me
@@ -73,7 +73,11 @@ Example:
 			printToStdoutf(cmd.OutOrStdout(), "  Location: %s\n", user.Location)
 		}
 		if user.Created_at != nil {
-			printToStdoutf(cmd.OutOrStdout(), "  Created: %s\n", time.Time(*user.Created_at).Format("2006-01-02 15:04:05"))
+			printToStdoutf(
+				cmd.OutOrStdout(),
+				"  Created: %s\n",
+				time.Time(*user.Created_at).Format("2006-01-02 15:04:05"),
+			)
 		}
 
 		return nil
