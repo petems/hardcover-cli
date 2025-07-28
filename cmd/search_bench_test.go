@@ -8,11 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"hardcover-cli/internal/testutil"
+
+	"github.com/spf13/cobra"
 )
 
-// BenchmarkSearchBooksCmd_ResponseProcessing benchmarks the processing of search results
+// BenchmarkSearchBooksCmd_ResponseProcessing benchmarks the processing of search results.
 func BenchmarkSearchBooksCmd_ResponseProcessing(b *testing.B) {
 	// Setup test data with multiple books to simulate real API response
 	searchData := map[string]interface{}{
@@ -95,12 +96,15 @@ func BenchmarkSearchBooksCmd_ResponseProcessing(b *testing.B) {
 	}
 
 	// Create test server
-	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
+	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, _ *http.Request) {
 		response := map[string]interface{}{
 			"data": searchData,
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 	defer server.Close()
 
@@ -133,7 +137,7 @@ func BenchmarkSearchBooksCmd_ResponseProcessing(b *testing.B) {
 	}
 }
 
-// BenchmarkSearchUsersCmd_ResponseProcessing benchmarks user search response processing
+// BenchmarkSearchUsersCmd_ResponseProcessing benchmarks user search response processing.
 func BenchmarkSearchUsersCmd_ResponseProcessing(b *testing.B) {
 	// Setup test data with multiple users
 	searchData := map[string]interface{}{
@@ -188,12 +192,15 @@ func BenchmarkSearchUsersCmd_ResponseProcessing(b *testing.B) {
 	}
 
 	// Create test server
-	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
+	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, _ *http.Request) {
 		response := map[string]interface{}{
 			"data": searchData,
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 	defer server.Close()
 
@@ -226,10 +233,10 @@ func BenchmarkSearchUsersCmd_ResponseProcessing(b *testing.B) {
 	}
 }
 
-// BenchmarkStringBuilding benchmarks string operations used in search results
+// BenchmarkStringBuilding benchmarks string operations used in search results.
 func BenchmarkStringBuilding(b *testing.B) {
 	authors := []interface{}{"Alan Donovan", "Brian Kernighan", "Rob Pike", "Ken Thompson"}
-	
+
 	b.Run("Current-strings.Join", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			authorStrs := make([]string, 0, len(authors))
@@ -241,7 +248,7 @@ func BenchmarkStringBuilding(b *testing.B) {
 			_ = strings.Join(authorStrs, ", ")
 		}
 	})
-	
+
 	b.Run("Optimized-strings.Builder", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			var builder strings.Builder

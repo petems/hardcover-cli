@@ -10,21 +10,7 @@ import (
 	"hardcover-cli/internal/testutil"
 )
 
-// BenchmarkClient_Execute_JSONMarshaling benchmarks JSON marshaling operations
-func BenchmarkClient_Execute_JSONMarshaling(b *testing.B) {
-	// Create test server with simple response
-	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{"search": {"results": {"hits": []}}}`),
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-	})
-	defer server.Close()
-
-	c := client.NewClient(server.URL, "test-api-key")
-
-	query := `
+const testGraphQLQuery = `
 		query SearchBooks($query: String!) {
 			search(query: $query, query_type: "Book", per_page: 25, page: 1) {
 				ids
@@ -36,6 +22,25 @@ func BenchmarkClient_Execute_JSONMarshaling(b *testing.B) {
 			}
 		}
 	`
+
+// BenchmarkClient_Execute_JSONMarshaling benchmarks JSON marshaling operations.
+func BenchmarkClient_Execute_JSONMarshaling(b *testing.B) {
+	// Create test server with simple response
+	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, _ *http.Request) {
+		response := client.GraphQLResponse{
+			Data: json.RawMessage(`{"search": {"results": {"hits": []}}}`),
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	})
+	defer server.Close()
+
+	c := client.NewClient(server.URL, "test-api-key")
+
+	query := testGraphQLQuery
 
 	variables := map[string]interface{}{
 		"query": "golang programming",
@@ -52,7 +57,7 @@ func BenchmarkClient_Execute_JSONMarshaling(b *testing.B) {
 	}
 }
 
-// BenchmarkClient_Execute_LargeResponse benchmarks processing large API responses
+// BenchmarkClient_Execute_LargeResponse benchmarks processing large API responses.
 func BenchmarkClient_Execute_LargeResponse(b *testing.B) {
 	// Create a large response with many books
 	largeData := make([]interface{}, 100)
@@ -82,29 +87,21 @@ func BenchmarkClient_Execute_LargeResponse(b *testing.B) {
 	}
 
 	// Create test server with large response
-	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
+	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, _ *http.Request) {
 		response := client.GraphQLResponse{
 			Data: mustMarshal(responseData),
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 	defer server.Close()
 
 	c := client.NewClient(server.URL, "test-api-key")
 
-	query := `
-		query SearchBooks($query: String!) {
-			search(query: $query, query_type: "Book", per_page: 100, page: 1) {
-				ids
-				results
-				query
-				query_type
-				page
-				per_page
-			}
-		}
-	`
+	query := testGraphQLQuery
 
 	variables := map[string]interface{}{
 		"query": "programming",
@@ -121,32 +118,24 @@ func BenchmarkClient_Execute_LargeResponse(b *testing.B) {
 	}
 }
 
-// BenchmarkClient_Execute_ConcurrentRequests benchmarks concurrent API calls
+// BenchmarkClient_Execute_ConcurrentRequests benchmarks concurrent API calls.
 func BenchmarkClient_Execute_ConcurrentRequests(b *testing.B) {
 	// Create test server
-	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
+	server := testutil.CreateTestServerWithHandler(func(w http.ResponseWriter, _ *http.Request) {
 		response := client.GraphQLResponse{
 			Data: json.RawMessage(`{"search": {"results": {"hits": []}}}`),
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 	defer server.Close()
 
 	c := client.NewClient(server.URL, "test-api-key")
 
-	query := `
-		query SearchBooks($query: String!) {
-			search(query: $query, query_type: "Book", per_page: 25, page: 1) {
-				ids
-				results
-				query
-				query_type
-				page
-				per_page
-			}
-		}
-	`
+	query := testGraphQLQuery
 
 	variables := map[string]interface{}{
 		"query": "golang",
@@ -165,7 +154,7 @@ func BenchmarkClient_Execute_ConcurrentRequests(b *testing.B) {
 	})
 }
 
-// BenchmarkJSON_Operations benchmarks different JSON processing approaches
+// BenchmarkJSON_Operations benchmarks different JSON processing approaches.
 func BenchmarkJSON_Operations(b *testing.B) {
 	sampleData := map[string]interface{}{
 		"search": map[string]interface{}{
@@ -196,7 +185,10 @@ func BenchmarkJSON_Operations(b *testing.B) {
 	})
 
 	b.Run("Unmarshal", func(b *testing.B) {
-		data, _ := json.Marshal(sampleData)
+		data, err := json.Marshal(sampleData)
+		if err != nil {
+			b.Fatal(err)
+		}
 		for i := 0; i < b.N; i++ {
 			var result map[string]interface{}
 			err := json.Unmarshal(data, &result)
@@ -207,7 +199,7 @@ func BenchmarkJSON_Operations(b *testing.B) {
 	})
 }
 
-// mustMarshal is a helper function for benchmark setup
+// mustMarshal is a helper function for benchmark setup.
 func mustMarshal(v interface{}) json.RawMessage {
 	data, err := json.Marshal(v)
 	if err != nil {

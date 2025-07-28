@@ -51,7 +51,7 @@ func (c *OptimizedClient) Execute(
 	result interface{},
 ) error {
 	// Get buffer from pool
-	buf := c.bufferPool.Get().(*bytes.Buffer)
+	buf := c.bufferPool.Get().(*bytes.Buffer) //nolint:errcheck // sync.Pool.Get() always succeeds
 	defer func() {
 		buf.Reset()
 		c.bufferPool.Put(buf)
@@ -101,13 +101,13 @@ func (c *OptimizedClient) Execute(
 	if httpResp.StatusCode != http.StatusOK {
 		// Read limited error body to avoid memory issues
 		limitedReader := io.LimitReader(httpResp.Body, 1024)
-		body, _ := io.ReadAll(limitedReader)
+		body, _ := io.ReadAll(limitedReader) //nolint:errcheck // intentionally ignore error to always return HTTP error
 		return fmt.Errorf("HTTP error %d: %s", httpResp.StatusCode, string(body))
 	}
 
 	// Use streaming decoder for response
 	decoder := json.NewDecoder(httpResp.Body)
-	
+
 	var gqlResp GraphQLResponse
 	if err := decoder.Decode(&gqlResp); err != nil {
 		return fmt.Errorf("failed to unmarshal response: %w", err)
@@ -137,7 +137,7 @@ func (c *OptimizedClient) ExecuteStreaming(
 	processor func(json.RawMessage) error,
 ) error {
 	// Get buffer from pool
-	buf := c.bufferPool.Get().(*bytes.Buffer)
+	buf := c.bufferPool.Get().(*bytes.Buffer) //nolint:errcheck // sync.Pool.Get() always succeeds
 	defer func() {
 		buf.Reset()
 		c.bufferPool.Put(buf)
@@ -174,17 +174,19 @@ func (c *OptimizedClient) ExecuteStreaming(
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
-	defer httpResp.Body.Close()
+	defer func() {
+		_ = httpResp.Body.Close() //nolint:errcheck // intentionally ignore error in defer
+	}()
 
 	if httpResp.StatusCode != http.StatusOK {
 		limitedReader := io.LimitReader(httpResp.Body, 1024)
-		body, _ := io.ReadAll(limitedReader)
+		body, _ := io.ReadAll(limitedReader) //nolint:errcheck // intentionally ignore error to always return HTTP error
 		return fmt.Errorf("HTTP error %d: %s", httpResp.StatusCode, string(body))
 	}
 
 	// Stream decode the response
 	decoder := json.NewDecoder(httpResp.Body)
-	
+
 	var gqlResp GraphQLResponse
 	if err := decoder.Decode(&gqlResp); err != nil {
 		return fmt.Errorf("failed to unmarshal response: %w", err)

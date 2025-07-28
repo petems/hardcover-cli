@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// BenchmarkStringProcessing compares current vs optimized string processing
+// BenchmarkStringProcessing compares current vs optimized string processing.
 func BenchmarkStringProcessing(b *testing.B) {
 	// Sample book data for benchmarking
 	sampleBook := map[string]interface{}{
@@ -67,7 +67,7 @@ func BenchmarkStringProcessing(b *testing.B) {
 	})
 }
 
-// BenchmarkBatchProcessing compares batch processing approaches
+// BenchmarkBatchProcessing compares batch processing approaches.
 func BenchmarkBatchProcessing(b *testing.B) {
 	// Create multiple sample hits
 	hits := make([]interface{}, 10)
@@ -107,22 +107,24 @@ func BenchmarkBatchProcessing(b *testing.B) {
 		var buf bytes.Buffer
 		for i := 0; i < b.N; i++ {
 			buf.Reset()
-			processor.ProcessBooksBatch(hits, 0, &buf)
+			if err := processor.ProcessBooksBatch(hits, 0, &buf); err != nil {
+				b.Fatalf("ProcessBooksBatch failed: %v", err)
+			}
 		}
 	})
 }
 
-// BenchmarkOptimizedStringBuilder compares different string building approaches
+// BenchmarkOptimizedStringBuilder compares different string building approaches.
 func BenchmarkOptimizedStringBuilder(b *testing.B) {
 	fields := []string{"Author 1", "Author 2", "Author 3", "Author 4", "Author 5"}
-	
+
 	b.Run("strings.Join", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			interfaces := make([]interface{}, len(fields))
 			for j, field := range fields {
 				interfaces[j] = field
 			}
-			
+
 			strs := make([]string, 0, len(interfaces))
 			for _, iface := range interfaces {
 				if s, ok := iface.(string); ok {
@@ -132,20 +134,20 @@ func BenchmarkOptimizedStringBuilder(b *testing.B) {
 			_ = strings.Join(strs, ", ")
 		}
 	})
-	
+
 	b.Run("OptimizedStringBuilder", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			interfaces := make([]interface{}, len(fields))
 			for j, field := range fields {
 				interfaces[j] = field
 			}
-			
+
 			builder := NewOptimizedStringBuilder(100)
 			builder.WriteStrings(interfaces, ", ")
 			_ = builder.String()
 		}
 	})
-	
+
 	b.Run("OptimizedStringBuilder-Reuse", func(b *testing.B) {
 		builder := NewOptimizedStringBuilder(100)
 		for i := 0; i < b.N; i++ {
@@ -154,25 +156,25 @@ func BenchmarkOptimizedStringBuilder(b *testing.B) {
 			for j, field := range fields {
 				interfaces[j] = field
 			}
-			
+
 			builder.WriteStrings(interfaces, ", ")
 			_ = builder.String()
 		}
 	})
 }
 
-// formatBookCurrent simulates the current book formatting logic for comparison
+// formatBookCurrent simulates the current book formatting logic for comparison.
 func formatBookCurrent(book map[string]interface{}, index int, buf *bytes.Buffer) {
 	// Title
 	if title, ok := book["title"].(string); ok {
-		buf.WriteString(fmt.Sprintf("%d. %s\n", index+1, title))
+		fmt.Fprintf(buf, "%d. %s\n", index+1, title)
 	}
-	
+
 	// Subtitle
 	if subtitle, ok := book["subtitle"].(string); ok && subtitle != "" {
-		buf.WriteString(fmt.Sprintf("   Subtitle: %s\n", subtitle))
+		fmt.Fprintf(buf, "   Subtitle: %s\n", subtitle)
 	}
-	
+
 	// Authors
 	if authors, ok := book["author_names"].([]interface{}); ok && len(authors) > 0 {
 		authorStrs := make([]string, 0, len(authors))
@@ -181,30 +183,30 @@ func formatBookCurrent(book map[string]interface{}, index int, buf *bytes.Buffer
 				authorStrs = append(authorStrs, s)
 			}
 		}
-		buf.WriteString(fmt.Sprintf("   Authors: %s\n", strings.Join(authorStrs, ", ")))
+		fmt.Fprintf(buf, "   Authors: %s\n", strings.Join(authorStrs, ", "))
 	}
-	
+
 	// Year
 	if year, ok := book["release_year"].(float64); ok && year > 0 {
-		buf.WriteString(fmt.Sprintf("   Year: %.0f\n", year))
+		fmt.Fprintf(buf, "   Year: %.0f\n", year)
 	}
-	
+
 	// Other fields...
 	buf.WriteString("-----------------------------\n")
 }
 
-// formatUserCurrent simulates the current user formatting logic for comparison
+// formatUserCurrent simulates the current user formatting logic for comparison.
 func formatUserCurrent(user map[string]interface{}, index int, buf *bytes.Buffer) {
 	// Username
 	if username, ok := user["username"].(string); ok {
-		buf.WriteString(fmt.Sprintf("%d. %s\n", index+1, username))
+		fmt.Fprintf(buf, "%d. %s\n", index+1, username)
 	}
-	
+
 	// Name
 	if name, ok := user["name"].(string); ok && name != "" {
-		buf.WriteString(fmt.Sprintf("   Name: %s\n", name))
+		fmt.Fprintf(buf, "   Name: %s\n", name)
 	}
-	
+
 	// Other fields...
 	buf.WriteString("-----------------------------\n")
 }
