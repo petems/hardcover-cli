@@ -3,7 +3,7 @@ package client_test
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -28,7 +28,7 @@ type clientInternal struct {
 type errorRoundTripper struct{}
 
 func (errorRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
-	return nil, fmt.Errorf("network error")
+	return nil, errors.New("network error")
 }
 
 func TestNewClient(t *testing.T) {
@@ -87,7 +87,7 @@ func TestClient_Execute_Success(t *testing.T) {
 
 func TestClient_Execute_GraphQLError(t *testing.T) {
 	// Setup GraphQL errors
-	errors := []testutil.GraphQLError{
+	graphqlErrors := []testutil.GraphQLError{
 		{
 			Message: "Field 'test' doesn't exist",
 			Locations: []testutil.GraphQLErrorLocation{
@@ -97,7 +97,7 @@ func TestClient_Execute_GraphQLError(t *testing.T) {
 	}
 
 	// Create test server that returns GraphQL errors
-	server := testutil.CreateTestServer(t, testutil.ErrorResponse(errors))
+	server := testutil.CreateTestServer(t, testutil.ErrorResponse(graphqlErrors))
 	defer server.Close()
 
 	c := client.NewClient(server.URL, "test-api-key")
