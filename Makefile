@@ -45,6 +45,32 @@ clean:
 	rm -rf bin/
 	$(GO) clean -cache ./...
 
+## Run performance benchmarks
+bench:
+	$(GO) test -bench=. -benchmem ./... -run=^$$
+
+## Run specific performance benchmarks for string operations
+bench-strings:
+	$(GO) test -bench=BenchmarkStringBuilding -benchmem ./cmd -run=^$$
+
+## Run client performance benchmarks
+bench-client:
+	$(GO) test -bench=. -benchmem ./internal/client -run=^$$
+
+## Run and save benchmark results for comparison
+bench-save:
+	$(GO) test -bench=. -benchmem ./... -run=^$$ > benchmarks_$(shell date +%Y%m%d_%H%M%S).txt
+
+## Run CPU profiling
+profile-cpu:
+	$(GO) test -bench=BenchmarkClient_Execute_JSONMarshaling -cpuprofile cpu.prof ./internal/client -run=^$$
+	$(GO) tool pprof cpu.prof
+
+## Run memory profiling  
+profile-mem:
+	$(GO) test -bench=BenchmarkClient_Execute_JSONMarshaling -memprofile mem.prof ./internal/client -run=^$$
+	$(GO) tool pprof mem.prof
+
 ## Help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
