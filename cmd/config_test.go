@@ -15,6 +15,11 @@ import (
 )
 
 func TestConfigSetAPIKeyCmd_Success(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
@@ -64,6 +69,11 @@ func TestConfigSetAPIKeyCmd_RequiresArgument(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_WithAPIKey(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
@@ -159,6 +169,11 @@ func TestConfigGetAPIKeyCmd_NoAPIKey(t *testing.T) {
 }
 
 func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
@@ -192,6 +207,11 @@ func TestConfigGetAPIKeyCmd_ShortAPIKey(t *testing.T) {
 }
 
 func TestConfigShowPathCmd_Success(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
@@ -219,6 +239,11 @@ func TestConfigShowPathCmd_Success(t *testing.T) {
 }
 
 func TestConfigShowPathCmd_FileExists(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
@@ -319,6 +344,11 @@ func TestConfigCmd_Integration(t *testing.T) {
 }
 
 func TestConfigSetAPIKeyCmd_UpdatesExistingConfig(t *testing.T) {
+	// Unset environment variable for this test
+	oldAPIKey := os.Getenv("HARDCOVER_API_KEY")
+	os.Unsetenv("HARDCOVER_API_KEY")
+	defer os.Setenv("HARDCOVER_API_KEY", oldAPIKey)
+
 	// Create temporary directory for config
 	tempDir := t.TempDir()
 
