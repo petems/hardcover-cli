@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -109,8 +110,11 @@ func TestClient_Execute_HTTPError(t *testing.T) {
 }
 
 func TestClient_Execute_NetworkError(t *testing.T) {
-	// Use invalid endpoint to trigger network error
-	c := client.NewClient("http://invalid-endpoint:99999", "test-api-key")
+	// Start and immediately close a test server to get a valid URL that will refuse connections
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	server.Close()
+
+	c := client.NewClient(server.URL, "test-api-key")
 
 	var result map[string]interface{}
 	err := c.Execute(context.Background(), "query { test }", nil, &result)
