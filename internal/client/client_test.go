@@ -109,8 +109,16 @@ func TestClient_Execute_HTTPError(t *testing.T) {
 }
 
 func TestClient_Execute_NetworkError(t *testing.T) {
+	// Disable proxy settings to ensure we hit the network error directly
+	t.Setenv("HTTP_PROXY", "")
+	t.Setenv("HTTPS_PROXY", "")
+	t.Setenv("http_proxy", "")
+	t.Setenv("https_proxy", "")
+	t.Setenv("NO_PROXY", "")
+	t.Setenv("no_proxy", "")
+
 	// Use invalid endpoint to trigger network error
-	c := client.NewClient("http://invalid-endpoint:99999", "test-api-key")
+	c := client.NewClient("http://localhost:0", "test-api-key")
 
 	var result map[string]interface{}
 	err := c.Execute(context.Background(), "query { test }", nil, &result)
