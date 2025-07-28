@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -168,7 +169,8 @@ import (
 {{range .Types}}
 // {{.Name}} represents the {{.Name}} GraphQL type
 type {{toCamelCase .Name}} struct {
-{{range .Fields}}{{if not (hasPrefix .Name "__")}}	{{toCamelCase .Name}} {{getGoType .Type}} ` + "`json:\"{{.Name}}\"`" + `
+{{range .Fields}}{{if not (hasPrefix .Name "__")}}
+	{{toCamelCase .Name}} {{getGoType .Type}} ` + "`json:\"{{.Name}}\"`" + `
 {{end}}{{end}}}
 {{end}}
 `
@@ -192,7 +194,9 @@ func main() {
 	}
 
 	// Create HTTP request
-	httpReq, err := http.NewRequest("POST", "https://api.hardcover.app/v1/graphql", bytes.NewBuffer(jsonData))
+	ctx := context.Background()
+	httpReq, err := http.NewRequestWithContext(
+		ctx, "POST", "https://api.hardcover.app/v1/graphql", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Printf("Failed to create request: %v\n", err)
 		os.Exit(1)
@@ -209,11 +213,13 @@ func main() {
 		fmt.Printf("Failed to execute request: %v\n", err)
 		os.Exit(1)
 	}
-	defer resp.Body.Close()
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("Failed to read response: %v\n", err)
+		os.Exit(1)
+	}
+	if closeErr := resp.Body.Close(); closeErr != nil {
+		fmt.Printf("Failed to close response body: %v\n", closeErr)
 		os.Exit(1)
 	}
 
@@ -224,8 +230,8 @@ func main() {
 
 	// Parse response
 	var gqlResp GraphQLResponse
-	if err := json.Unmarshal(body, &gqlResp); err != nil {
-		fmt.Printf("Failed to unmarshal response: %v\n", err)
+	if unmarshalErr := json.Unmarshal(body, &gqlResp); unmarshalErr != nil {
+		fmt.Printf("Failed to unmarshal response: %v\n", unmarshalErr)
 		os.Exit(1)
 	}
 
@@ -249,8 +255,8 @@ func main() {
 	}
 
 	// Create output directory
-	if err := os.MkdirAll("internal/client", 0755); err != nil {
-		fmt.Printf("Failed to create directory: %v\n", err)
+	if mkdirErr := os.MkdirAll("internal/client", dirPermissions); mkdirErr != nil {
+		fmt.Printf("Failed to create directory: %v\n", mkdirErr)
 		os.Exit(1)
 	}
 
@@ -260,7 +266,6 @@ func main() {
 		fmt.Printf("Failed to create types file: %v\n", err)
 		os.Exit(1)
 	}
-	defer typesFile.Close()
 
 	// Execute template
 	data := struct {
@@ -271,11 +276,27 @@ func main() {
 
 	if err := tmpl.Execute(typesFile, data); err != nil {
 		fmt.Printf("Failed to execute template: %v\n", err)
+		if closeErr := typesFile.Close(); closeErr != nil {
+			fmt.Printf("Failed to close types file: %v\n", closeErr)
+		}
+		os.Exit(1)
+	}
+
+	if err := typesFile.Close(); err != nil {
+		fmt.Printf("Failed to close types file: %v\n", err)
 		os.Exit(1)
 	}
 
 	fmt.Println("Successfully generated Go types from GraphQL schema")
 }
+
+const (
+	goStringType = "string"
+	// ASCII uppercase conversion: clear bit 5 (32) to convert lowercase to uppercase
+	asciiUppercaseMask = 32
+	// Directory permissions: owner read/write/execute, group read/execute
+	dirPermissions = 0o750
+)
 
 func getGoType(typeRef TypeRef) string {
 	if typeRef.Kind == "NON_NULL" {
@@ -288,9 +309,9 @@ func getGoType(typeRef TypeRef) string {
 
 	switch typeRef.Name {
 	case "ID":
-		return "string"
+		return goStringType
 	case "String":
-		return "string"
+		return goStringType
 	case "Int":
 		return "int"
 	case "Float":
@@ -302,14 +323,14 @@ func getGoType(typeRef TypeRef) string {
 	case "jsonb":
 		return "*json.RawMessage"
 	case "citext":
-		return "string"
+		return goStringType
 	default:
 		return "*" + toCamelCase(typeRef.Name)
 	}
 }
 
 func toCamelCase(s string) string {
-	if len(s) == 0 {
+	if s == "" {
 		return s
 	}
 
@@ -325,7 +346,7 @@ func toCamelCase(s string) string {
 
 	// Simple camel case conversion
 	if len(s) > 1 {
-		return string(rune(s[0])&^32) + s[1:]
+		return string(rune(s[0])&^asciiUppercaseMask) + s[1:]
 	}
-	return string(rune(s[0]) & ^32)
+	return string(rune(s[0]) & ^asciiUppercaseMask)
 }
