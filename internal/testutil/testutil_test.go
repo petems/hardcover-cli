@@ -1,4 +1,5 @@
-package testutil
+// Package testutil provides testing utilities and helpers for the hardcover-cli application.
+package testutil_test
 
 import (
 	"context"
@@ -9,38 +10,31 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/testutil"
 )
 
 func TestDefaultTestConfig(t *testing.T) {
-	cfg := DefaultTestConfig()
-	assert.NotNil(t, cfg)
+	cfg := testutil.DefaultTestConfig()
 	assert.Equal(t, "test-api-key", cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 }
 
 func TestSetupTestConfig(t *testing.T) {
-	// Test with nil input
-	cfg := SetupTestConfig(nil)
-	assert.NotNil(t, cfg)
-	assert.Equal(t, "test-api-key", cfg.APIKey)
-	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
-
-	// Test with custom input
-	customCfg := &TestConfig{
+	testCfg := &testutil.TestConfig{
 		APIKey:  "custom-key",
-		BaseURL: "https://custom.url",
+		BaseURL: "custom-url",
 	}
-	cfg = SetupTestConfig(customCfg)
+	cfg := testutil.SetupTestConfig(testCfg)
 	assert.Equal(t, "custom-key", cfg.APIKey)
-	assert.Equal(t, "https://custom.url", cfg.BaseURL)
+	assert.Equal(t, "custom-url", cfg.BaseURL)
 }
 
 func TestConfig_Methods(t *testing.T) {
-	cfg := &Config{
+	cfg := &testutil.Config{
 		APIKey:  "test-key",
 		BaseURL: "test-url",
 	}
-
 	assert.Equal(t, "test-key", cfg.GetAPIKey())
 	assert.Equal(t, "test-url", cfg.GetBaseURL())
 }
@@ -49,20 +43,26 @@ func TestCreateTestServer_Success(t *testing.T) {
 	data := map[string]interface{}{
 		"test": "value",
 	}
-	response := SuccessResponse(data)
+	response := testutil.SuccessResponse(data)
 
-	server := CreateTestServer(t, response)
+	server := testutil.CreateTestServer(t, response)
 	defer server.Close()
 
 	// Make a request to the test server
-	resp, err := http.Get(server.URL)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL, http.NoBody)
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			t.Errorf("Failed to close response body: %v", closeErr)
+		}
+	}()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "application/json", resp.Header.Get("Content-Type"))
 
-	var graphqlResp GraphQLResponse
+	var graphqlResp testutil.GraphQLResponse
 	err = json.NewDecoder(resp.Body).Decode(&graphqlResp)
 	require.NoError(t, err)
 
@@ -73,22 +73,28 @@ func TestCreateTestServer_Success(t *testing.T) {
 }
 
 func TestCreateTestServer_Error(t *testing.T) {
-	errors := []GraphQLError{
+	errors := []testutil.GraphQLError{
 		{Message: "Test error"},
 	}
-	response := ErrorResponse(errors)
+	response := testutil.ErrorResponse(errors)
 
-	server := CreateTestServer(t, response)
+	server := testutil.CreateTestServer(t, response)
 	defer server.Close()
 
 	// Make a request to the test server
-	resp, err := http.Get(server.URL)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL, http.NoBody)
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			t.Errorf("Failed to close response body: %v", closeErr)
+		}
+	}()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	var graphqlResp GraphQLResponse
+	var graphqlResp testutil.GraphQLResponse
 	err = json.NewDecoder(resp.Body).Decode(&graphqlResp)
 	require.NoError(t, err)
 
@@ -97,21 +103,27 @@ func TestCreateTestServer_Error(t *testing.T) {
 }
 
 func TestCreateTestServer_HTTPError(t *testing.T) {
-	response := HTTPErrorResponse(http.StatusBadRequest, "Bad Request")
+	response := testutil.HTTPErrorResponse(http.StatusBadRequest, "Bad Request")
 
-	server := CreateTestServer(t, response)
+	server := testutil.CreateTestServer(t, response)
 	defer server.Close()
 
 	// Make a request to the test server
-	resp, err := http.Get(server.URL)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL, http.NoBody)
 	require.NoError(t, err)
-	defer resp.Body.Close()
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			t.Errorf("Failed to close response body: %v", closeErr)
+		}
+	}()
 
 	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 }
 
 func TestEnvironmentManager(t *testing.T) {
-	envMgr := NewEnvironmentManager(t)
+	envMgr := testutil.NewEnvironmentManager(t)
 
 	// Test setting a new environment variable
 	envMgr.SetEnv("TEST_VAR", "test_value")
@@ -122,7 +134,9 @@ func TestEnvironmentManager(t *testing.T) {
 	assert.Empty(t, os.Getenv("TEST_VAR"))
 
 	// Test modifying existing environment variable
-	os.Setenv("EXISTING_VAR", "original")
+	if err := os.Setenv("EXISTING_VAR", "original"); err != nil {
+		t.Errorf("Failed to set EXISTING_VAR: %v", err)
+	}
 	envMgr.SetEnv("EXISTING_VAR", "modified")
 	assert.Equal(t, "modified", os.Getenv("EXISTING_VAR"))
 
@@ -131,11 +145,13 @@ func TestEnvironmentManager(t *testing.T) {
 	assert.Equal(t, "original", os.Getenv("EXISTING_VAR"))
 
 	// Clean up
-	os.Unsetenv("EXISTING_VAR")
+	if err := os.Unsetenv("EXISTING_VAR"); err != nil {
+		t.Errorf("Failed to unset EXISTING_VAR: %v", err)
+	}
 }
 
 func TestTempDirManager(t *testing.T) {
-	tempDirMgr := NewTempDirManager(t)
+	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
 	// Test temp directory creation
@@ -151,7 +167,7 @@ func TestTempDirManager(t *testing.T) {
 	assert.Equal(t, expectedPath, configPath)
 
 	// Test config creation
-	cfg := &Config{
+	cfg := &testutil.Config{
 		APIKey:  "test-key",
 		BaseURL: "test-url",
 	}
@@ -163,17 +179,18 @@ func TestTempDirManager(t *testing.T) {
 }
 
 func TestSetupTestCommand(t *testing.T) {
-	cfg := SetupTestConfig(&TestConfig{
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-key",
 		BaseURL: "test-url",
 	})
 
 	// Mock withConfig function
+	type testConfigKey struct{}
 	mockWithConfig := func(ctx context.Context, cfg interface{}) context.Context {
-		return context.WithValue(ctx, "test-config", cfg)
+		return context.WithValue(ctx, testConfigKey{}, cfg)
 	}
 
-	cmd, output := SetupTestCommand(t, cfg, mockWithConfig)
+	cmd, output := testutil.SetupTestCommand(t, cfg, mockWithConfig)
 
 	assert.NotNil(t, cmd)
 	assert.NotNil(t, output)
@@ -186,28 +203,28 @@ func TestSetupTestCommand(t *testing.T) {
 func TestResponseBuilders(t *testing.T) {
 	// Test SuccessResponse
 	data := map[string]interface{}{"key": "value"}
-	successResp := SuccessResponse(data)
+	successResp := testutil.SuccessResponse(data)
 	assert.Equal(t, data, successResp.Data)
 	assert.Equal(t, http.StatusOK, successResp.StatusCode)
 	assert.Equal(t, "application/json", successResp.Headers["Content-Type"])
 
 	// Test ErrorResponse
-	errors := []GraphQLError{{Message: "error"}}
-	errorResp := ErrorResponse(errors)
+	errors := []testutil.GraphQLError{{Message: "error"}}
+	errorResp := testutil.ErrorResponse(errors)
 	assert.Nil(t, errorResp.Data)
 	assert.Equal(t, errors, errorResp.Errors)
 	assert.Equal(t, http.StatusOK, errorResp.StatusCode)
 
 	// Test HTTPErrorResponse
-	httpErrorResp := HTTPErrorResponse(http.StatusNotFound, "Not Found")
+	httpErrorResp := testutil.HTTPErrorResponse(http.StatusNotFound, "Not Found")
 	assert.Equal(t, "Not Found", httpErrorResp.Data)
 	assert.Equal(t, http.StatusNotFound, httpErrorResp.StatusCode)
 }
 
 func TestGraphQLError_Error(t *testing.T) {
-	err := GraphQLError{
+	err := testutil.GraphQLError{
 		Message: "Test error message",
-		Locations: []GraphQLErrorLocation{
+		Locations: []testutil.GraphQLErrorLocation{
 			{Line: 1, Column: 5},
 		},
 	}

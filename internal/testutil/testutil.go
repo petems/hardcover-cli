@@ -1,3 +1,4 @@
+// Package testutil provides testing utilities and helpers for the hardcover-cli application.
 package testutil
 
 import (
@@ -15,13 +16,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// TestConfig represents common test configuration options
+// TestConfig represents common test configuration options.
 type TestConfig struct {
 	APIKey  string
 	BaseURL string
 }
 
-// DefaultTestConfig returns a standard test configuration
+// DefaultTestConfig returns a standard test configuration.
 func DefaultTestConfig() *TestConfig {
 	return &TestConfig{
 		APIKey:  "test-api-key",
@@ -29,30 +30,30 @@ func DefaultTestConfig() *TestConfig {
 	}
 }
 
-// GraphQLError represents a GraphQL error (copied to avoid import cycle)
+// GraphQLError represents a GraphQL error (copied to avoid import cycle).
 type GraphQLError struct {
 	Message   string                 `json:"message"`
 	Locations []GraphQLErrorLocation `json:"locations,omitempty"`
 }
 
-// Error implements the error interface
+// Error implements the error interface.
 func (e GraphQLError) Error() string {
 	return e.Message
 }
 
-// GraphQLErrorLocation represents the location of a GraphQL error
+// GraphQLErrorLocation represents the location of a GraphQL error.
 type GraphQLErrorLocation struct {
 	Line   int `json:"line"`
 	Column int `json:"column"`
 }
 
-// GraphQLResponse represents a GraphQL response (copied to avoid import cycle)
+// GraphQLResponse represents a GraphQL response (copied to avoid import cycle).
 type GraphQLResponse struct {
 	Data   json.RawMessage `json:"data"`
 	Errors []GraphQLError  `json:"errors,omitempty"`
 }
 
-// TestServerResponse represents a configurable test server response
+// TestServerResponse represents a configurable test server response.
 type TestServerResponse struct {
 	Data       interface{}
 	Errors     []GraphQLError
@@ -60,10 +61,19 @@ type TestServerResponse struct {
 	Headers    map[string]string
 }
 
-// TestServerHandler represents a function that handles test server requests
+// TestServerHandler represents a function that handles test server requests.
 type TestServerHandler func(w http.ResponseWriter, r *http.Request)
 
-// CreateTestServer creates an HTTP test server with default GraphQL response behavior
+// writeErrorResponse writes error response data to the response writer.
+func writeErrorResponse(t *testing.T, w http.ResponseWriter, data interface{}) {
+	if dataStr, ok := data.(string); ok {
+		if _, writeErr := w.Write([]byte(dataStr)); writeErr != nil {
+			t.Errorf("Failed to write response: %v", writeErr)
+		}
+	}
+}
+
+// CreateTestServer creates an HTTP test server with default GraphQL response behavior.
 func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Server {
 	t.Helper()
 
@@ -83,10 +93,7 @@ func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Serv
 		if statusCode != http.StatusOK {
 			w.WriteHeader(statusCode)
 			if response.Data != nil {
-				_, writeErr := w.Write([]byte(response.Data.(string)))
-				if writeErr != nil {
-					t.Errorf("Failed to write response: %v", writeErr)
-				}
+				writeErrorResponse(t, w, response.Data)
 			}
 			return
 		}
@@ -95,7 +102,10 @@ func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Serv
 		var data json.RawMessage
 		if response.Data != nil {
 			dataBytes, err := json.Marshal(response.Data)
-			require.NoError(t, err)
+			if err != nil {
+				t.Errorf("Failed to marshal response data: %v", err)
+				return
+			}
 			data = json.RawMessage(dataBytes)
 		}
 
@@ -112,12 +122,12 @@ func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Serv
 	}))
 }
 
-// CreateTestServerWithHandler creates an HTTP test server with a custom handler
+// CreateTestServerWithHandler creates an HTTP test server with a custom handler.
 func CreateTestServerWithHandler(handler TestServerHandler) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(handler))
 }
 
-// CreateTestServerWithAPIKeyValidation creates a test server that validates API key
+// CreateTestServerWithAPIKeyValidation creates a test server that validates API key.
 func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string,
 	response *TestServerResponse) *httptest.Server {
 	t.Helper()
@@ -138,23 +148,23 @@ func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string,
 	})
 }
 
-// Config represents a configuration (copied to avoid import cycle)
+// Config represents a configuration (copied to avoid import cycle).
 type Config struct {
 	APIKey  string `yaml:"api_key"`
 	BaseURL string `yaml:"base_url"`
 }
 
-// GetAPIKey returns the API key (for interface compatibility)
+// GetAPIKey returns the API key (for interface compatibility).
 func (c *Config) GetAPIKey() string {
 	return c.APIKey
 }
 
-// GetBaseURL returns the base URL (for interface compatibility)
+// GetBaseURL returns the base URL (for interface compatibility).
 func (c *Config) GetBaseURL() string {
 	return c.BaseURL
 }
 
-// SetupTestConfig creates a Config for testing
+// SetupTestConfig creates a Config for testing.
 func SetupTestConfig(testCfg *TestConfig) *Config {
 	if testCfg == nil {
 		testCfg = DefaultTestConfig()
@@ -166,10 +176,34 @@ func SetupTestConfig(testCfg *TestConfig) *Config {
 	}
 }
 
-// WithConfigFunc represents the withConfig function signature from cmd package
+// WithConfigFunc represents the withConfig function signature from cmd package.
 type WithConfigFunc func(ctx context.Context, cfg interface{}) context.Context
 
-// SetupTestCommand creates a cobra.Command with test context and config
+// WithConfig is a test helper function to inject configuration into context.
+func WithConfig(ctx context.Context, _ *Config) context.Context {
+	// This function is used by tests to inject test configuration
+	// The actual implementation depends on the specific command package
+	return ctx
+}
+
+// WithTestConfig is a test helper function that converts TestConfig to Config.
+func WithTestConfig(ctx context.Context, testCfg *TestConfig) context.Context {
+	realCfg := &Config{
+		APIKey:  testCfg.APIKey,
+		BaseURL: testCfg.BaseURL,
+	}
+	return WithConfig(ctx, realCfg)
+}
+
+// WithTestConfigAdapter creates a WithConfigFunc that works with Config.
+func WithTestConfigAdapter(ctx context.Context, cfg interface{}) context.Context {
+	if config, ok := cfg.(*Config); ok {
+		return WithConfig(ctx, config)
+	}
+	return ctx
+}
+
+// SetupTestCommand creates a cobra.Command with test context and config.
 func SetupTestCommand(t *testing.T, cfg *Config, withConfigFunc WithConfigFunc) (*cobra.Command, *bytes.Buffer) {
 	t.Helper()
 
@@ -190,13 +224,13 @@ func SetupTestCommand(t *testing.T, cfg *Config, withConfigFunc WithConfigFunc) 
 	return cmd, &output
 }
 
-// EnvironmentManager helps manage environment variables in tests
+// EnvironmentManager helps manage environment variables in tests.
 type EnvironmentManager struct {
 	originalValues map[string]string
 	t              *testing.T
 }
 
-// NewEnvironmentManager creates a new environment manager
+// NewEnvironmentManager creates a new environment manager.
 func NewEnvironmentManager(t *testing.T) *EnvironmentManager {
 	t.Helper()
 	return &EnvironmentManager{
@@ -205,7 +239,7 @@ func NewEnvironmentManager(t *testing.T) *EnvironmentManager {
 	}
 }
 
-// SetEnv sets an environment variable and remembers the original value
+// SetEnv sets an environment variable and remembers the original value.
 func (em *EnvironmentManager) SetEnv(key, value string) {
 	em.t.Helper()
 
@@ -214,10 +248,12 @@ func (em *EnvironmentManager) SetEnv(key, value string) {
 		em.originalValues[key] = os.Getenv(key)
 	}
 
-	os.Setenv(key, value)
+	if err := os.Setenv(key, value); err != nil {
+		em.t.Errorf("Failed to set environment variable %s: %v", key, err)
+	}
 }
 
-// UnsetEnv unsets an environment variable and remembers the original value
+// UnsetEnv unsets an environment variable and remembers the original value.
 func (em *EnvironmentManager) UnsetEnv(key string) {
 	em.t.Helper()
 
@@ -226,30 +262,36 @@ func (em *EnvironmentManager) UnsetEnv(key string) {
 		em.originalValues[key] = os.Getenv(key)
 	}
 
-	os.Unsetenv(key)
+	if err := os.Unsetenv(key); err != nil {
+		em.t.Errorf("Failed to unset environment variable %s: %v", key, err)
+	}
 }
 
-// Cleanup restores all environment variables to their original values
+// Cleanup restores all environment variables to their original values.
 func (em *EnvironmentManager) Cleanup() {
 	em.t.Helper()
 
 	for key, originalValue := range em.originalValues {
 		if originalValue == "" {
-			os.Unsetenv(key)
+			if err := os.Unsetenv(key); err != nil {
+				em.t.Errorf("Failed to unset environment variable %s: %v", key, err)
+			}
 		} else {
-			os.Setenv(key, originalValue)
+			if err := os.Setenv(key, originalValue); err != nil {
+				em.t.Errorf("Failed to set environment variable %s: %v", key, err)
+			}
 		}
 	}
 }
 
-// TempDirManager helps manage temporary directories for config testing
+// TempDirManager helps manage temporary directories for config testing.
 type TempDirManager struct {
 	tempDir      string
 	originalHome string
 	t            *testing.T
 }
 
-// NewTempDirManager creates a new temporary directory manager
+// NewTempDirManager creates a new temporary directory manager.
 func NewTempDirManager(t *testing.T) *TempDirManager {
 	t.Helper()
 
@@ -257,7 +299,9 @@ func NewTempDirManager(t *testing.T) *TempDirManager {
 	originalHome := os.Getenv("HOME")
 
 	// Set HOME to temp directory
-	os.Setenv("HOME", tempDir)
+	if err := os.Setenv("HOME", tempDir); err != nil {
+		t.Errorf("Failed to set HOME environment variable: %v", err)
+	}
 
 	return &TempDirManager{
 		tempDir:      tempDir,
@@ -266,23 +310,23 @@ func NewTempDirManager(t *testing.T) *TempDirManager {
 	}
 }
 
-// GetTempDir returns the temporary directory path
+// GetTempDir returns the temporary directory path.
 func (tdm *TempDirManager) GetTempDir() string {
 	return tdm.tempDir
 }
 
-// GetConfigPath returns the config file path in the temp directory
+// GetConfigPath returns the config file path in the temp directory.
 func (tdm *TempDirManager) GetConfigPath() string {
 	return filepath.Join(tdm.tempDir, ".hardcover", "config.yaml")
 }
 
-// CreateConfig creates a config file in the temp directory
+// CreateConfig creates a config file in the temp directory.
 func (tdm *TempDirManager) CreateConfig(t *testing.T, cfg *Config) {
 	t.Helper()
 
 	// Create config directory
 	configDir := filepath.Join(tdm.tempDir, ".hardcover")
-	err := os.MkdirAll(configDir, 0o755)
+	err := os.MkdirAll(configDir, 0o750)
 	require.NoError(t, err)
 
 	// Write config file
@@ -294,12 +338,14 @@ func (tdm *TempDirManager) CreateConfig(t *testing.T, cfg *Config) {
 	require.NoError(t, err)
 }
 
-// Cleanup restores the original HOME environment variable
+// Cleanup restores the original HOME environment variable.
 func (tdm *TempDirManager) Cleanup() {
-	os.Setenv("HOME", tdm.originalHome)
+	if err := os.Setenv("HOME", tdm.originalHome); err != nil {
+		tdm.t.Errorf("Failed to restore HOME environment variable: %v", err)
+	}
 }
 
-// TestCase represents a common test case structure
+// TestCase represents a common test case structure.
 type TestCase struct {
 	Name    string
 	Setup   func(t *testing.T) interface{}
@@ -308,7 +354,7 @@ type TestCase struct {
 	Cleanup func(t *testing.T, setupData interface{})
 }
 
-// RunTestCases runs a slice of test cases
+// RunTestCases runs a slice of test cases.
 func RunTestCases(t *testing.T, testCases []TestCase) {
 	t.Helper()
 
@@ -338,7 +384,7 @@ func RunTestCases(t *testing.T, testCases []TestCase) {
 
 // Common response builders for GraphQL tests
 
-// SuccessResponse creates a successful test server response
+// SuccessResponse creates a successful test server response.
 func SuccessResponse(data interface{}) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       data,
@@ -347,7 +393,7 @@ func SuccessResponse(data interface{}) *TestServerResponse {
 	}
 }
 
-// ErrorResponse creates an error test server response
+// ErrorResponse creates an error test server response.
 func ErrorResponse(errors []GraphQLError) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       nil,
@@ -357,7 +403,7 @@ func ErrorResponse(errors []GraphQLError) *TestServerResponse {
 	}
 }
 
-// HTTPErrorResponse creates an HTTP error test server response
+// HTTPErrorResponse creates an HTTP error test server response.
 func HTTPErrorResponse(statusCode int, body string) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       body,

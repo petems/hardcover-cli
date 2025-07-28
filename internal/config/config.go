@@ -1,3 +1,4 @@
+// Package config provides configuration management functionality for the hardcover-cli application.
 package config
 
 import (
@@ -8,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Config represents the application configuration
+// Config represents the application configuration.
 type Config struct {
 	APIKey  string `yaml:"api_key"`
 	BaseURL string `yaml:"base_url"`
@@ -21,14 +22,14 @@ const (
 	configDirPerm  = 0o755
 )
 
-// DefaultConfig returns a config with default values
+// DefaultConfig returns a config with default values.
 func DefaultConfig() *Config {
 	return &Config{
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 }
 
-// LoadConfig loads configuration from file and environment variables
+// LoadConfig loads configuration from file and environment variables.
 func LoadConfig() (*Config, error) {
 	cfg := DefaultConfig()
 
@@ -43,7 +44,7 @@ func LoadConfig() (*Config, error) {
 	if err != nil {
 		// If we can't get the config path, continue with default config
 		// This allows the CLI to work even if home directory is not accessible
-		return cfg, nil
+		return cfg, err
 	}
 
 	if _, statErr := os.Stat(configPath); statErr == nil {
@@ -60,7 +61,7 @@ func LoadConfig() (*Config, error) {
 	return cfg, nil
 }
 
-// SaveConfig saves the configuration to file
+// SaveConfig saves the configuration to file.
 func SaveConfig(cfg *Config) error {
 	configPath, err := GetConfigPath()
 	if err != nil {
@@ -87,7 +88,7 @@ func SaveConfig(cfg *Config) error {
 	return nil
 }
 
-// GetConfigPath returns the path to the configuration file
+// GetConfigPath returns the path to the configuration file.
 func GetConfigPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

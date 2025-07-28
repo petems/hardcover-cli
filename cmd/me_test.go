@@ -29,7 +29,7 @@ func TestMeCmd_Success(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, output := testutil.SetupTestCommand(t, cfg, withTestConfig)
+	cmd, output := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -48,7 +48,7 @@ func TestMeCmd_MissingAPIKey(t *testing.T) {
 		APIKey:  "",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	})
-	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
+	cmd, _ := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -58,7 +58,7 @@ func TestMeCmd_MissingAPIKey(t *testing.T) {
 
 func TestMeCmd_NoConfig(t *testing.T) {
 	// Create command without config
-	cmd, _ := testutil.SetupTestCommand(t, nil, withTestConfig)
+	cmd, _ := testutil.SetupTestCommand(t, nil, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -79,7 +79,7 @@ func TestMeCmd_APIError(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
+	cmd, _ := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -97,7 +97,7 @@ func TestMeCmd_HTTPError(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
+	cmd, _ := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})
@@ -123,7 +123,7 @@ func TestMeCmd_PartialData(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, output := testutil.SetupTestCommand(t, cfg, withTestConfig)
+	cmd, output := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
 
 	// Execute command
 	err := meCmd.RunE(cmd, []string{})

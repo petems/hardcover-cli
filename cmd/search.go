@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -10,28 +11,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Contributor represents a book contributor
+// Contributor represents a book contributor.
 type Contributor struct {
 	Name string `json:"name"`
 	Role string `json:"role"`
 }
 
-// Genre represents a book genre
+// Genre represents a book genre.
 type Genre struct {
 	Name string `json:"name"`
 }
 
-// Contribution represents a contribution to a book
+// Contribution represents a contribution to a book.
 type Contribution struct {
 	Author Author `json:"author"`
 }
 
-// Author represents an author from the API
+// Author represents an author from the API.
 type Author struct {
 	Name string `json:"name"`
 }
 
-// SearchUser represents a user from the search API
+// SearchUser represents a user from the search API.
 type SearchUser struct {
 	Image              interface{} `json:"image"`
 	ID                 string      `json:"id"`
@@ -45,7 +46,7 @@ type SearchUser struct {
 	Pro                bool        `json:"pro"`
 }
 
-// Book represents a book from the search API
+// Book represents a book from the search API.
 type Book struct {
 	ID                     string   `json:"id"`
 	FeaturedSeries         string   `json:"featured_series"`
@@ -82,13 +83,13 @@ type Book struct {
 	Compilation            bool     `json:"compilation"`
 }
 
-// BookSearchResults represents the search results for books
+// BookSearchResults represents the search results for books.
 type BookSearchResults struct {
 	Results    []Book `json:"results"`
 	TotalCount int    `json:"totalCount"`
 }
 
-// SearchBooksResponse represents the response from the SearchBooks query
+// SearchBooksResponse represents the response from the SearchBooks query.
 type SearchBooksResponse struct {
 	Search struct {
 		Query     string   `json:"query"`
@@ -100,7 +101,7 @@ type SearchBooksResponse struct {
 	} `json:"search"`
 }
 
-// SearchUsersResponse represents the response from the SearchUsers query
+// SearchUsersResponse represents the response from the SearchUsers query.
 type SearchUsersResponse struct {
 	Search struct {
 		Query     string       `json:"query"`
@@ -112,7 +113,7 @@ type SearchUsersResponse struct {
 	} `json:"search"`
 }
 
-// searchCmd represents the search command
+// searchCmd represents the search command.
 var searchCmd = &cobra.Command{
 	Use:   "search",
 	Short: "Search for content on Hardcover.app",
@@ -123,7 +124,7 @@ Available subcommands:
   users    Search for users by name, username, or location`,
 }
 
-// searchBooksCmd represents the search books command
+// searchBooksCmd represents the search books command.
 var searchBooksCmd = &cobra.Command{
 	Use:   "books <query>",
 	Short: "Search for books",
@@ -145,11 +146,11 @@ Example:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
-			return fmt.Errorf("failed to get configuration")
+			return errors.New("failed to get configuration")
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf("API key is required. Set it using:\n" +
+			return errors.New("API key is required. Set it using:\n" +
 				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
 				"  or\n" +
 				"  hardcover config set-api-key \"your-api-key\"")
@@ -268,7 +269,7 @@ Example:
 	},
 }
 
-// searchUsersCmd represents the search users command
+// searchUsersCmd represents the search users command.
 var searchUsersCmd = &cobra.Command{
 	Use:   "users <query>",
 	Short: "Search for users",
@@ -289,11 +290,11 @@ Example:
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cfg, ok := getConfig(cmd.Context())
 		if !ok {
-			return fmt.Errorf("failed to get configuration")
+			return errors.New("failed to get configuration")
 		}
 
 		if cfg.APIKey == "" {
-			return fmt.Errorf("API key is required. Set it using:\n" +
+			return errors.New("API key is required. Set it using:\n" +
 				"  export HARDCOVER_API_KEY=\"your-api-key\"\n" +
 				"  or\n" +
 				"  hardcover config set-api-key \"your-api-key\"")
@@ -399,7 +400,7 @@ Example:
 	},
 }
 
-// setupSearchCommands registers the search commands with the root command
+// setupSearchCommands registers the search commands with the root command.
 func setupSearchCommands() {
 	searchCmd.AddCommand(searchBooksCmd)
 	searchCmd.AddCommand(searchUsersCmd)

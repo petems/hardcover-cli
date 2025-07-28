@@ -247,12 +247,18 @@ linters:
       - path: _test\.go
         linters:
           - gocyclo
-          - errcheck
           - dupl
           - gosec
           - funlen
           - gocognit
           - cyclop
+      
+      # Exclude testpackage linter for cmd_test packages
+      - linters:
+          - testpackage
+        text: "package should be `cmd_test` instead of `cmd`"
+      
+
 
       # Exclude some staticcheck messages
       - linters:
@@ -279,6 +285,8 @@ linters:
           - gosec
         text: "G601:"
         # Allow implicit memory aliasing in CLI tools
+      
+
 
     # Exclude specific paths from linting
     paths:

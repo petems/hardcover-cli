@@ -1,4 +1,4 @@
-package config
+package config_test
 
 import (
 	"os"
@@ -8,11 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hardcover-cli/internal/config"
 	"hardcover-cli/internal/testutil"
 )
 
 func TestDefaultConfig(t *testing.T) {
-	cfg := DefaultConfig()
+	cfg := config.DefaultConfig()
 	assert.NotNil(t, cfg)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
 	assert.Empty(t, cfg.APIKey)
@@ -26,7 +27,7 @@ func TestLoadConfig_FromEnvironment(t *testing.T) {
 	expectedAPIKey := "test-api-key-from-env"
 	envMgr.SetEnv("HARDCOVER_API_KEY", expectedAPIKey)
 
-	cfg, err := LoadConfig()
+	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
 	assert.Equal(t, expectedAPIKey, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
@@ -50,7 +51,7 @@ base_url: https://api.hardcover.app/v1/graphql`
 	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
-	cfg, err := LoadConfig()
+	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
 	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
@@ -65,7 +66,7 @@ func TestLoadConfig_NoFileExists(t *testing.T) {
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
-	cfg, err := LoadConfig()
+	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
 	assert.Empty(t, cfg.APIKey)
 	assert.Equal(t, "https://api.hardcover.app/v1/graphql", cfg.BaseURL)
@@ -76,12 +77,12 @@ func TestSaveConfig(t *testing.T) {
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
-	cfg := &Config{
+	cfg := &config.Config{
 		APIKey:  "test-api-key",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	}
 
-	err := SaveConfig(cfg)
+	err := config.SaveConfig(cfg)
 	require.NoError(t, err)
 
 	// Verify file was created
@@ -90,7 +91,7 @@ func TestSaveConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	// Load the config back and verify
-	loadedCfg, err := LoadConfig()
+	loadedCfg, err := config.LoadConfig()
 	require.NoError(t, err)
 	assert.Equal(t, cfg.APIKey, loadedCfg.APIKey)
 	assert.Equal(t, cfg.BaseURL, loadedCfg.BaseURL)
@@ -101,7 +102,7 @@ func TestGetConfigPath(t *testing.T) {
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
-	configPath, err := GetConfigPath()
+	configPath, err := config.GetConfigPath()
 	require.NoError(t, err)
 
 	expectedPath := tempDirMgr.GetConfigPath()
@@ -133,7 +134,7 @@ base_url: https://api.hardcover.app/v1/graphql`
 	envAPIKey := "env-api-key"
 	envMgr.SetEnv("HARDCOVER_API_KEY", envAPIKey)
 
-	cfg, err := LoadConfig()
+	cfg, err := config.LoadConfig()
 	require.NoError(t, err)
 
 	// Environment variable should override file
@@ -159,7 +160,7 @@ invalid_yaml: [unclosed bracket`
 	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
-	_, err = LoadConfig()
-	assert.Error(t, err)
+	_, err = config.LoadConfig()
+	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to parse config file")
 }

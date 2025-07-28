@@ -1,3 +1,4 @@
+// Package client provides HTTP client functionality for interacting with the Hardcover API.
 package client
 
 import (
@@ -10,43 +11,43 @@ import (
 	"time"
 )
 
-// Client represents a GraphQL client for the Hardcover API
+// Client represents a GraphQL client for the Hardcover API.
 type Client struct {
 	endpoint   string
 	apiKey     string
 	httpClient *http.Client
 }
 
-// GraphQLRequest represents a GraphQL request
+// GraphQLRequest represents a GraphQL request.
 type GraphQLRequest struct {
 	Query     string                 `json:"query"`
 	Variables map[string]interface{} `json:"variables,omitempty"`
 }
 
-// GraphQLResponse represents a GraphQL response
+// GraphQLResponse represents a GraphQL response.
 type GraphQLResponse struct {
 	Data   json.RawMessage `json:"data"`
 	Errors []GraphQLError  `json:"errors,omitempty"`
 }
 
-// GraphQLError represents a GraphQL error
+// GraphQLError represents a GraphQL error.
 type GraphQLError struct {
 	Message   string                 `json:"message"`
 	Locations []GraphQLErrorLocation `json:"locations,omitempty"`
 }
 
-// GraphQLErrorLocation represents the location of a GraphQL error
+// GraphQLErrorLocation represents the location of a GraphQL error.
 type GraphQLErrorLocation struct {
 	Line   int `json:"line"`
 	Column int `json:"column"`
 }
 
-// Error implements the error interface for GraphQLError
+// Error implements the error interface for GraphQLError.
 func (e GraphQLError) Error() string {
 	return e.Message
 }
 
-// NewClient creates a new GraphQL client
+// NewClient creates a new GraphQL client.
 func NewClient(endpoint, apiKey string) *Client {
 	return &Client{
 		endpoint: endpoint,
@@ -57,7 +58,7 @@ func NewClient(endpoint, apiKey string) *Client {
 	}
 }
 
-// Execute performs a GraphQL query and unmarshals the result
+// Execute performs a GraphQL query and unmarshals the result.
 func (c *Client) Execute(
 	ctx context.Context,
 	query string,
@@ -95,7 +96,13 @@ func (c *Client) Execute(
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
-	defer httpResp.Body.Close()
+	defer func() {
+		if closeErr := httpResp.Body.Close(); closeErr != nil {
+			// Log the error but don't fail the request
+			// This is a common pattern for defer statements
+			_ = closeErr // explicitly ignore the error
+		}
+	}()
 
 	// Read response body
 	body, err := io.ReadAll(httpResp.Body)

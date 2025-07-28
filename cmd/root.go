@@ -45,7 +45,7 @@ func SetupCommands() {
 	setupSearchCommands()
 }
 
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// Execute runs the root command.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -87,7 +87,7 @@ func initConfig() {
 }
 
 // getConfig retrieves the configuration - updated to use global config.
-func getConfig(ctx context.Context) (*config.Config, bool) {
+func getConfig(_ context.Context) (*config.Config, bool) {
 	// First check context (for tests)
 	if globalConfig != nil {
 		return globalConfig, true
