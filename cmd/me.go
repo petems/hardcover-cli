@@ -10,11 +10,6 @@ import (
 	"hardcover-cli/internal/client"
 )
 
-// GetCurrentUserResponse represents the response from the GetCurrentUser query
-type GetCurrentUserResponse struct {
-	Me *client.Users `json:"me"`
-}
-
 // meCmd represents the me command
 var meCmd = &cobra.Command{
 	Use:   "me",
@@ -47,21 +42,8 @@ Example:
 
 		gqlClient := client.NewClient(cfg.BaseURL, cfg.APIKey)
 
-		query := `
-			query GetCurrentUser {
-				me {
-					id
-					username
-					email
-					name
-					created_at
-					updated_at
-				}
-			}
-		`
-
-		var response GetCurrentUserResponse
-		if err := gqlClient.Execute(context.Background(), query, nil, &response); err != nil {
+		response, err := gqlClient.GetCurrentUser(context.Background())
+		if err != nil {
 			return fmt.Errorf("failed to get user profile: %w", err)
 		}
 

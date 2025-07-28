@@ -219,7 +219,7 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 		}
 	}`
 
-	var response GetCurrentUserResponse
+	var response client.GetCurrentUserResponse
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
 
