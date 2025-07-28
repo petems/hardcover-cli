@@ -3,9 +3,11 @@ package client_test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
+	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,6 +15,21 @@ import (
 	"hardcover-cli/internal/client"
 	"hardcover-cli/internal/testutil"
 )
+
+// clientInternal mirrors the unexported fields of client.Client for test
+// purposes.
+type clientInternal struct {
+	endpoint   string
+	apiKey     string
+	httpClient *http.Client
+}
+
+// errorRoundTripper simulates a network failure by always returning an error.
+type errorRoundTripper struct{}
+
+func (errorRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
+	return nil, errors.New("network error")
+}
 
 func TestNewClient(t *testing.T) {
 	endpoint := "https://api.hardcover.app/v1/graphql"
@@ -70,7 +87,7 @@ func TestClient_Execute_Success(t *testing.T) {
 
 func TestClient_Execute_GraphQLError(t *testing.T) {
 	// Setup GraphQL errors
-	errors := []testutil.GraphQLError{
+	graphqlErrors := []testutil.GraphQLError{
 		{
 			Message: "Field 'test' doesn't exist",
 			Locations: []testutil.GraphQLErrorLocation{
@@ -80,7 +97,7 @@ func TestClient_Execute_GraphQLError(t *testing.T) {
 	}
 
 	// Create test server that returns GraphQL errors
-	server := testutil.CreateTestServer(t, testutil.ErrorResponse(errors))
+	server := testutil.CreateTestServer(t, testutil.ErrorResponse(graphqlErrors))
 	defer server.Close()
 
 	c := client.NewClient(server.URL, "test-api-key")
@@ -109,8 +126,22 @@ func TestClient_Execute_HTTPError(t *testing.T) {
 }
 
 func TestClient_Execute_NetworkError(t *testing.T) {
-	// Use invalid endpoint to trigger network error
-	c := client.NewClient("http://invalid-endpoint:99999", "test-api-key")
+	// Disable proxy settings so the request isn't routed through the test
+	// environment's HTTP proxy which would return an HTTP error instead of a
+	// network error.
+	t.Setenv("HTTP_PROXY", "")
+	t.Setenv("http_proxy", "")
+	t.Setenv("HTTPS_PROXY", "")
+	t.Setenv("https_proxy", "")
+	t.Setenv("NO_PROXY", "")
+	t.Setenv("no_proxy", "")
+
+	// Use an HTTP client that always returns an error to simulate a network
+	// failure without performing any real network operations.
+	c := client.NewClient("http://example.com", "test-api-key")
+
+	ci := (*clientInternal)(unsafe.Pointer(c))
+	ci.httpClient = &http.Client{Transport: errorRoundTripper{}}
 
 	var result map[string]interface{}
 	err := c.Execute(context.Background(), "query { test }", nil, &result)
