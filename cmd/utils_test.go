@@ -5,8 +5,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"hardcover-cli/internal/config"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMaskAPIKey(t *testing.T) {
