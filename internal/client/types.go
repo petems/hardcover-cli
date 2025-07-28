@@ -1,4 +1,5 @@
 // Code generated from GraphQL schema, DO NOT EDIT.
+// Generated at: 2025-07-28 01:59:29 BST
 
 package client
 
@@ -17,14 +18,6 @@ type AuthorIdType struct {
 	ID int `json:"id"`
 }
 
-// AuthorInputType represents the AuthorInputType GraphQL type
-type AuthorInputType struct {
-}
-
-// BasicTag represents the BasicTag GraphQL type
-type BasicTag struct {
-}
-
 // BasicTagType represents the BasicTagType GraphQL type
 type BasicTagType struct {
 
@@ -41,14 +34,6 @@ type BasicTagType struct {
 	TagSlug string `json:"tagSlug"`
 }
 
-// BookDtoInput represents the BookDtoInput GraphQL type
-type BookDtoInput struct {
-}
-
-// BookDtoType represents the BookDtoType GraphQL type
-type BookDtoType struct {
-}
-
 // BookIdType represents the BookIdType GraphQL type
 type BookIdType struct {
 
@@ -57,10 +42,6 @@ type BookIdType struct {
 	Errors []string `json:"errors"`
 
 	ID int `json:"id"`
-}
-
-// BookInput represents the BookInput GraphQL type
-type BookInput struct {
 }
 
 // BookMappingIdType represents the BookMappingIdType GraphQL type
@@ -73,26 +54,6 @@ type BookMappingIdType struct {
 	ID int `json:"id"`
 }
 
-// BookMappingInput represents the BookMappingInput GraphQL type
-type BookMappingInput struct {
-}
-
-// BookSeriesDtoInput represents the BookSeriesDtoInput GraphQL type
-type BookSeriesDtoInput struct {
-}
-
-// Boolean represents the Boolean GraphQL type
-type Boolean struct {
-}
-
-// Boolean_comparison_exp represents the Boolean_comparison_exp GraphQL type
-type Boolean_comparison_exp struct {
-}
-
-// CharacterDtoInput represents the CharacterDtoInput GraphQL type
-type CharacterDtoInput struct {
-}
-
 // CharacterIdType represents the CharacterIdType GraphQL type
 type CharacterIdType struct {
 
@@ -103,10 +64,6 @@ type CharacterIdType struct {
 	ID int `json:"id"`
 }
 
-// CharacterInput represents the CharacterInput GraphQL type
-type CharacterInput struct {
-}
-
 // CollectionImportIdType represents the CollectionImportIdType GraphQL type
 type CollectionImportIdType struct {
 
@@ -115,32 +72,12 @@ type CollectionImportIdType struct {
 	ID int `json:"id"`
 }
 
-// CollectionImportInput represents the CollectionImportInput GraphQL type
-type CollectionImportInput struct {
-}
-
 // CollectionImportResultIdType represents the CollectionImportResultIdType GraphQL type
 type CollectionImportResultIdType struct {
 
 	Collection_import_result *Collection_import_results `json:"collection_import_result"`
 
 	ID int `json:"id"`
-}
-
-// ContributionInputType represents the ContributionInputType GraphQL type
-type ContributionInputType struct {
-}
-
-// CreateBookFromPlatformInput represents the CreateBookFromPlatformInput GraphQL type
-type CreateBookFromPlatformInput struct {
-}
-
-// CreatePromptInput represents the CreatePromptInput GraphQL type
-type CreatePromptInput struct {
-}
-
-// DatesReadInput represents the DatesReadInput GraphQL type
-type DatesReadInput struct {
 }
 
 // DeleteFollowedPromptType represents the DeleteFollowedPromptType GraphQL type
@@ -167,10 +104,6 @@ type DeleteReadingJournalsOutput struct {
 	Ids []int `json:"ids"`
 }
 
-// DtoTag represents the DtoTag GraphQL type
-type DtoTag struct {
-}
-
 // EditionIdType represents the EditionIdType GraphQL type
 type EditionIdType struct {
 
@@ -179,14 +112,6 @@ type EditionIdType struct {
 	Errors []string `json:"errors"`
 
 	ID int `json:"id"`
-}
-
-// EditionInput represents the EditionInput GraphQL type
-type EditionInput struct {
-}
-
-// Float represents the Float GraphQL type
-type Float struct {
 }
 
 // FollowedListType represents the FollowedListType GraphQL type
@@ -227,10 +152,6 @@ type FollowedUserType struct {
 	User_id int `json:"user_id"`
 }
 
-// GoalConditionInput represents the GoalConditionInput GraphQL type
-type GoalConditionInput struct {
-}
-
 // GoalIdType represents the GoalIdType GraphQL type
 type GoalIdType struct {
 
@@ -241,20 +162,12 @@ type GoalIdType struct {
 	ID int `json:"id"`
 }
 
-// GoalInput represents the GoalInput GraphQL type
-type GoalInput struct {
-}
-
 // ImageIdType represents the ImageIdType GraphQL type
 type ImageIdType struct {
 
 	ID int `json:"id"`
 
 	Image *Images `json:"image"`
-}
-
-// ImageInput represents the ImageInput GraphQL type
-type ImageInput struct {
 }
 
 // InsertBlockOutput represents the InsertBlockOutput GraphQL type
@@ -265,14 +178,6 @@ type InsertBlockOutput struct {
 	ID int `json:"id"`
 
 	User_block *User_blocks `json:"user_block"`
-}
-
-// Int represents the Int GraphQL type
-type Int struct {
-}
-
-// Int_comparison_exp represents the Int_comparison_exp GraphQL type
-type Int_comparison_exp struct {
 }
 
 // LikeDeleteType represents the LikeDeleteType GraphQL type
@@ -309,10 +214,6 @@ type ListBookIdType struct {
 	List_book *List_books `json:"list_book"`
 }
 
-// ListBookInput represents the ListBookInput GraphQL type
-type ListBookInput struct {
-}
-
 // ListDeleteType represents the ListDeleteType GraphQL type
 type ListDeleteType struct {
 
@@ -327,10 +228,6 @@ type ListIdType struct {
 	ID int `json:"id"`
 
 	List *Lists `json:"list"`
-}
-
-// ListInput represents the ListInput GraphQL type
-type ListInput struct {
 }
 
 // NewBookIdType represents the NewBookIdType GraphQL type
@@ -361,10 +258,6 @@ type OptionalEditionIdType struct {
 	Errors []string `json:"errors"`
 
 	ID int `json:"id"`
-}
-
-// PromptAnswerCreateInput represents the PromptAnswerCreateInput GraphQL type
-type PromptAnswerCreateInput struct {
 }
 
 // PromptAnswerIdType represents the PromptAnswerIdType GraphQL type
@@ -403,14 +296,6 @@ type PublisherIdType struct {
 	Publisher *Publishers `json:"publisher"`
 }
 
-// PublisherInputType represents the PublisherInputType GraphQL type
-type PublisherInputType struct {
-}
-
-// ReadingJournalCreateType represents the ReadingJournalCreateType GraphQL type
-type ReadingJournalCreateType struct {
-}
-
 // ReadingJournalOutput represents the ReadingJournalOutput GraphQL type
 type ReadingJournalOutput struct {
 
@@ -421,10 +306,6 @@ type ReadingJournalOutput struct {
 	Reading_journal *Reading_journals `json:"reading_journal"`
 }
 
-// ReadingJournalUpdateType represents the ReadingJournalUpdateType GraphQL type
-type ReadingJournalUpdateType struct {
-}
-
 // ReferralType represents the ReferralType GraphQL type
 type ReferralType struct {
 
@@ -433,10 +314,6 @@ type ReferralType struct {
 	Book_id int `json:"book_id"`
 
 	Count int `json:"count"`
-}
-
-// ReportInput represents the ReportInput GraphQL type
-type ReportInput struct {
 }
 
 // ReportOutput represents the ReportOutput GraphQL type
@@ -477,22 +354,6 @@ type SeriesIdType struct {
 	Series *Series `json:"series"`
 }
 
-// SeriesInput represents the SeriesInput GraphQL type
-type SeriesInput struct {
-}
-
-// SeriesInputType represents the SeriesInputType GraphQL type
-type SeriesInputType struct {
-}
-
-// String represents the String GraphQL type
-type String struct {
-}
-
-// String_comparison_exp represents the String_comparison_exp GraphQL type
-type String_comparison_exp struct {
-}
-
 // SubscriptionsType represents the SubscriptionsType GraphQL type
 type SubscriptionsType struct {
 
@@ -519,10 +380,6 @@ type SuccessType struct {
 	Success bool `json:"success"`
 }
 
-// TagsDtoInput represents the TagsDtoInput GraphQL type
-type TagsDtoInput struct {
-}
-
 // TagsType represents the TagsType GraphQL type
 type TagsType struct {
 
@@ -535,14 +392,6 @@ type TrendingBookType struct {
 	Error string `json:"error"`
 
 	Ids []int `json:"ids"`
-}
-
-// UpdatePromptInput represents the UpdatePromptInput GraphQL type
-type UpdatePromptInput struct {
-}
-
-// UserBookCreateInput represents the UserBookCreateInput GraphQL type
-type UserBookCreateInput struct {
 }
 
 // UserBookDeleteType represents the UserBookDeleteType GraphQL type
@@ -577,10 +426,6 @@ type UserBookReadIdType struct {
 	User_book_read *User_book_reads `json:"user_book_read"`
 }
 
-// UserBookUpdateInput represents the UserBookUpdateInput GraphQL type
-type UserBookUpdateInput struct {
-}
-
 // UserBooksReadUpsertType represents the UserBooksReadUpsertType GraphQL type
 type UserBooksReadUpsertType struct {
 
@@ -599,14 +444,6 @@ type UserIdType struct {
 	ID int `json:"id"`
 
 	User *Users `json:"user"`
-}
-
-// UserJoinInput represents the UserJoinInput GraphQL type
-type UserJoinInput struct {
-}
-
-// UserLoginInput represents the UserLoginInput GraphQL type
-type UserLoginInput struct {
 }
 
 // ValidateReceiptType represents the ValidateReceiptType GraphQL type
@@ -653,26 +490,6 @@ type Activities struct {
 	User_id int `json:"user_id"`
 }
 
-// activities_aggregate_order_by represents the activities_aggregate_order_by GraphQL type
-type Activities_aggregate_order_by struct {
-}
-
-// activities_avg_order_by represents the activities_avg_order_by GraphQL type
-type Activities_avg_order_by struct {
-}
-
-// activities_bool_exp represents the activities_bool_exp GraphQL type
-type Activities_bool_exp struct {
-}
-
-// activities_max_order_by represents the activities_max_order_by GraphQL type
-type Activities_max_order_by struct {
-}
-
-// activities_min_order_by represents the activities_min_order_by GraphQL type
-type Activities_min_order_by struct {
-}
-
 // activities_mutation_response represents the activities_mutation_response GraphQL type
 type Activities_mutation_response struct {
 
@@ -681,56 +498,8 @@ type Activities_mutation_response struct {
 	Returning []*Activities `json:"returning"`
 }
 
-// activities_order_by represents the activities_order_by GraphQL type
-type Activities_order_by struct {
-}
-
 // activities_select_column represents the activities_select_column GraphQL type
 type Activities_select_column struct {
-}
-
-// activities_stddev_order_by represents the activities_stddev_order_by GraphQL type
-type Activities_stddev_order_by struct {
-}
-
-// activities_stddev_pop_order_by represents the activities_stddev_pop_order_by GraphQL type
-type Activities_stddev_pop_order_by struct {
-}
-
-// activities_stddev_samp_order_by represents the activities_stddev_samp_order_by GraphQL type
-type Activities_stddev_samp_order_by struct {
-}
-
-// activities_stream_cursor_input represents the activities_stream_cursor_input GraphQL type
-type Activities_stream_cursor_input struct {
-}
-
-// activities_stream_cursor_value_input represents the activities_stream_cursor_value_input GraphQL type
-type Activities_stream_cursor_value_input struct {
-}
-
-// activities_sum_order_by represents the activities_sum_order_by GraphQL type
-type Activities_sum_order_by struct {
-}
-
-// activities_var_pop_order_by represents the activities_var_pop_order_by GraphQL type
-type Activities_var_pop_order_by struct {
-}
-
-// activities_var_samp_order_by represents the activities_var_samp_order_by GraphQL type
-type Activities_var_samp_order_by struct {
-}
-
-// activities_variance_order_by represents the activities_variance_order_by GraphQL type
-type Activities_variance_order_by struct {
-}
-
-// activity_feed_args represents the activity_feed_args GraphQL type
-type Activity_feed_args struct {
-}
-
-// activity_foryou_feed_args represents the activity_foryou_feed_args GraphQL type
-type Activity_foryou_feed_args struct {
 }
 
 // authors represents the authors GraphQL type
@@ -801,76 +570,8 @@ type Authors struct {
 	Users_count int `json:"users_count"`
 }
 
-// authors_aggregate_order_by represents the authors_aggregate_order_by GraphQL type
-type Authors_aggregate_order_by struct {
-}
-
-// authors_avg_order_by represents the authors_avg_order_by GraphQL type
-type Authors_avg_order_by struct {
-}
-
-// authors_bool_exp represents the authors_bool_exp GraphQL type
-type Authors_bool_exp struct {
-}
-
-// authors_max_order_by represents the authors_max_order_by GraphQL type
-type Authors_max_order_by struct {
-}
-
-// authors_min_order_by represents the authors_min_order_by GraphQL type
-type Authors_min_order_by struct {
-}
-
-// authors_order_by represents the authors_order_by GraphQL type
-type Authors_order_by struct {
-}
-
 // authors_select_column represents the authors_select_column GraphQL type
 type Authors_select_column struct {
-}
-
-// authors_stddev_order_by represents the authors_stddev_order_by GraphQL type
-type Authors_stddev_order_by struct {
-}
-
-// authors_stddev_pop_order_by represents the authors_stddev_pop_order_by GraphQL type
-type Authors_stddev_pop_order_by struct {
-}
-
-// authors_stddev_samp_order_by represents the authors_stddev_samp_order_by GraphQL type
-type Authors_stddev_samp_order_by struct {
-}
-
-// authors_stream_cursor_input represents the authors_stream_cursor_input GraphQL type
-type Authors_stream_cursor_input struct {
-}
-
-// authors_stream_cursor_value_input represents the authors_stream_cursor_value_input GraphQL type
-type Authors_stream_cursor_value_input struct {
-}
-
-// authors_sum_order_by represents the authors_sum_order_by GraphQL type
-type Authors_sum_order_by struct {
-}
-
-// authors_var_pop_order_by represents the authors_var_pop_order_by GraphQL type
-type Authors_var_pop_order_by struct {
-}
-
-// authors_var_samp_order_by represents the authors_var_samp_order_by GraphQL type
-type Authors_var_samp_order_by struct {
-}
-
-// authors_variance_order_by represents the authors_variance_order_by GraphQL type
-type Authors_variance_order_by struct {
-}
-
-// bigint represents the bigint GraphQL type
-type Bigint struct {
-}
-
-// bigint_comparison_exp represents the bigint_comparison_exp GraphQL type
-type Bigint_comparison_exp struct {
 }
 
 // book_categories represents the book_categories GraphQL type
@@ -881,24 +582,8 @@ type Book_categories struct {
 	Name string `json:"name"`
 }
 
-// book_categories_bool_exp represents the book_categories_bool_exp GraphQL type
-type Book_categories_bool_exp struct {
-}
-
-// book_categories_order_by represents the book_categories_order_by GraphQL type
-type Book_categories_order_by struct {
-}
-
 // book_categories_select_column represents the book_categories_select_column GraphQL type
 type Book_categories_select_column struct {
-}
-
-// book_categories_stream_cursor_input represents the book_categories_stream_cursor_input GraphQL type
-type Book_categories_stream_cursor_input struct {
-}
-
-// book_categories_stream_cursor_value_input represents the book_categories_stream_cursor_value_input GraphQL type
-type Book_categories_stream_cursor_value_input struct {
 }
 
 // book_characters represents the book_characters GraphQL type
@@ -921,68 +606,8 @@ type Book_characters struct {
 	Spoiler bool `json:"spoiler"`
 }
 
-// book_characters_aggregate_order_by represents the book_characters_aggregate_order_by GraphQL type
-type Book_characters_aggregate_order_by struct {
-}
-
-// book_characters_avg_order_by represents the book_characters_avg_order_by GraphQL type
-type Book_characters_avg_order_by struct {
-}
-
-// book_characters_bool_exp represents the book_characters_bool_exp GraphQL type
-type Book_characters_bool_exp struct {
-}
-
-// book_characters_max_order_by represents the book_characters_max_order_by GraphQL type
-type Book_characters_max_order_by struct {
-}
-
-// book_characters_min_order_by represents the book_characters_min_order_by GraphQL type
-type Book_characters_min_order_by struct {
-}
-
-// book_characters_order_by represents the book_characters_order_by GraphQL type
-type Book_characters_order_by struct {
-}
-
 // book_characters_select_column represents the book_characters_select_column GraphQL type
 type Book_characters_select_column struct {
-}
-
-// book_characters_stddev_order_by represents the book_characters_stddev_order_by GraphQL type
-type Book_characters_stddev_order_by struct {
-}
-
-// book_characters_stddev_pop_order_by represents the book_characters_stddev_pop_order_by GraphQL type
-type Book_characters_stddev_pop_order_by struct {
-}
-
-// book_characters_stddev_samp_order_by represents the book_characters_stddev_samp_order_by GraphQL type
-type Book_characters_stddev_samp_order_by struct {
-}
-
-// book_characters_stream_cursor_input represents the book_characters_stream_cursor_input GraphQL type
-type Book_characters_stream_cursor_input struct {
-}
-
-// book_characters_stream_cursor_value_input represents the book_characters_stream_cursor_value_input GraphQL type
-type Book_characters_stream_cursor_value_input struct {
-}
-
-// book_characters_sum_order_by represents the book_characters_sum_order_by GraphQL type
-type Book_characters_sum_order_by struct {
-}
-
-// book_characters_var_pop_order_by represents the book_characters_var_pop_order_by GraphQL type
-type Book_characters_var_pop_order_by struct {
-}
-
-// book_characters_var_samp_order_by represents the book_characters_var_samp_order_by GraphQL type
-type Book_characters_var_samp_order_by struct {
-}
-
-// book_characters_variance_order_by represents the book_characters_variance_order_by GraphQL type
-type Book_characters_variance_order_by struct {
 }
 
 // book_collections represents the book_collections GraphQL type
@@ -997,24 +622,8 @@ type Book_collections struct {
 	Position int `json:"position"`
 }
 
-// book_collections_bool_exp represents the book_collections_bool_exp GraphQL type
-type Book_collections_bool_exp struct {
-}
-
-// book_collections_order_by represents the book_collections_order_by GraphQL type
-type Book_collections_order_by struct {
-}
-
 // book_collections_select_column represents the book_collections_select_column GraphQL type
 type Book_collections_select_column struct {
-}
-
-// book_collections_stream_cursor_input represents the book_collections_stream_cursor_input GraphQL type
-type Book_collections_stream_cursor_input struct {
-}
-
-// book_collections_stream_cursor_value_input represents the book_collections_stream_cursor_value_input GraphQL type
-type Book_collections_stream_cursor_value_input struct {
 }
 
 // book_mappings represents the book_mappings GraphQL type
@@ -1061,68 +670,8 @@ type Book_mappings struct {
 	Verified_at *Timestamp `json:"verified_at"`
 }
 
-// book_mappings_aggregate_order_by represents the book_mappings_aggregate_order_by GraphQL type
-type Book_mappings_aggregate_order_by struct {
-}
-
-// book_mappings_avg_order_by represents the book_mappings_avg_order_by GraphQL type
-type Book_mappings_avg_order_by struct {
-}
-
-// book_mappings_bool_exp represents the book_mappings_bool_exp GraphQL type
-type Book_mappings_bool_exp struct {
-}
-
-// book_mappings_max_order_by represents the book_mappings_max_order_by GraphQL type
-type Book_mappings_max_order_by struct {
-}
-
-// book_mappings_min_order_by represents the book_mappings_min_order_by GraphQL type
-type Book_mappings_min_order_by struct {
-}
-
-// book_mappings_order_by represents the book_mappings_order_by GraphQL type
-type Book_mappings_order_by struct {
-}
-
 // book_mappings_select_column represents the book_mappings_select_column GraphQL type
 type Book_mappings_select_column struct {
-}
-
-// book_mappings_stddev_order_by represents the book_mappings_stddev_order_by GraphQL type
-type Book_mappings_stddev_order_by struct {
-}
-
-// book_mappings_stddev_pop_order_by represents the book_mappings_stddev_pop_order_by GraphQL type
-type Book_mappings_stddev_pop_order_by struct {
-}
-
-// book_mappings_stddev_samp_order_by represents the book_mappings_stddev_samp_order_by GraphQL type
-type Book_mappings_stddev_samp_order_by struct {
-}
-
-// book_mappings_stream_cursor_input represents the book_mappings_stream_cursor_input GraphQL type
-type Book_mappings_stream_cursor_input struct {
-}
-
-// book_mappings_stream_cursor_value_input represents the book_mappings_stream_cursor_value_input GraphQL type
-type Book_mappings_stream_cursor_value_input struct {
-}
-
-// book_mappings_sum_order_by represents the book_mappings_sum_order_by GraphQL type
-type Book_mappings_sum_order_by struct {
-}
-
-// book_mappings_var_pop_order_by represents the book_mappings_var_pop_order_by GraphQL type
-type Book_mappings_var_pop_order_by struct {
-}
-
-// book_mappings_var_samp_order_by represents the book_mappings_var_samp_order_by GraphQL type
-type Book_mappings_var_samp_order_by struct {
-}
-
-// book_mappings_variance_order_by represents the book_mappings_variance_order_by GraphQL type
-type Book_mappings_variance_order_by struct {
 }
 
 // book_series represents the book_series GraphQL type
@@ -1157,62 +706,6 @@ type Book_series_aggregate struct {
 	Nodes []*Book_series `json:"nodes"`
 }
 
-// book_series_aggregate_bool_exp represents the book_series_aggregate_bool_exp GraphQL type
-type Book_series_aggregate_bool_exp struct {
-}
-
-// book_series_aggregate_bool_exp_avg represents the book_series_aggregate_bool_exp_avg GraphQL type
-type Book_series_aggregate_bool_exp_avg struct {
-}
-
-// book_series_aggregate_bool_exp_bool_and represents the book_series_aggregate_bool_exp_bool_and GraphQL type
-type Book_series_aggregate_bool_exp_bool_and struct {
-}
-
-// book_series_aggregate_bool_exp_bool_or represents the book_series_aggregate_bool_exp_bool_or GraphQL type
-type Book_series_aggregate_bool_exp_bool_or struct {
-}
-
-// book_series_aggregate_bool_exp_corr represents the book_series_aggregate_bool_exp_corr GraphQL type
-type Book_series_aggregate_bool_exp_corr struct {
-}
-
-// book_series_aggregate_bool_exp_corr_arguments represents the book_series_aggregate_bool_exp_corr_arguments GraphQL type
-type Book_series_aggregate_bool_exp_corr_arguments struct {
-}
-
-// book_series_aggregate_bool_exp_count represents the book_series_aggregate_bool_exp_count GraphQL type
-type Book_series_aggregate_bool_exp_count struct {
-}
-
-// book_series_aggregate_bool_exp_covar_samp represents the book_series_aggregate_bool_exp_covar_samp GraphQL type
-type Book_series_aggregate_bool_exp_covar_samp struct {
-}
-
-// book_series_aggregate_bool_exp_covar_samp_arguments represents the book_series_aggregate_bool_exp_covar_samp_arguments GraphQL type
-type Book_series_aggregate_bool_exp_covar_samp_arguments struct {
-}
-
-// book_series_aggregate_bool_exp_max represents the book_series_aggregate_bool_exp_max GraphQL type
-type Book_series_aggregate_bool_exp_max struct {
-}
-
-// book_series_aggregate_bool_exp_min represents the book_series_aggregate_bool_exp_min GraphQL type
-type Book_series_aggregate_bool_exp_min struct {
-}
-
-// book_series_aggregate_bool_exp_stddev_samp represents the book_series_aggregate_bool_exp_stddev_samp GraphQL type
-type Book_series_aggregate_bool_exp_stddev_samp struct {
-}
-
-// book_series_aggregate_bool_exp_sum represents the book_series_aggregate_bool_exp_sum GraphQL type
-type Book_series_aggregate_bool_exp_sum struct {
-}
-
-// book_series_aggregate_bool_exp_var_samp represents the book_series_aggregate_bool_exp_var_samp GraphQL type
-type Book_series_aggregate_bool_exp_var_samp struct {
-}
-
 // book_series_aggregate_fields represents the book_series_aggregate_fields GraphQL type
 type Book_series_aggregate_fields struct {
 
@@ -1239,10 +732,6 @@ type Book_series_aggregate_fields struct {
 	Variance *Book_series_variance_fields `json:"variance"`
 }
 
-// book_series_aggregate_order_by represents the book_series_aggregate_order_by GraphQL type
-type Book_series_aggregate_order_by struct {
-}
-
 // book_series_avg_fields represents the book_series_avg_fields GraphQL type
 type Book_series_avg_fields struct {
 
@@ -1253,14 +742,6 @@ type Book_series_avg_fields struct {
 	Position float64 `json:"position"`
 
 	Series_id float64 `json:"series_id"`
-}
-
-// book_series_avg_order_by represents the book_series_avg_order_by GraphQL type
-type Book_series_avg_order_by struct {
-}
-
-// book_series_bool_exp represents the book_series_bool_exp GraphQL type
-type Book_series_bool_exp struct {
 }
 
 // book_series_max_fields represents the book_series_max_fields GraphQL type
@@ -1281,10 +762,6 @@ type Book_series_max_fields struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// book_series_max_order_by represents the book_series_max_order_by GraphQL type
-type Book_series_max_order_by struct {
-}
-
 // book_series_min_fields represents the book_series_min_fields GraphQL type
 type Book_series_min_fields struct {
 
@@ -1301,14 +778,6 @@ type Book_series_min_fields struct {
 	Series_id int `json:"series_id"`
 
 	Updated_at *Timestamp `json:"updated_at"`
-}
-
-// book_series_min_order_by represents the book_series_min_order_by GraphQL type
-type Book_series_min_order_by struct {
-}
-
-// book_series_order_by represents the book_series_order_by GraphQL type
-type Book_series_order_by struct {
 }
 
 // book_series_select_column represents the book_series_select_column GraphQL type
@@ -1367,10 +836,6 @@ type Book_series_stddev_fields struct {
 	Series_id float64 `json:"series_id"`
 }
 
-// book_series_stddev_order_by represents the book_series_stddev_order_by GraphQL type
-type Book_series_stddev_order_by struct {
-}
-
 // book_series_stddev_pop_fields represents the book_series_stddev_pop_fields GraphQL type
 type Book_series_stddev_pop_fields struct {
 
@@ -1381,10 +846,6 @@ type Book_series_stddev_pop_fields struct {
 	Position float64 `json:"position"`
 
 	Series_id float64 `json:"series_id"`
-}
-
-// book_series_stddev_pop_order_by represents the book_series_stddev_pop_order_by GraphQL type
-type Book_series_stddev_pop_order_by struct {
 }
 
 // book_series_stddev_samp_fields represents the book_series_stddev_samp_fields GraphQL type
@@ -1399,18 +860,6 @@ type Book_series_stddev_samp_fields struct {
 	Series_id float64 `json:"series_id"`
 }
 
-// book_series_stddev_samp_order_by represents the book_series_stddev_samp_order_by GraphQL type
-type Book_series_stddev_samp_order_by struct {
-}
-
-// book_series_stream_cursor_input represents the book_series_stream_cursor_input GraphQL type
-type Book_series_stream_cursor_input struct {
-}
-
-// book_series_stream_cursor_value_input represents the book_series_stream_cursor_value_input GraphQL type
-type Book_series_stream_cursor_value_input struct {
-}
-
 // book_series_sum_fields represents the book_series_sum_fields GraphQL type
 type Book_series_sum_fields struct {
 
@@ -1421,10 +870,6 @@ type Book_series_sum_fields struct {
 	Position *Float8 `json:"position"`
 
 	Series_id int `json:"series_id"`
-}
-
-// book_series_sum_order_by represents the book_series_sum_order_by GraphQL type
-type Book_series_sum_order_by struct {
 }
 
 // book_series_var_pop_fields represents the book_series_var_pop_fields GraphQL type
@@ -1439,10 +884,6 @@ type Book_series_var_pop_fields struct {
 	Series_id float64 `json:"series_id"`
 }
 
-// book_series_var_pop_order_by represents the book_series_var_pop_order_by GraphQL type
-type Book_series_var_pop_order_by struct {
-}
-
 // book_series_var_samp_fields represents the book_series_var_samp_fields GraphQL type
 type Book_series_var_samp_fields struct {
 
@@ -1453,10 +894,6 @@ type Book_series_var_samp_fields struct {
 	Position float64 `json:"position"`
 
 	Series_id float64 `json:"series_id"`
-}
-
-// book_series_var_samp_order_by represents the book_series_var_samp_order_by GraphQL type
-type Book_series_var_samp_order_by struct {
 }
 
 // book_series_variance_fields represents the book_series_variance_fields GraphQL type
@@ -1471,10 +908,6 @@ type Book_series_variance_fields struct {
 	Series_id float64 `json:"series_id"`
 }
 
-// book_series_variance_order_by represents the book_series_variance_order_by GraphQL type
-type Book_series_variance_order_by struct {
-}
-
 // book_statuses represents the book_statuses GraphQL type
 type Book_statuses struct {
 
@@ -1487,24 +920,8 @@ type Book_statuses struct {
 	Name string `json:"name"`
 }
 
-// book_statuses_bool_exp represents the book_statuses_bool_exp GraphQL type
-type Book_statuses_bool_exp struct {
-}
-
-// book_statuses_order_by represents the book_statuses_order_by GraphQL type
-type Book_statuses_order_by struct {
-}
-
 // book_statuses_select_column represents the book_statuses_select_column GraphQL type
 type Book_statuses_select_column struct {
-}
-
-// book_statuses_stream_cursor_input represents the book_statuses_stream_cursor_input GraphQL type
-type Book_statuses_stream_cursor_input struct {
-}
-
-// book_statuses_stream_cursor_value_input represents the book_statuses_stream_cursor_value_input GraphQL type
-type Book_statuses_stream_cursor_value_input struct {
 }
 
 // bookles represents the bookles GraphQL type
@@ -1521,24 +938,8 @@ type Bookles struct {
 	ID *Bigint `json:"id"`
 }
 
-// bookles_bool_exp represents the bookles_bool_exp GraphQL type
-type Bookles_bool_exp struct {
-}
-
-// bookles_order_by represents the bookles_order_by GraphQL type
-type Bookles_order_by struct {
-}
-
 // bookles_select_column represents the bookles_select_column GraphQL type
 type Bookles_select_column struct {
-}
-
-// bookles_stream_cursor_input represents the bookles_stream_cursor_input GraphQL type
-type Bookles_stream_cursor_input struct {
-}
-
-// bookles_stream_cursor_value_input represents the bookles_stream_cursor_value_input GraphQL type
-type Bookles_stream_cursor_value_input struct {
 }
 
 // books represents the books GraphQL type
@@ -1709,22 +1110,6 @@ type Books_aggregate struct {
 	Nodes []*Books `json:"nodes"`
 }
 
-// books_aggregate_bool_exp represents the books_aggregate_bool_exp GraphQL type
-type Books_aggregate_bool_exp struct {
-}
-
-// books_aggregate_bool_exp_bool_and represents the books_aggregate_bool_exp_bool_and GraphQL type
-type Books_aggregate_bool_exp_bool_and struct {
-}
-
-// books_aggregate_bool_exp_bool_or represents the books_aggregate_bool_exp_bool_or GraphQL type
-type Books_aggregate_bool_exp_bool_or struct {
-}
-
-// books_aggregate_bool_exp_count represents the books_aggregate_bool_exp_count GraphQL type
-type Books_aggregate_bool_exp_count struct {
-}
-
 // books_aggregate_fields represents the books_aggregate_fields GraphQL type
 type Books_aggregate_fields struct {
 
@@ -1749,10 +1134,6 @@ type Books_aggregate_fields struct {
 	Var_samp *Books_var_samp_fields `json:"var_samp"`
 
 	Variance *Books_variance_fields `json:"variance"`
-}
-
-// books_aggregate_order_by represents the books_aggregate_order_by GraphQL type
-type Books_aggregate_order_by struct {
 }
 
 // books_avg_fields represents the books_avg_fields GraphQL type
@@ -1811,14 +1192,6 @@ type Books_avg_fields struct {
 	Users_count float64 `json:"users_count"`
 
 	Users_read_count float64 `json:"users_read_count"`
-}
-
-// books_avg_order_by represents the books_avg_order_by GraphQL type
-type Books_avg_order_by struct {
-}
-
-// books_bool_exp represents the books_bool_exp GraphQL type
-type Books_bool_exp struct {
 }
 
 // books_max_fields represents the books_max_fields GraphQL type
@@ -1897,10 +1270,6 @@ type Books_max_fields struct {
 	Users_read_count int `json:"users_read_count"`
 }
 
-// books_max_order_by represents the books_max_order_by GraphQL type
-type Books_max_order_by struct {
-}
-
 // books_min_fields represents the books_min_fields GraphQL type
 type Books_min_fields struct {
 
@@ -1977,14 +1346,6 @@ type Books_min_fields struct {
 	Users_read_count int `json:"users_read_count"`
 }
 
-// books_min_order_by represents the books_min_order_by GraphQL type
-type Books_min_order_by struct {
-}
-
-// books_order_by represents the books_order_by GraphQL type
-type Books_order_by struct {
-}
-
 // books_select_column represents the books_select_column GraphQL type
 type Books_select_column struct {
 }
@@ -2055,10 +1416,6 @@ type Books_stddev_fields struct {
 	Users_read_count float64 `json:"users_read_count"`
 }
 
-// books_stddev_order_by represents the books_stddev_order_by GraphQL type
-type Books_stddev_order_by struct {
-}
-
 // books_stddev_pop_fields represents the books_stddev_pop_fields GraphQL type
 type Books_stddev_pop_fields struct {
 
@@ -2115,10 +1472,6 @@ type Books_stddev_pop_fields struct {
 	Users_count float64 `json:"users_count"`
 
 	Users_read_count float64 `json:"users_read_count"`
-}
-
-// books_stddev_pop_order_by represents the books_stddev_pop_order_by GraphQL type
-type Books_stddev_pop_order_by struct {
 }
 
 // books_stddev_samp_fields represents the books_stddev_samp_fields GraphQL type
@@ -2179,18 +1532,6 @@ type Books_stddev_samp_fields struct {
 	Users_read_count float64 `json:"users_read_count"`
 }
 
-// books_stddev_samp_order_by represents the books_stddev_samp_order_by GraphQL type
-type Books_stddev_samp_order_by struct {
-}
-
-// books_stream_cursor_input represents the books_stream_cursor_input GraphQL type
-type Books_stream_cursor_input struct {
-}
-
-// books_stream_cursor_value_input represents the books_stream_cursor_value_input GraphQL type
-type Books_stream_cursor_value_input struct {
-}
-
 // books_sum_fields represents the books_sum_fields GraphQL type
 type Books_sum_fields struct {
 
@@ -2247,10 +1588,6 @@ type Books_sum_fields struct {
 	Users_count int `json:"users_count"`
 
 	Users_read_count int `json:"users_read_count"`
-}
-
-// books_sum_order_by represents the books_sum_order_by GraphQL type
-type Books_sum_order_by struct {
 }
 
 // books_var_pop_fields represents the books_var_pop_fields GraphQL type
@@ -2311,10 +1648,6 @@ type Books_var_pop_fields struct {
 	Users_read_count float64 `json:"users_read_count"`
 }
 
-// books_var_pop_order_by represents the books_var_pop_order_by GraphQL type
-type Books_var_pop_order_by struct {
-}
-
 // books_var_samp_fields represents the books_var_samp_fields GraphQL type
 type Books_var_samp_fields struct {
 
@@ -2371,10 +1704,6 @@ type Books_var_samp_fields struct {
 	Users_count float64 `json:"users_count"`
 
 	Users_read_count float64 `json:"users_read_count"`
-}
-
-// books_var_samp_order_by represents the books_var_samp_order_by GraphQL type
-type Books_var_samp_order_by struct {
 }
 
 // books_variance_fields represents the books_variance_fields GraphQL type
@@ -2435,10 +1764,6 @@ type Books_variance_fields struct {
 	Users_read_count float64 `json:"users_read_count"`
 }
 
-// books_variance_order_by represents the books_variance_order_by GraphQL type
-type Books_variance_order_by struct {
-}
-
 // characters represents the characters GraphQL type
 type Characters struct {
 
@@ -2491,32 +1816,8 @@ type Characters struct {
 	User_id int `json:"user_id"`
 }
 
-// characters_bool_exp represents the characters_bool_exp GraphQL type
-type Characters_bool_exp struct {
-}
-
-// characters_order_by represents the characters_order_by GraphQL type
-type Characters_order_by struct {
-}
-
 // characters_select_column represents the characters_select_column GraphQL type
 type Characters_select_column struct {
-}
-
-// characters_stream_cursor_input represents the characters_stream_cursor_input GraphQL type
-type Characters_stream_cursor_input struct {
-}
-
-// characters_stream_cursor_value_input represents the characters_stream_cursor_value_input GraphQL type
-type Characters_stream_cursor_value_input struct {
-}
-
-// citext represents the citext GraphQL type
-type Citext struct {
-}
-
-// citext_comparison_exp represents the citext_comparison_exp GraphQL type
-type Citext_comparison_exp struct {
 }
 
 // collection_import_results represents the collection_import_results GraphQL type
@@ -2547,30 +1848,6 @@ type Collection_import_results struct {
 	Title string `json:"title"`
 }
 
-// collection_import_results_aggregate_order_by represents the collection_import_results_aggregate_order_by GraphQL type
-type Collection_import_results_aggregate_order_by struct {
-}
-
-// collection_import_results_avg_order_by represents the collection_import_results_avg_order_by GraphQL type
-type Collection_import_results_avg_order_by struct {
-}
-
-// collection_import_results_bool_exp represents the collection_import_results_bool_exp GraphQL type
-type Collection_import_results_bool_exp struct {
-}
-
-// collection_import_results_inc_input represents the collection_import_results_inc_input GraphQL type
-type Collection_import_results_inc_input struct {
-}
-
-// collection_import_results_max_order_by represents the collection_import_results_max_order_by GraphQL type
-type Collection_import_results_max_order_by struct {
-}
-
-// collection_import_results_min_order_by represents the collection_import_results_min_order_by GraphQL type
-type Collection_import_results_min_order_by struct {
-}
-
 // collection_import_results_mutation_response represents the collection_import_results_mutation_response GraphQL type
 type Collection_import_results_mutation_response struct {
 
@@ -2579,60 +1856,8 @@ type Collection_import_results_mutation_response struct {
 	Returning []*Collection_import_results `json:"returning"`
 }
 
-// collection_import_results_order_by represents the collection_import_results_order_by GraphQL type
-type Collection_import_results_order_by struct {
-}
-
-// collection_import_results_pk_columns_input represents the collection_import_results_pk_columns_input GraphQL type
-type Collection_import_results_pk_columns_input struct {
-}
-
 // collection_import_results_select_column represents the collection_import_results_select_column GraphQL type
 type Collection_import_results_select_column struct {
-}
-
-// collection_import_results_set_input represents the collection_import_results_set_input GraphQL type
-type Collection_import_results_set_input struct {
-}
-
-// collection_import_results_stddev_order_by represents the collection_import_results_stddev_order_by GraphQL type
-type Collection_import_results_stddev_order_by struct {
-}
-
-// collection_import_results_stddev_pop_order_by represents the collection_import_results_stddev_pop_order_by GraphQL type
-type Collection_import_results_stddev_pop_order_by struct {
-}
-
-// collection_import_results_stddev_samp_order_by represents the collection_import_results_stddev_samp_order_by GraphQL type
-type Collection_import_results_stddev_samp_order_by struct {
-}
-
-// collection_import_results_stream_cursor_input represents the collection_import_results_stream_cursor_input GraphQL type
-type Collection_import_results_stream_cursor_input struct {
-}
-
-// collection_import_results_stream_cursor_value_input represents the collection_import_results_stream_cursor_value_input GraphQL type
-type Collection_import_results_stream_cursor_value_input struct {
-}
-
-// collection_import_results_sum_order_by represents the collection_import_results_sum_order_by GraphQL type
-type Collection_import_results_sum_order_by struct {
-}
-
-// collection_import_results_updates represents the collection_import_results_updates GraphQL type
-type Collection_import_results_updates struct {
-}
-
-// collection_import_results_var_pop_order_by represents the collection_import_results_var_pop_order_by GraphQL type
-type Collection_import_results_var_pop_order_by struct {
-}
-
-// collection_import_results_var_samp_order_by represents the collection_import_results_var_samp_order_by GraphQL type
-type Collection_import_results_var_samp_order_by struct {
-}
-
-// collection_import_results_variance_order_by represents the collection_import_results_variance_order_by GraphQL type
-type Collection_import_results_variance_order_by struct {
 }
 
 // collection_imports represents the collection_imports GraphQL type
@@ -2683,68 +1908,8 @@ type Collection_imports struct {
 	User_id int `json:"user_id"`
 }
 
-// collection_imports_aggregate_order_by represents the collection_imports_aggregate_order_by GraphQL type
-type Collection_imports_aggregate_order_by struct {
-}
-
-// collection_imports_avg_order_by represents the collection_imports_avg_order_by GraphQL type
-type Collection_imports_avg_order_by struct {
-}
-
-// collection_imports_bool_exp represents the collection_imports_bool_exp GraphQL type
-type Collection_imports_bool_exp struct {
-}
-
-// collection_imports_max_order_by represents the collection_imports_max_order_by GraphQL type
-type Collection_imports_max_order_by struct {
-}
-
-// collection_imports_min_order_by represents the collection_imports_min_order_by GraphQL type
-type Collection_imports_min_order_by struct {
-}
-
-// collection_imports_order_by represents the collection_imports_order_by GraphQL type
-type Collection_imports_order_by struct {
-}
-
 // collection_imports_select_column represents the collection_imports_select_column GraphQL type
 type Collection_imports_select_column struct {
-}
-
-// collection_imports_stddev_order_by represents the collection_imports_stddev_order_by GraphQL type
-type Collection_imports_stddev_order_by struct {
-}
-
-// collection_imports_stddev_pop_order_by represents the collection_imports_stddev_pop_order_by GraphQL type
-type Collection_imports_stddev_pop_order_by struct {
-}
-
-// collection_imports_stddev_samp_order_by represents the collection_imports_stddev_samp_order_by GraphQL type
-type Collection_imports_stddev_samp_order_by struct {
-}
-
-// collection_imports_stream_cursor_input represents the collection_imports_stream_cursor_input GraphQL type
-type Collection_imports_stream_cursor_input struct {
-}
-
-// collection_imports_stream_cursor_value_input represents the collection_imports_stream_cursor_value_input GraphQL type
-type Collection_imports_stream_cursor_value_input struct {
-}
-
-// collection_imports_sum_order_by represents the collection_imports_sum_order_by GraphQL type
-type Collection_imports_sum_order_by struct {
-}
-
-// collection_imports_var_pop_order_by represents the collection_imports_var_pop_order_by GraphQL type
-type Collection_imports_var_pop_order_by struct {
-}
-
-// collection_imports_var_samp_order_by represents the collection_imports_var_samp_order_by GraphQL type
-type Collection_imports_var_samp_order_by struct {
-}
-
-// collection_imports_variance_order_by represents the collection_imports_variance_order_by GraphQL type
-type Collection_imports_variance_order_by struct {
 }
 
 // contributions represents the contributions GraphQL type
@@ -2777,14 +1942,6 @@ type Contributions_aggregate struct {
 	Nodes []*Contributions `json:"nodes"`
 }
 
-// contributions_aggregate_bool_exp represents the contributions_aggregate_bool_exp GraphQL type
-type Contributions_aggregate_bool_exp struct {
-}
-
-// contributions_aggregate_bool_exp_count represents the contributions_aggregate_bool_exp_count GraphQL type
-type Contributions_aggregate_bool_exp_count struct {
-}
-
 // contributions_aggregate_fields represents the contributions_aggregate_fields GraphQL type
 type Contributions_aggregate_fields struct {
 
@@ -2811,10 +1968,6 @@ type Contributions_aggregate_fields struct {
 	Variance *Contributions_variance_fields `json:"variance"`
 }
 
-// contributions_aggregate_order_by represents the contributions_aggregate_order_by GraphQL type
-type Contributions_aggregate_order_by struct {
-}
-
 // contributions_avg_fields represents the contributions_avg_fields GraphQL type
 type Contributions_avg_fields struct {
 
@@ -2823,14 +1976,6 @@ type Contributions_avg_fields struct {
 	Contributable_id float64 `json:"contributable_id"`
 
 	ID float64 `json:"id"`
-}
-
-// contributions_avg_order_by represents the contributions_avg_order_by GraphQL type
-type Contributions_avg_order_by struct {
-}
-
-// contributions_bool_exp represents the contributions_bool_exp GraphQL type
-type Contributions_bool_exp struct {
 }
 
 // contributions_max_fields represents the contributions_max_fields GraphQL type
@@ -2851,10 +1996,6 @@ type Contributions_max_fields struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// contributions_max_order_by represents the contributions_max_order_by GraphQL type
-type Contributions_max_order_by struct {
-}
-
 // contributions_min_fields represents the contributions_min_fields GraphQL type
 type Contributions_min_fields struct {
 
@@ -2873,14 +2014,6 @@ type Contributions_min_fields struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// contributions_min_order_by represents the contributions_min_order_by GraphQL type
-type Contributions_min_order_by struct {
-}
-
-// contributions_order_by represents the contributions_order_by GraphQL type
-type Contributions_order_by struct {
-}
-
 // contributions_select_column represents the contributions_select_column GraphQL type
 type Contributions_select_column struct {
 }
@@ -2895,10 +2028,6 @@ type Contributions_stddev_fields struct {
 	ID float64 `json:"id"`
 }
 
-// contributions_stddev_order_by represents the contributions_stddev_order_by GraphQL type
-type Contributions_stddev_order_by struct {
-}
-
 // contributions_stddev_pop_fields represents the contributions_stddev_pop_fields GraphQL type
 type Contributions_stddev_pop_fields struct {
 
@@ -2907,10 +2036,6 @@ type Contributions_stddev_pop_fields struct {
 	Contributable_id float64 `json:"contributable_id"`
 
 	ID float64 `json:"id"`
-}
-
-// contributions_stddev_pop_order_by represents the contributions_stddev_pop_order_by GraphQL type
-type Contributions_stddev_pop_order_by struct {
 }
 
 // contributions_stddev_samp_fields represents the contributions_stddev_samp_fields GraphQL type
@@ -2923,18 +2048,6 @@ type Contributions_stddev_samp_fields struct {
 	ID float64 `json:"id"`
 }
 
-// contributions_stddev_samp_order_by represents the contributions_stddev_samp_order_by GraphQL type
-type Contributions_stddev_samp_order_by struct {
-}
-
-// contributions_stream_cursor_input represents the contributions_stream_cursor_input GraphQL type
-type Contributions_stream_cursor_input struct {
-}
-
-// contributions_stream_cursor_value_input represents the contributions_stream_cursor_value_input GraphQL type
-type Contributions_stream_cursor_value_input struct {
-}
-
 // contributions_sum_fields represents the contributions_sum_fields GraphQL type
 type Contributions_sum_fields struct {
 
@@ -2943,10 +2056,6 @@ type Contributions_sum_fields struct {
 	Contributable_id int `json:"contributable_id"`
 
 	ID *Bigint `json:"id"`
-}
-
-// contributions_sum_order_by represents the contributions_sum_order_by GraphQL type
-type Contributions_sum_order_by struct {
 }
 
 // contributions_var_pop_fields represents the contributions_var_pop_fields GraphQL type
@@ -2959,10 +2068,6 @@ type Contributions_var_pop_fields struct {
 	ID float64 `json:"id"`
 }
 
-// contributions_var_pop_order_by represents the contributions_var_pop_order_by GraphQL type
-type Contributions_var_pop_order_by struct {
-}
-
 // contributions_var_samp_fields represents the contributions_var_samp_fields GraphQL type
 type Contributions_var_samp_fields struct {
 
@@ -2973,10 +2078,6 @@ type Contributions_var_samp_fields struct {
 	ID float64 `json:"id"`
 }
 
-// contributions_var_samp_order_by represents the contributions_var_samp_order_by GraphQL type
-type Contributions_var_samp_order_by struct {
-}
-
 // contributions_variance_fields represents the contributions_variance_fields GraphQL type
 type Contributions_variance_fields struct {
 
@@ -2985,10 +2086,6 @@ type Contributions_variance_fields struct {
 	Contributable_id float64 `json:"contributable_id"`
 
 	ID float64 `json:"id"`
-}
-
-// contributions_variance_order_by represents the contributions_variance_order_by GraphQL type
-type Contributions_variance_order_by struct {
 }
 
 // countries represents the countries GraphQL type
@@ -3025,36 +2122,12 @@ type Countries struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// countries_bool_exp represents the countries_bool_exp GraphQL type
-type Countries_bool_exp struct {
-}
-
-// countries_order_by represents the countries_order_by GraphQL type
-type Countries_order_by struct {
-}
-
 // countries_select_column represents the countries_select_column GraphQL type
 type Countries_select_column struct {
 }
 
-// countries_stream_cursor_input represents the countries_stream_cursor_input GraphQL type
-type Countries_stream_cursor_input struct {
-}
-
-// countries_stream_cursor_value_input represents the countries_stream_cursor_value_input GraphQL type
-type Countries_stream_cursor_value_input struct {
-}
-
 // cursor_ordering represents the cursor_ordering GraphQL type
 type Cursor_ordering struct {
-}
-
-// date represents the date GraphQL type
-type Date struct {
-}
-
-// date_comparison_exp represents the date_comparison_exp GraphQL type
-type Date_comparison_exp struct {
 }
 
 // editions represents the editions GraphQL type
@@ -3171,68 +2244,8 @@ type Editions struct {
 	Users_read_count int `json:"users_read_count"`
 }
 
-// editions_aggregate_order_by represents the editions_aggregate_order_by GraphQL type
-type Editions_aggregate_order_by struct {
-}
-
-// editions_avg_order_by represents the editions_avg_order_by GraphQL type
-type Editions_avg_order_by struct {
-}
-
-// editions_bool_exp represents the editions_bool_exp GraphQL type
-type Editions_bool_exp struct {
-}
-
-// editions_max_order_by represents the editions_max_order_by GraphQL type
-type Editions_max_order_by struct {
-}
-
-// editions_min_order_by represents the editions_min_order_by GraphQL type
-type Editions_min_order_by struct {
-}
-
-// editions_order_by represents the editions_order_by GraphQL type
-type Editions_order_by struct {
-}
-
 // editions_select_column represents the editions_select_column GraphQL type
 type Editions_select_column struct {
-}
-
-// editions_stddev_order_by represents the editions_stddev_order_by GraphQL type
-type Editions_stddev_order_by struct {
-}
-
-// editions_stddev_pop_order_by represents the editions_stddev_pop_order_by GraphQL type
-type Editions_stddev_pop_order_by struct {
-}
-
-// editions_stddev_samp_order_by represents the editions_stddev_samp_order_by GraphQL type
-type Editions_stddev_samp_order_by struct {
-}
-
-// editions_stream_cursor_input represents the editions_stream_cursor_input GraphQL type
-type Editions_stream_cursor_input struct {
-}
-
-// editions_stream_cursor_value_input represents the editions_stream_cursor_value_input GraphQL type
-type Editions_stream_cursor_value_input struct {
-}
-
-// editions_sum_order_by represents the editions_sum_order_by GraphQL type
-type Editions_sum_order_by struct {
-}
-
-// editions_var_pop_order_by represents the editions_var_pop_order_by GraphQL type
-type Editions_var_pop_order_by struct {
-}
-
-// editions_var_samp_order_by represents the editions_var_samp_order_by GraphQL type
-type Editions_var_samp_order_by struct {
-}
-
-// editions_variance_order_by represents the editions_variance_order_by GraphQL type
-type Editions_variance_order_by struct {
 }
 
 // flag_statuses represents the flag_statuses GraphQL type
@@ -3245,32 +2258,8 @@ type Flag_statuses struct {
 	User_flags []*User_flags `json:"user_flags"`
 }
 
-// flag_statuses_bool_exp represents the flag_statuses_bool_exp GraphQL type
-type Flag_statuses_bool_exp struct {
-}
-
-// flag_statuses_order_by represents the flag_statuses_order_by GraphQL type
-type Flag_statuses_order_by struct {
-}
-
 // flag_statuses_select_column represents the flag_statuses_select_column GraphQL type
 type Flag_statuses_select_column struct {
-}
-
-// flag_statuses_stream_cursor_input represents the flag_statuses_stream_cursor_input GraphQL type
-type Flag_statuses_stream_cursor_input struct {
-}
-
-// flag_statuses_stream_cursor_value_input represents the flag_statuses_stream_cursor_value_input GraphQL type
-type Flag_statuses_stream_cursor_value_input struct {
-}
-
-// float8 represents the float8 GraphQL type
-type Float8 struct {
-}
-
-// float8_comparison_exp represents the float8_comparison_exp GraphQL type
-type Float8_comparison_exp struct {
 }
 
 // followed_lists represents the followed_lists GraphQL type
@@ -3289,68 +2278,8 @@ type Followed_lists struct {
 	User_id int `json:"user_id"`
 }
 
-// followed_lists_aggregate_order_by represents the followed_lists_aggregate_order_by GraphQL type
-type Followed_lists_aggregate_order_by struct {
-}
-
-// followed_lists_avg_order_by represents the followed_lists_avg_order_by GraphQL type
-type Followed_lists_avg_order_by struct {
-}
-
-// followed_lists_bool_exp represents the followed_lists_bool_exp GraphQL type
-type Followed_lists_bool_exp struct {
-}
-
-// followed_lists_max_order_by represents the followed_lists_max_order_by GraphQL type
-type Followed_lists_max_order_by struct {
-}
-
-// followed_lists_min_order_by represents the followed_lists_min_order_by GraphQL type
-type Followed_lists_min_order_by struct {
-}
-
-// followed_lists_order_by represents the followed_lists_order_by GraphQL type
-type Followed_lists_order_by struct {
-}
-
 // followed_lists_select_column represents the followed_lists_select_column GraphQL type
 type Followed_lists_select_column struct {
-}
-
-// followed_lists_stddev_order_by represents the followed_lists_stddev_order_by GraphQL type
-type Followed_lists_stddev_order_by struct {
-}
-
-// followed_lists_stddev_pop_order_by represents the followed_lists_stddev_pop_order_by GraphQL type
-type Followed_lists_stddev_pop_order_by struct {
-}
-
-// followed_lists_stddev_samp_order_by represents the followed_lists_stddev_samp_order_by GraphQL type
-type Followed_lists_stddev_samp_order_by struct {
-}
-
-// followed_lists_stream_cursor_input represents the followed_lists_stream_cursor_input GraphQL type
-type Followed_lists_stream_cursor_input struct {
-}
-
-// followed_lists_stream_cursor_value_input represents the followed_lists_stream_cursor_value_input GraphQL type
-type Followed_lists_stream_cursor_value_input struct {
-}
-
-// followed_lists_sum_order_by represents the followed_lists_sum_order_by GraphQL type
-type Followed_lists_sum_order_by struct {
-}
-
-// followed_lists_var_pop_order_by represents the followed_lists_var_pop_order_by GraphQL type
-type Followed_lists_var_pop_order_by struct {
-}
-
-// followed_lists_var_samp_order_by represents the followed_lists_var_samp_order_by GraphQL type
-type Followed_lists_var_samp_order_by struct {
-}
-
-// followed_lists_variance_order_by represents the followed_lists_variance_order_by GraphQL type
-type Followed_lists_variance_order_by struct {
 }
 
 // followed_prompts represents the followed_prompts GraphQL type
@@ -3371,36 +2300,8 @@ type Followed_prompts struct {
 	User_id int `json:"user_id"`
 }
 
-// followed_prompts_aggregate_order_by represents the followed_prompts_aggregate_order_by GraphQL type
-type Followed_prompts_aggregate_order_by struct {
-}
-
-// followed_prompts_avg_order_by represents the followed_prompts_avg_order_by GraphQL type
-type Followed_prompts_avg_order_by struct {
-}
-
-// followed_prompts_bool_exp represents the followed_prompts_bool_exp GraphQL type
-type Followed_prompts_bool_exp struct {
-}
-
 // followed_prompts_constraint represents the followed_prompts_constraint GraphQL type
 type Followed_prompts_constraint struct {
-}
-
-// followed_prompts_inc_input represents the followed_prompts_inc_input GraphQL type
-type Followed_prompts_inc_input struct {
-}
-
-// followed_prompts_insert_input represents the followed_prompts_insert_input GraphQL type
-type Followed_prompts_insert_input struct {
-}
-
-// followed_prompts_max_order_by represents the followed_prompts_max_order_by GraphQL type
-type Followed_prompts_max_order_by struct {
-}
-
-// followed_prompts_min_order_by represents the followed_prompts_min_order_by GraphQL type
-type Followed_prompts_min_order_by struct {
 }
 
 // followed_prompts_mutation_response represents the followed_prompts_mutation_response GraphQL type
@@ -3411,68 +2312,12 @@ type Followed_prompts_mutation_response struct {
 	Returning []*Followed_prompts `json:"returning"`
 }
 
-// followed_prompts_on_conflict represents the followed_prompts_on_conflict GraphQL type
-type Followed_prompts_on_conflict struct {
-}
-
-// followed_prompts_order_by represents the followed_prompts_order_by GraphQL type
-type Followed_prompts_order_by struct {
-}
-
-// followed_prompts_pk_columns_input represents the followed_prompts_pk_columns_input GraphQL type
-type Followed_prompts_pk_columns_input struct {
-}
-
 // followed_prompts_select_column represents the followed_prompts_select_column GraphQL type
 type Followed_prompts_select_column struct {
 }
 
-// followed_prompts_set_input represents the followed_prompts_set_input GraphQL type
-type Followed_prompts_set_input struct {
-}
-
-// followed_prompts_stddev_order_by represents the followed_prompts_stddev_order_by GraphQL type
-type Followed_prompts_stddev_order_by struct {
-}
-
-// followed_prompts_stddev_pop_order_by represents the followed_prompts_stddev_pop_order_by GraphQL type
-type Followed_prompts_stddev_pop_order_by struct {
-}
-
-// followed_prompts_stddev_samp_order_by represents the followed_prompts_stddev_samp_order_by GraphQL type
-type Followed_prompts_stddev_samp_order_by struct {
-}
-
-// followed_prompts_stream_cursor_input represents the followed_prompts_stream_cursor_input GraphQL type
-type Followed_prompts_stream_cursor_input struct {
-}
-
-// followed_prompts_stream_cursor_value_input represents the followed_prompts_stream_cursor_value_input GraphQL type
-type Followed_prompts_stream_cursor_value_input struct {
-}
-
-// followed_prompts_sum_order_by represents the followed_prompts_sum_order_by GraphQL type
-type Followed_prompts_sum_order_by struct {
-}
-
 // followed_prompts_update_column represents the followed_prompts_update_column GraphQL type
 type Followed_prompts_update_column struct {
-}
-
-// followed_prompts_updates represents the followed_prompts_updates GraphQL type
-type Followed_prompts_updates struct {
-}
-
-// followed_prompts_var_pop_order_by represents the followed_prompts_var_pop_order_by GraphQL type
-type Followed_prompts_var_pop_order_by struct {
-}
-
-// followed_prompts_var_samp_order_by represents the followed_prompts_var_samp_order_by GraphQL type
-type Followed_prompts_var_samp_order_by struct {
-}
-
-// followed_prompts_variance_order_by represents the followed_prompts_variance_order_by GraphQL type
-type Followed_prompts_variance_order_by struct {
 }
 
 // followed_user_books represents the followed_user_books GraphQL type
@@ -3541,10 +2386,6 @@ type Followed_user_books_avg_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// followed_user_books_bool_exp represents the followed_user_books_bool_exp GraphQL type
-type Followed_user_books_bool_exp struct {
-}
-
 // followed_user_books_max_fields represents the followed_user_books_max_fields GraphQL type
 type Followed_user_books_max_fields struct {
 
@@ -3567,10 +2408,6 @@ type Followed_user_books_min_fields struct {
 	User_book_id int `json:"user_book_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// followed_user_books_order_by represents the followed_user_books_order_by GraphQL type
-type Followed_user_books_order_by struct {
 }
 
 // followed_user_books_select_column represents the followed_user_books_select_column GraphQL type
@@ -3611,14 +2448,6 @@ type Followed_user_books_stddev_samp_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// followed_user_books_stream_cursor_input represents the followed_user_books_stream_cursor_input GraphQL type
-type Followed_user_books_stream_cursor_input struct {
-}
-
-// followed_user_books_stream_cursor_value_input represents the followed_user_books_stream_cursor_value_input GraphQL type
-type Followed_user_books_stream_cursor_value_input struct {
 }
 
 // followed_user_books_sum_fields represents the followed_user_books_sum_fields GraphQL type
@@ -3685,26 +2514,6 @@ type Followed_users struct {
 	User_id int `json:"user_id"`
 }
 
-// followed_users_aggregate_order_by represents the followed_users_aggregate_order_by GraphQL type
-type Followed_users_aggregate_order_by struct {
-}
-
-// followed_users_avg_order_by represents the followed_users_avg_order_by GraphQL type
-type Followed_users_avg_order_by struct {
-}
-
-// followed_users_bool_exp represents the followed_users_bool_exp GraphQL type
-type Followed_users_bool_exp struct {
-}
-
-// followed_users_max_order_by represents the followed_users_max_order_by GraphQL type
-type Followed_users_max_order_by struct {
-}
-
-// followed_users_min_order_by represents the followed_users_min_order_by GraphQL type
-type Followed_users_min_order_by struct {
-}
-
 // followed_users_mutation_response represents the followed_users_mutation_response GraphQL type
 type Followed_users_mutation_response struct {
 
@@ -3713,48 +2522,8 @@ type Followed_users_mutation_response struct {
 	Returning []*Followed_users `json:"returning"`
 }
 
-// followed_users_order_by represents the followed_users_order_by GraphQL type
-type Followed_users_order_by struct {
-}
-
 // followed_users_select_column represents the followed_users_select_column GraphQL type
 type Followed_users_select_column struct {
-}
-
-// followed_users_stddev_order_by represents the followed_users_stddev_order_by GraphQL type
-type Followed_users_stddev_order_by struct {
-}
-
-// followed_users_stddev_pop_order_by represents the followed_users_stddev_pop_order_by GraphQL type
-type Followed_users_stddev_pop_order_by struct {
-}
-
-// followed_users_stddev_samp_order_by represents the followed_users_stddev_samp_order_by GraphQL type
-type Followed_users_stddev_samp_order_by struct {
-}
-
-// followed_users_stream_cursor_input represents the followed_users_stream_cursor_input GraphQL type
-type Followed_users_stream_cursor_input struct {
-}
-
-// followed_users_stream_cursor_value_input represents the followed_users_stream_cursor_value_input GraphQL type
-type Followed_users_stream_cursor_value_input struct {
-}
-
-// followed_users_sum_order_by represents the followed_users_sum_order_by GraphQL type
-type Followed_users_sum_order_by struct {
-}
-
-// followed_users_var_pop_order_by represents the followed_users_var_pop_order_by GraphQL type
-type Followed_users_var_pop_order_by struct {
-}
-
-// followed_users_var_samp_order_by represents the followed_users_var_samp_order_by GraphQL type
-type Followed_users_var_samp_order_by struct {
-}
-
-// followed_users_variance_order_by represents the followed_users_variance_order_by GraphQL type
-type Followed_users_variance_order_by struct {
 }
 
 // following_user_books represents the following_user_books GraphQL type
@@ -3823,10 +2592,6 @@ type Following_user_books_avg_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// following_user_books_bool_exp represents the following_user_books_bool_exp GraphQL type
-type Following_user_books_bool_exp struct {
-}
-
 // following_user_books_max_fields represents the following_user_books_max_fields GraphQL type
 type Following_user_books_max_fields struct {
 
@@ -3849,10 +2614,6 @@ type Following_user_books_min_fields struct {
 	User_book_id int `json:"user_book_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// following_user_books_order_by represents the following_user_books_order_by GraphQL type
-type Following_user_books_order_by struct {
 }
 
 // following_user_books_select_column represents the following_user_books_select_column GraphQL type
@@ -3893,14 +2654,6 @@ type Following_user_books_stddev_samp_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// following_user_books_stream_cursor_input represents the following_user_books_stream_cursor_input GraphQL type
-type Following_user_books_stream_cursor_input struct {
-}
-
-// following_user_books_stream_cursor_value_input represents the following_user_books_stream_cursor_value_input GraphQL type
-type Following_user_books_stream_cursor_value_input struct {
 }
 
 // following_user_books_sum_fields represents the following_user_books_sum_fields GraphQL type
@@ -3985,26 +2738,6 @@ type Goals struct {
 	User_id int `json:"user_id"`
 }
 
-// goals_aggregate_order_by represents the goals_aggregate_order_by GraphQL type
-type Goals_aggregate_order_by struct {
-}
-
-// goals_avg_order_by represents the goals_avg_order_by GraphQL type
-type Goals_avg_order_by struct {
-}
-
-// goals_bool_exp represents the goals_bool_exp GraphQL type
-type Goals_bool_exp struct {
-}
-
-// goals_max_order_by represents the goals_max_order_by GraphQL type
-type Goals_max_order_by struct {
-}
-
-// goals_min_order_by represents the goals_min_order_by GraphQL type
-type Goals_min_order_by struct {
-}
-
 // goals_mutation_response represents the goals_mutation_response GraphQL type
 type Goals_mutation_response struct {
 
@@ -4013,48 +2746,8 @@ type Goals_mutation_response struct {
 	Returning []*Goals `json:"returning"`
 }
 
-// goals_order_by represents the goals_order_by GraphQL type
-type Goals_order_by struct {
-}
-
 // goals_select_column represents the goals_select_column GraphQL type
 type Goals_select_column struct {
-}
-
-// goals_stddev_order_by represents the goals_stddev_order_by GraphQL type
-type Goals_stddev_order_by struct {
-}
-
-// goals_stddev_pop_order_by represents the goals_stddev_pop_order_by GraphQL type
-type Goals_stddev_pop_order_by struct {
-}
-
-// goals_stddev_samp_order_by represents the goals_stddev_samp_order_by GraphQL type
-type Goals_stddev_samp_order_by struct {
-}
-
-// goals_stream_cursor_input represents the goals_stream_cursor_input GraphQL type
-type Goals_stream_cursor_input struct {
-}
-
-// goals_stream_cursor_value_input represents the goals_stream_cursor_value_input GraphQL type
-type Goals_stream_cursor_value_input struct {
-}
-
-// goals_sum_order_by represents the goals_sum_order_by GraphQL type
-type Goals_sum_order_by struct {
-}
-
-// goals_var_pop_order_by represents the goals_var_pop_order_by GraphQL type
-type Goals_var_pop_order_by struct {
-}
-
-// goals_var_samp_order_by represents the goals_var_samp_order_by GraphQL type
-type Goals_var_samp_order_by struct {
-}
-
-// goals_variance_order_by represents the goals_variance_order_by GraphQL type
-type Goals_variance_order_by struct {
 }
 
 // images represents the images GraphQL type
@@ -4079,84 +2772,8 @@ type Images struct {
 	Width int `json:"width"`
 }
 
-// images_aggregate_order_by represents the images_aggregate_order_by GraphQL type
-type Images_aggregate_order_by struct {
-}
-
-// images_avg_order_by represents the images_avg_order_by GraphQL type
-type Images_avg_order_by struct {
-}
-
-// images_bool_exp represents the images_bool_exp GraphQL type
-type Images_bool_exp struct {
-}
-
-// images_max_order_by represents the images_max_order_by GraphQL type
-type Images_max_order_by struct {
-}
-
-// images_min_order_by represents the images_min_order_by GraphQL type
-type Images_min_order_by struct {
-}
-
-// images_order_by represents the images_order_by GraphQL type
-type Images_order_by struct {
-}
-
 // images_select_column represents the images_select_column GraphQL type
 type Images_select_column struct {
-}
-
-// images_stddev_order_by represents the images_stddev_order_by GraphQL type
-type Images_stddev_order_by struct {
-}
-
-// images_stddev_pop_order_by represents the images_stddev_pop_order_by GraphQL type
-type Images_stddev_pop_order_by struct {
-}
-
-// images_stddev_samp_order_by represents the images_stddev_samp_order_by GraphQL type
-type Images_stddev_samp_order_by struct {
-}
-
-// images_stream_cursor_input represents the images_stream_cursor_input GraphQL type
-type Images_stream_cursor_input struct {
-}
-
-// images_stream_cursor_value_input represents the images_stream_cursor_value_input GraphQL type
-type Images_stream_cursor_value_input struct {
-}
-
-// images_sum_order_by represents the images_sum_order_by GraphQL type
-type Images_sum_order_by struct {
-}
-
-// images_var_pop_order_by represents the images_var_pop_order_by GraphQL type
-type Images_var_pop_order_by struct {
-}
-
-// images_var_samp_order_by represents the images_var_samp_order_by GraphQL type
-type Images_var_samp_order_by struct {
-}
-
-// images_variance_order_by represents the images_variance_order_by GraphQL type
-type Images_variance_order_by struct {
-}
-
-// json_comparison_exp represents the json_comparison_exp GraphQL type
-type Json_comparison_exp struct {
-}
-
-// jsonb represents the jsonb GraphQL type
-type Jsonb struct {
-}
-
-// jsonb_cast_exp represents the jsonb_cast_exp GraphQL type
-type Jsonb_cast_exp struct {
-}
-
-// jsonb_comparison_exp represents the jsonb_comparison_exp GraphQL type
-type Jsonb_comparison_exp struct {
 }
 
 // languages represents the languages GraphQL type
@@ -4171,24 +2788,8 @@ type Languages struct {
 	Language string `json:"language"`
 }
 
-// languages_bool_exp represents the languages_bool_exp GraphQL type
-type Languages_bool_exp struct {
-}
-
-// languages_order_by represents the languages_order_by GraphQL type
-type Languages_order_by struct {
-}
-
 // languages_select_column represents the languages_select_column GraphQL type
 type Languages_select_column struct {
-}
-
-// languages_stream_cursor_input represents the languages_stream_cursor_input GraphQL type
-type Languages_stream_cursor_input struct {
-}
-
-// languages_stream_cursor_value_input represents the languages_stream_cursor_value_input GraphQL type
-type Languages_stream_cursor_value_input struct {
 }
 
 // likes represents the likes GraphQL type
@@ -4215,68 +2816,8 @@ type Likes struct {
 	User_id int `json:"user_id"`
 }
 
-// likes_aggregate_order_by represents the likes_aggregate_order_by GraphQL type
-type Likes_aggregate_order_by struct {
-}
-
-// likes_avg_order_by represents the likes_avg_order_by GraphQL type
-type Likes_avg_order_by struct {
-}
-
-// likes_bool_exp represents the likes_bool_exp GraphQL type
-type Likes_bool_exp struct {
-}
-
-// likes_max_order_by represents the likes_max_order_by GraphQL type
-type Likes_max_order_by struct {
-}
-
-// likes_min_order_by represents the likes_min_order_by GraphQL type
-type Likes_min_order_by struct {
-}
-
-// likes_order_by represents the likes_order_by GraphQL type
-type Likes_order_by struct {
-}
-
 // likes_select_column represents the likes_select_column GraphQL type
 type Likes_select_column struct {
-}
-
-// likes_stddev_order_by represents the likes_stddev_order_by GraphQL type
-type Likes_stddev_order_by struct {
-}
-
-// likes_stddev_pop_order_by represents the likes_stddev_pop_order_by GraphQL type
-type Likes_stddev_pop_order_by struct {
-}
-
-// likes_stddev_samp_order_by represents the likes_stddev_samp_order_by GraphQL type
-type Likes_stddev_samp_order_by struct {
-}
-
-// likes_stream_cursor_input represents the likes_stream_cursor_input GraphQL type
-type Likes_stream_cursor_input struct {
-}
-
-// likes_stream_cursor_value_input represents the likes_stream_cursor_value_input GraphQL type
-type Likes_stream_cursor_value_input struct {
-}
-
-// likes_sum_order_by represents the likes_sum_order_by GraphQL type
-type Likes_sum_order_by struct {
-}
-
-// likes_var_pop_order_by represents the likes_var_pop_order_by GraphQL type
-type Likes_var_pop_order_by struct {
-}
-
-// likes_var_samp_order_by represents the likes_var_samp_order_by GraphQL type
-type Likes_var_samp_order_by struct {
-}
-
-// likes_variance_order_by represents the likes_variance_order_by GraphQL type
-type Likes_variance_order_by struct {
 }
 
 // list_books represents the list_books GraphQL type
@@ -4327,22 +2868,6 @@ type List_books_aggregate struct {
 	Nodes []*List_books `json:"nodes"`
 }
 
-// list_books_aggregate_bool_exp represents the list_books_aggregate_bool_exp GraphQL type
-type List_books_aggregate_bool_exp struct {
-}
-
-// list_books_aggregate_bool_exp_bool_and represents the list_books_aggregate_bool_exp_bool_and GraphQL type
-type List_books_aggregate_bool_exp_bool_and struct {
-}
-
-// list_books_aggregate_bool_exp_bool_or represents the list_books_aggregate_bool_exp_bool_or GraphQL type
-type List_books_aggregate_bool_exp_bool_or struct {
-}
-
-// list_books_aggregate_bool_exp_count represents the list_books_aggregate_bool_exp_count GraphQL type
-type List_books_aggregate_bool_exp_count struct {
-}
-
 // list_books_aggregate_fields represents the list_books_aggregate_fields GraphQL type
 type List_books_aggregate_fields struct {
 
@@ -4369,10 +2894,6 @@ type List_books_aggregate_fields struct {
 	Variance *List_books_variance_fields `json:"variance"`
 }
 
-// list_books_aggregate_order_by represents the list_books_aggregate_order_by GraphQL type
-type List_books_aggregate_order_by struct {
-}
-
 // list_books_avg_fields represents the list_books_avg_fields GraphQL type
 type List_books_avg_fields struct {
 
@@ -4389,18 +2910,6 @@ type List_books_avg_fields struct {
 	Original_edition_id float64 `json:"original_edition_id"`
 
 	Position float64 `json:"position"`
-}
-
-// list_books_avg_order_by represents the list_books_avg_order_by GraphQL type
-type List_books_avg_order_by struct {
-}
-
-// list_books_bool_exp represents the list_books_bool_exp GraphQL type
-type List_books_bool_exp struct {
-}
-
-// list_books_inc_input represents the list_books_inc_input GraphQL type
-type List_books_inc_input struct {
 }
 
 // list_books_max_fields represents the list_books_max_fields GraphQL type
@@ -4431,10 +2940,6 @@ type List_books_max_fields struct {
 	Updated_at *Timestamptz `json:"updated_at"`
 }
 
-// list_books_max_order_by represents the list_books_max_order_by GraphQL type
-type List_books_max_order_by struct {
-}
-
 // list_books_min_fields represents the list_books_min_fields GraphQL type
 type List_books_min_fields struct {
 
@@ -4463,24 +2968,12 @@ type List_books_min_fields struct {
 	Updated_at *Timestamptz `json:"updated_at"`
 }
 
-// list_books_min_order_by represents the list_books_min_order_by GraphQL type
-type List_books_min_order_by struct {
-}
-
 // list_books_mutation_response represents the list_books_mutation_response GraphQL type
 type List_books_mutation_response struct {
 
 	Affected_rows int `json:"affected_rows"`
 
 	Returning []*List_books `json:"returning"`
-}
-
-// list_books_order_by represents the list_books_order_by GraphQL type
-type List_books_order_by struct {
-}
-
-// list_books_pk_columns_input represents the list_books_pk_columns_input GraphQL type
-type List_books_pk_columns_input struct {
 }
 
 // list_books_select_column represents the list_books_select_column GraphQL type
@@ -4493,10 +2986,6 @@ type List_books_select_column_list_books_aggregate_bool_exp_bool_and_arguments_c
 
 // list_books_select_column_list_books_aggregate_bool_exp_bool_or_arguments_columns represents the list_books_select_column_list_books_aggregate_bool_exp_bool_or_arguments_columns GraphQL type
 type List_books_select_column_list_books_aggregate_bool_exp_bool_or_arguments_columns struct {
-}
-
-// list_books_set_input represents the list_books_set_input GraphQL type
-type List_books_set_input struct {
 }
 
 // list_books_stddev_fields represents the list_books_stddev_fields GraphQL type
@@ -4517,10 +3006,6 @@ type List_books_stddev_fields struct {
 	Position float64 `json:"position"`
 }
 
-// list_books_stddev_order_by represents the list_books_stddev_order_by GraphQL type
-type List_books_stddev_order_by struct {
-}
-
 // list_books_stddev_pop_fields represents the list_books_stddev_pop_fields GraphQL type
 type List_books_stddev_pop_fields struct {
 
@@ -4537,10 +3022,6 @@ type List_books_stddev_pop_fields struct {
 	Original_edition_id float64 `json:"original_edition_id"`
 
 	Position float64 `json:"position"`
-}
-
-// list_books_stddev_pop_order_by represents the list_books_stddev_pop_order_by GraphQL type
-type List_books_stddev_pop_order_by struct {
 }
 
 // list_books_stddev_samp_fields represents the list_books_stddev_samp_fields GraphQL type
@@ -4561,18 +3042,6 @@ type List_books_stddev_samp_fields struct {
 	Position float64 `json:"position"`
 }
 
-// list_books_stddev_samp_order_by represents the list_books_stddev_samp_order_by GraphQL type
-type List_books_stddev_samp_order_by struct {
-}
-
-// list_books_stream_cursor_input represents the list_books_stream_cursor_input GraphQL type
-type List_books_stream_cursor_input struct {
-}
-
-// list_books_stream_cursor_value_input represents the list_books_stream_cursor_value_input GraphQL type
-type List_books_stream_cursor_value_input struct {
-}
-
 // list_books_sum_fields represents the list_books_sum_fields GraphQL type
 type List_books_sum_fields struct {
 
@@ -4589,14 +3058,6 @@ type List_books_sum_fields struct {
 	Original_edition_id int `json:"original_edition_id"`
 
 	Position int `json:"position"`
-}
-
-// list_books_sum_order_by represents the list_books_sum_order_by GraphQL type
-type List_books_sum_order_by struct {
-}
-
-// list_books_updates represents the list_books_updates GraphQL type
-type List_books_updates struct {
 }
 
 // list_books_var_pop_fields represents the list_books_var_pop_fields GraphQL type
@@ -4617,10 +3078,6 @@ type List_books_var_pop_fields struct {
 	Position float64 `json:"position"`
 }
 
-// list_books_var_pop_order_by represents the list_books_var_pop_order_by GraphQL type
-type List_books_var_pop_order_by struct {
-}
-
 // list_books_var_samp_fields represents the list_books_var_samp_fields GraphQL type
 type List_books_var_samp_fields struct {
 
@@ -4639,10 +3096,6 @@ type List_books_var_samp_fields struct {
 	Position float64 `json:"position"`
 }
 
-// list_books_var_samp_order_by represents the list_books_var_samp_order_by GraphQL type
-type List_books_var_samp_order_by struct {
-}
-
 // list_books_variance_fields represents the list_books_variance_fields GraphQL type
 type List_books_variance_fields struct {
 
@@ -4659,10 +3112,6 @@ type List_books_variance_fields struct {
 	Original_edition_id float64 `json:"original_edition_id"`
 
 	Position float64 `json:"position"`
-}
-
-// list_books_variance_order_by represents the list_books_variance_order_by GraphQL type
-type List_books_variance_order_by struct {
 }
 
 // lists represents the lists GraphQL type
@@ -4729,22 +3178,6 @@ type Lists_aggregate struct {
 	Nodes []*Lists `json:"nodes"`
 }
 
-// lists_aggregate_bool_exp represents the lists_aggregate_bool_exp GraphQL type
-type Lists_aggregate_bool_exp struct {
-}
-
-// lists_aggregate_bool_exp_bool_and represents the lists_aggregate_bool_exp_bool_and GraphQL type
-type Lists_aggregate_bool_exp_bool_and struct {
-}
-
-// lists_aggregate_bool_exp_bool_or represents the lists_aggregate_bool_exp_bool_or GraphQL type
-type Lists_aggregate_bool_exp_bool_or struct {
-}
-
-// lists_aggregate_bool_exp_count represents the lists_aggregate_bool_exp_count GraphQL type
-type Lists_aggregate_bool_exp_count struct {
-}
-
 // lists_aggregate_fields represents the lists_aggregate_fields GraphQL type
 type Lists_aggregate_fields struct {
 
@@ -4771,10 +3204,6 @@ type Lists_aggregate_fields struct {
 	Variance *Lists_variance_fields `json:"variance"`
 }
 
-// lists_aggregate_order_by represents the lists_aggregate_order_by GraphQL type
-type Lists_aggregate_order_by struct {
-}
-
 // lists_avg_fields represents the lists_avg_fields GraphQL type
 type Lists_avg_fields struct {
 
@@ -4789,14 +3218,6 @@ type Lists_avg_fields struct {
 	Privacy_setting_id float64 `json:"privacy_setting_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// lists_avg_order_by represents the lists_avg_order_by GraphQL type
-type Lists_avg_order_by struct {
-}
-
-// lists_bool_exp represents the lists_bool_exp GraphQL type
-type Lists_bool_exp struct {
 }
 
 // lists_max_fields represents the lists_max_fields GraphQL type
@@ -4831,10 +3252,6 @@ type Lists_max_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// lists_max_order_by represents the lists_max_order_by GraphQL type
-type Lists_max_order_by struct {
-}
-
 // lists_min_fields represents the lists_min_fields GraphQL type
 type Lists_min_fields struct {
 
@@ -4867,14 +3284,6 @@ type Lists_min_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// lists_min_order_by represents the lists_min_order_by GraphQL type
-type Lists_min_order_by struct {
-}
-
-// lists_order_by represents the lists_order_by GraphQL type
-type Lists_order_by struct {
-}
-
 // lists_select_column represents the lists_select_column GraphQL type
 type Lists_select_column struct {
 }
@@ -4903,10 +3312,6 @@ type Lists_stddev_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// lists_stddev_order_by represents the lists_stddev_order_by GraphQL type
-type Lists_stddev_order_by struct {
-}
-
 // lists_stddev_pop_fields represents the lists_stddev_pop_fields GraphQL type
 type Lists_stddev_pop_fields struct {
 
@@ -4921,10 +3326,6 @@ type Lists_stddev_pop_fields struct {
 	Privacy_setting_id float64 `json:"privacy_setting_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// lists_stddev_pop_order_by represents the lists_stddev_pop_order_by GraphQL type
-type Lists_stddev_pop_order_by struct {
 }
 
 // lists_stddev_samp_fields represents the lists_stddev_samp_fields GraphQL type
@@ -4943,18 +3344,6 @@ type Lists_stddev_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// lists_stddev_samp_order_by represents the lists_stddev_samp_order_by GraphQL type
-type Lists_stddev_samp_order_by struct {
-}
-
-// lists_stream_cursor_input represents the lists_stream_cursor_input GraphQL type
-type Lists_stream_cursor_input struct {
-}
-
-// lists_stream_cursor_value_input represents the lists_stream_cursor_value_input GraphQL type
-type Lists_stream_cursor_value_input struct {
-}
-
 // lists_sum_fields represents the lists_sum_fields GraphQL type
 type Lists_sum_fields struct {
 
@@ -4969,10 +3358,6 @@ type Lists_sum_fields struct {
 	Privacy_setting_id int `json:"privacy_setting_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// lists_sum_order_by represents the lists_sum_order_by GraphQL type
-type Lists_sum_order_by struct {
 }
 
 // lists_var_pop_fields represents the lists_var_pop_fields GraphQL type
@@ -4991,10 +3376,6 @@ type Lists_var_pop_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// lists_var_pop_order_by represents the lists_var_pop_order_by GraphQL type
-type Lists_var_pop_order_by struct {
-}
-
 // lists_var_samp_fields represents the lists_var_samp_fields GraphQL type
 type Lists_var_samp_fields struct {
 
@@ -5011,10 +3392,6 @@ type Lists_var_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// lists_var_samp_order_by represents the lists_var_samp_order_by GraphQL type
-type Lists_var_samp_order_by struct {
-}
-
 // lists_variance_fields represents the lists_variance_fields GraphQL type
 type Lists_variance_fields struct {
 
@@ -5029,10 +3406,6 @@ type Lists_variance_fields struct {
 	Privacy_setting_id float64 `json:"privacy_setting_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// lists_variance_order_by represents the lists_variance_order_by GraphQL type
-type Lists_variance_order_by struct {
 }
 
 // mutation_root represents the mutation_root GraphQL type
@@ -5251,24 +3624,8 @@ type Notification_channels struct {
 	ID *Bigint `json:"id"`
 }
 
-// notification_channels_bool_exp represents the notification_channels_bool_exp GraphQL type
-type Notification_channels_bool_exp struct {
-}
-
-// notification_channels_order_by represents the notification_channels_order_by GraphQL type
-type Notification_channels_order_by struct {
-}
-
 // notification_channels_select_column represents the notification_channels_select_column GraphQL type
 type Notification_channels_select_column struct {
-}
-
-// notification_channels_stream_cursor_input represents the notification_channels_stream_cursor_input GraphQL type
-type Notification_channels_stream_cursor_input struct {
-}
-
-// notification_channels_stream_cursor_value_input represents the notification_channels_stream_cursor_value_input GraphQL type
-type Notification_channels_stream_cursor_value_input struct {
 }
 
 // notification_deliveries represents the notification_deliveries GraphQL type
@@ -5303,22 +3660,6 @@ type Notification_deliveries_aggregate struct {
 	Nodes []*Notification_deliveries `json:"nodes"`
 }
 
-// notification_deliveries_aggregate_bool_exp represents the notification_deliveries_aggregate_bool_exp GraphQL type
-type Notification_deliveries_aggregate_bool_exp struct {
-}
-
-// notification_deliveries_aggregate_bool_exp_bool_and represents the notification_deliveries_aggregate_bool_exp_bool_and GraphQL type
-type Notification_deliveries_aggregate_bool_exp_bool_and struct {
-}
-
-// notification_deliveries_aggregate_bool_exp_bool_or represents the notification_deliveries_aggregate_bool_exp_bool_or GraphQL type
-type Notification_deliveries_aggregate_bool_exp_bool_or struct {
-}
-
-// notification_deliveries_aggregate_bool_exp_count represents the notification_deliveries_aggregate_bool_exp_count GraphQL type
-type Notification_deliveries_aggregate_bool_exp_count struct {
-}
-
 // notification_deliveries_aggregate_fields represents the notification_deliveries_aggregate_fields GraphQL type
 type Notification_deliveries_aggregate_fields struct {
 
@@ -5345,10 +3686,6 @@ type Notification_deliveries_aggregate_fields struct {
 	Variance *Notification_deliveries_variance_fields `json:"variance"`
 }
 
-// notification_deliveries_aggregate_order_by represents the notification_deliveries_aggregate_order_by GraphQL type
-type Notification_deliveries_aggregate_order_by struct {
-}
-
 // notification_deliveries_avg_fields represents the notification_deliveries_avg_fields GraphQL type
 type Notification_deliveries_avg_fields struct {
 
@@ -5359,14 +3696,6 @@ type Notification_deliveries_avg_fields struct {
 	Notification_id float64 `json:"notification_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// notification_deliveries_avg_order_by represents the notification_deliveries_avg_order_by GraphQL type
-type Notification_deliveries_avg_order_by struct {
-}
-
-// notification_deliveries_bool_exp represents the notification_deliveries_bool_exp GraphQL type
-type Notification_deliveries_bool_exp struct {
 }
 
 // notification_deliveries_max_fields represents the notification_deliveries_max_fields GraphQL type
@@ -5385,10 +3714,6 @@ type Notification_deliveries_max_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// notification_deliveries_max_order_by represents the notification_deliveries_max_order_by GraphQL type
-type Notification_deliveries_max_order_by struct {
-}
-
 // notification_deliveries_min_fields represents the notification_deliveries_min_fields GraphQL type
 type Notification_deliveries_min_fields struct {
 
@@ -5405,24 +3730,12 @@ type Notification_deliveries_min_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// notification_deliveries_min_order_by represents the notification_deliveries_min_order_by GraphQL type
-type Notification_deliveries_min_order_by struct {
-}
-
 // notification_deliveries_mutation_response represents the notification_deliveries_mutation_response GraphQL type
 type Notification_deliveries_mutation_response struct {
 
 	Affected_rows int `json:"affected_rows"`
 
 	Returning []*Notification_deliveries `json:"returning"`
-}
-
-// notification_deliveries_order_by represents the notification_deliveries_order_by GraphQL type
-type Notification_deliveries_order_by struct {
-}
-
-// notification_deliveries_pk_columns_input represents the notification_deliveries_pk_columns_input GraphQL type
-type Notification_deliveries_pk_columns_input struct {
 }
 
 // notification_deliveries_select_column represents the notification_deliveries_select_column GraphQL type
@@ -5437,10 +3750,6 @@ type Notification_deliveries_select_column_notification_deliveries_aggregate_boo
 type Notification_deliveries_select_column_notification_deliveries_aggregate_bool_exp_bool_or_arguments_columns struct {
 }
 
-// notification_deliveries_set_input represents the notification_deliveries_set_input GraphQL type
-type Notification_deliveries_set_input struct {
-}
-
 // notification_deliveries_stddev_fields represents the notification_deliveries_stddev_fields GraphQL type
 type Notification_deliveries_stddev_fields struct {
 
@@ -5451,10 +3760,6 @@ type Notification_deliveries_stddev_fields struct {
 	Notification_id float64 `json:"notification_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// notification_deliveries_stddev_order_by represents the notification_deliveries_stddev_order_by GraphQL type
-type Notification_deliveries_stddev_order_by struct {
 }
 
 // notification_deliveries_stddev_pop_fields represents the notification_deliveries_stddev_pop_fields GraphQL type
@@ -5469,10 +3774,6 @@ type Notification_deliveries_stddev_pop_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// notification_deliveries_stddev_pop_order_by represents the notification_deliveries_stddev_pop_order_by GraphQL type
-type Notification_deliveries_stddev_pop_order_by struct {
-}
-
 // notification_deliveries_stddev_samp_fields represents the notification_deliveries_stddev_samp_fields GraphQL type
 type Notification_deliveries_stddev_samp_fields struct {
 
@@ -5483,18 +3784,6 @@ type Notification_deliveries_stddev_samp_fields struct {
 	Notification_id float64 `json:"notification_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// notification_deliveries_stddev_samp_order_by represents the notification_deliveries_stddev_samp_order_by GraphQL type
-type Notification_deliveries_stddev_samp_order_by struct {
-}
-
-// notification_deliveries_stream_cursor_input represents the notification_deliveries_stream_cursor_input GraphQL type
-type Notification_deliveries_stream_cursor_input struct {
-}
-
-// notification_deliveries_stream_cursor_value_input represents the notification_deliveries_stream_cursor_value_input GraphQL type
-type Notification_deliveries_stream_cursor_value_input struct {
 }
 
 // notification_deliveries_sum_fields represents the notification_deliveries_sum_fields GraphQL type
@@ -5509,14 +3798,6 @@ type Notification_deliveries_sum_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// notification_deliveries_sum_order_by represents the notification_deliveries_sum_order_by GraphQL type
-type Notification_deliveries_sum_order_by struct {
-}
-
-// notification_deliveries_updates represents the notification_deliveries_updates GraphQL type
-type Notification_deliveries_updates struct {
-}
-
 // notification_deliveries_var_pop_fields represents the notification_deliveries_var_pop_fields GraphQL type
 type Notification_deliveries_var_pop_fields struct {
 
@@ -5527,10 +3808,6 @@ type Notification_deliveries_var_pop_fields struct {
 	Notification_id float64 `json:"notification_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// notification_deliveries_var_pop_order_by represents the notification_deliveries_var_pop_order_by GraphQL type
-type Notification_deliveries_var_pop_order_by struct {
 }
 
 // notification_deliveries_var_samp_fields represents the notification_deliveries_var_samp_fields GraphQL type
@@ -5545,10 +3822,6 @@ type Notification_deliveries_var_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// notification_deliveries_var_samp_order_by represents the notification_deliveries_var_samp_order_by GraphQL type
-type Notification_deliveries_var_samp_order_by struct {
-}
-
 // notification_deliveries_variance_fields represents the notification_deliveries_variance_fields GraphQL type
 type Notification_deliveries_variance_fields struct {
 
@@ -5559,10 +3832,6 @@ type Notification_deliveries_variance_fields struct {
 	Notification_id float64 `json:"notification_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// notification_deliveries_variance_order_by represents the notification_deliveries_variance_order_by GraphQL type
-type Notification_deliveries_variance_order_by struct {
 }
 
 // notification_settings represents the notification_settings GraphQL type
@@ -5579,32 +3848,8 @@ type Notification_settings struct {
 	User_id int `json:"user_id"`
 }
 
-// notification_settings_aggregate_order_by represents the notification_settings_aggregate_order_by GraphQL type
-type Notification_settings_aggregate_order_by struct {
-}
-
-// notification_settings_avg_order_by represents the notification_settings_avg_order_by GraphQL type
-type Notification_settings_avg_order_by struct {
-}
-
-// notification_settings_bool_exp represents the notification_settings_bool_exp GraphQL type
-type Notification_settings_bool_exp struct {
-}
-
 // notification_settings_constraint represents the notification_settings_constraint GraphQL type
 type Notification_settings_constraint struct {
-}
-
-// notification_settings_insert_input represents the notification_settings_insert_input GraphQL type
-type Notification_settings_insert_input struct {
-}
-
-// notification_settings_max_order_by represents the notification_settings_max_order_by GraphQL type
-type Notification_settings_max_order_by struct {
-}
-
-// notification_settings_min_order_by represents the notification_settings_min_order_by GraphQL type
-type Notification_settings_min_order_by struct {
 }
 
 // notification_settings_mutation_response represents the notification_settings_mutation_response GraphQL type
@@ -5615,68 +3860,12 @@ type Notification_settings_mutation_response struct {
 	Returning []*Notification_settings `json:"returning"`
 }
 
-// notification_settings_on_conflict represents the notification_settings_on_conflict GraphQL type
-type Notification_settings_on_conflict struct {
-}
-
-// notification_settings_order_by represents the notification_settings_order_by GraphQL type
-type Notification_settings_order_by struct {
-}
-
-// notification_settings_pk_columns_input represents the notification_settings_pk_columns_input GraphQL type
-type Notification_settings_pk_columns_input struct {
-}
-
 // notification_settings_select_column represents the notification_settings_select_column GraphQL type
 type Notification_settings_select_column struct {
 }
 
-// notification_settings_set_input represents the notification_settings_set_input GraphQL type
-type Notification_settings_set_input struct {
-}
-
-// notification_settings_stddev_order_by represents the notification_settings_stddev_order_by GraphQL type
-type Notification_settings_stddev_order_by struct {
-}
-
-// notification_settings_stddev_pop_order_by represents the notification_settings_stddev_pop_order_by GraphQL type
-type Notification_settings_stddev_pop_order_by struct {
-}
-
-// notification_settings_stddev_samp_order_by represents the notification_settings_stddev_samp_order_by GraphQL type
-type Notification_settings_stddev_samp_order_by struct {
-}
-
-// notification_settings_stream_cursor_input represents the notification_settings_stream_cursor_input GraphQL type
-type Notification_settings_stream_cursor_input struct {
-}
-
-// notification_settings_stream_cursor_value_input represents the notification_settings_stream_cursor_value_input GraphQL type
-type Notification_settings_stream_cursor_value_input struct {
-}
-
-// notification_settings_sum_order_by represents the notification_settings_sum_order_by GraphQL type
-type Notification_settings_sum_order_by struct {
-}
-
 // notification_settings_update_column represents the notification_settings_update_column GraphQL type
 type Notification_settings_update_column struct {
-}
-
-// notification_settings_updates represents the notification_settings_updates GraphQL type
-type Notification_settings_updates struct {
-}
-
-// notification_settings_var_pop_order_by represents the notification_settings_var_pop_order_by GraphQL type
-type Notification_settings_var_pop_order_by struct {
-}
-
-// notification_settings_var_samp_order_by represents the notification_settings_var_samp_order_by GraphQL type
-type Notification_settings_var_samp_order_by struct {
-}
-
-// notification_settings_variance_order_by represents the notification_settings_variance_order_by GraphQL type
-type Notification_settings_variance_order_by struct {
 }
 
 // notification_types represents the notification_types GraphQL type
@@ -5699,24 +3888,8 @@ type Notification_types struct {
 	Uid string `json:"uid"`
 }
 
-// notification_types_bool_exp represents the notification_types_bool_exp GraphQL type
-type Notification_types_bool_exp struct {
-}
-
-// notification_types_order_by represents the notification_types_order_by GraphQL type
-type Notification_types_order_by struct {
-}
-
 // notification_types_select_column represents the notification_types_select_column GraphQL type
 type Notification_types_select_column struct {
-}
-
-// notification_types_stream_cursor_input represents the notification_types_stream_cursor_input GraphQL type
-type Notification_types_stream_cursor_input struct {
-}
-
-// notification_types_stream_cursor_value_input represents the notification_types_stream_cursor_value_input GraphQL type
-type Notification_types_stream_cursor_value_input struct {
 }
 
 // notifications represents the notifications GraphQL type
@@ -5749,32 +3922,8 @@ type Notifications struct {
 	Uid string `json:"uid"`
 }
 
-// notifications_bool_exp represents the notifications_bool_exp GraphQL type
-type Notifications_bool_exp struct {
-}
-
-// notifications_order_by represents the notifications_order_by GraphQL type
-type Notifications_order_by struct {
-}
-
 // notifications_select_column represents the notifications_select_column GraphQL type
 type Notifications_select_column struct {
-}
-
-// notifications_stream_cursor_input represents the notifications_stream_cursor_input GraphQL type
-type Notifications_stream_cursor_input struct {
-}
-
-// notifications_stream_cursor_value_input represents the notifications_stream_cursor_value_input GraphQL type
-type Notifications_stream_cursor_value_input struct {
-}
-
-// numeric represents the numeric GraphQL type
-type Numeric struct {
-}
-
-// numeric_comparison_exp represents the numeric_comparison_exp GraphQL type
-type Numeric_comparison_exp struct {
 }
 
 // order_by represents the order_by GraphQL type
@@ -5793,24 +3942,8 @@ type Platforms struct {
 	URL string `json:"url"`
 }
 
-// platforms_bool_exp represents the platforms_bool_exp GraphQL type
-type Platforms_bool_exp struct {
-}
-
-// platforms_order_by represents the platforms_order_by GraphQL type
-type Platforms_order_by struct {
-}
-
 // platforms_select_column represents the platforms_select_column GraphQL type
 type Platforms_select_column struct {
-}
-
-// platforms_stream_cursor_input represents the platforms_stream_cursor_input GraphQL type
-type Platforms_stream_cursor_input struct {
-}
-
-// platforms_stream_cursor_value_input represents the platforms_stream_cursor_value_input GraphQL type
-type Platforms_stream_cursor_value_input struct {
 }
 
 // privacy_settings represents the privacy_settings GraphQL type
@@ -5837,24 +3970,8 @@ type Privacy_settings struct {
 	Users_by_activity []*Users `json:"users_by_activity"`
 }
 
-// privacy_settings_bool_exp represents the privacy_settings_bool_exp GraphQL type
-type Privacy_settings_bool_exp struct {
-}
-
-// privacy_settings_order_by represents the privacy_settings_order_by GraphQL type
-type Privacy_settings_order_by struct {
-}
-
 // privacy_settings_select_column represents the privacy_settings_select_column GraphQL type
 type Privacy_settings_select_column struct {
-}
-
-// privacy_settings_stream_cursor_input represents the privacy_settings_stream_cursor_input GraphQL type
-type Privacy_settings_stream_cursor_input struct {
-}
-
-// privacy_settings_stream_cursor_value_input represents the privacy_settings_stream_cursor_value_input GraphQL type
-type Privacy_settings_stream_cursor_value_input struct {
 }
 
 // prompt_answers represents the prompt_answers GraphQL type
@@ -5893,14 +4010,6 @@ type Prompt_answers_aggregate struct {
 	Nodes []*Prompt_answers `json:"nodes"`
 }
 
-// prompt_answers_aggregate_bool_exp represents the prompt_answers_aggregate_bool_exp GraphQL type
-type Prompt_answers_aggregate_bool_exp struct {
-}
-
-// prompt_answers_aggregate_bool_exp_count represents the prompt_answers_aggregate_bool_exp_count GraphQL type
-type Prompt_answers_aggregate_bool_exp_count struct {
-}
-
 // prompt_answers_aggregate_fields represents the prompt_answers_aggregate_fields GraphQL type
 type Prompt_answers_aggregate_fields struct {
 
@@ -5927,10 +4036,6 @@ type Prompt_answers_aggregate_fields struct {
 	Variance *Prompt_answers_variance_fields `json:"variance"`
 }
 
-// prompt_answers_aggregate_order_by represents the prompt_answers_aggregate_order_by GraphQL type
-type Prompt_answers_aggregate_order_by struct {
-}
-
 // prompt_answers_avg_fields represents the prompt_answers_avg_fields GraphQL type
 type Prompt_answers_avg_fields struct {
 
@@ -5943,14 +4048,6 @@ type Prompt_answers_avg_fields struct {
 	Prompt_id float64 `json:"prompt_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// prompt_answers_avg_order_by represents the prompt_answers_avg_order_by GraphQL type
-type Prompt_answers_avg_order_by struct {
-}
-
-// prompt_answers_bool_exp represents the prompt_answers_bool_exp GraphQL type
-type Prompt_answers_bool_exp struct {
 }
 
 // prompt_answers_max_fields represents the prompt_answers_max_fields GraphQL type
@@ -5973,10 +4070,6 @@ type Prompt_answers_max_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// prompt_answers_max_order_by represents the prompt_answers_max_order_by GraphQL type
-type Prompt_answers_max_order_by struct {
-}
-
 // prompt_answers_min_fields represents the prompt_answers_min_fields GraphQL type
 type Prompt_answers_min_fields struct {
 
@@ -5997,10 +4090,6 @@ type Prompt_answers_min_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// prompt_answers_min_order_by represents the prompt_answers_min_order_by GraphQL type
-type Prompt_answers_min_order_by struct {
-}
-
 // prompt_answers_mutation_response represents the prompt_answers_mutation_response GraphQL type
 type Prompt_answers_mutation_response struct {
 
@@ -6009,20 +4098,8 @@ type Prompt_answers_mutation_response struct {
 	Returning []*Prompt_answers `json:"returning"`
 }
 
-// prompt_answers_order_by represents the prompt_answers_order_by GraphQL type
-type Prompt_answers_order_by struct {
-}
-
-// prompt_answers_pk_columns_input represents the prompt_answers_pk_columns_input GraphQL type
-type Prompt_answers_pk_columns_input struct {
-}
-
 // prompt_answers_select_column represents the prompt_answers_select_column GraphQL type
 type Prompt_answers_select_column struct {
-}
-
-// prompt_answers_set_input represents the prompt_answers_set_input GraphQL type
-type Prompt_answers_set_input struct {
 }
 
 // prompt_answers_stddev_fields represents the prompt_answers_stddev_fields GraphQL type
@@ -6039,10 +4116,6 @@ type Prompt_answers_stddev_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// prompt_answers_stddev_order_by represents the prompt_answers_stddev_order_by GraphQL type
-type Prompt_answers_stddev_order_by struct {
-}
-
 // prompt_answers_stddev_pop_fields represents the prompt_answers_stddev_pop_fields GraphQL type
 type Prompt_answers_stddev_pop_fields struct {
 
@@ -6055,10 +4128,6 @@ type Prompt_answers_stddev_pop_fields struct {
 	Prompt_id float64 `json:"prompt_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// prompt_answers_stddev_pop_order_by represents the prompt_answers_stddev_pop_order_by GraphQL type
-type Prompt_answers_stddev_pop_order_by struct {
 }
 
 // prompt_answers_stddev_samp_fields represents the prompt_answers_stddev_samp_fields GraphQL type
@@ -6075,18 +4144,6 @@ type Prompt_answers_stddev_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// prompt_answers_stddev_samp_order_by represents the prompt_answers_stddev_samp_order_by GraphQL type
-type Prompt_answers_stddev_samp_order_by struct {
-}
-
-// prompt_answers_stream_cursor_input represents the prompt_answers_stream_cursor_input GraphQL type
-type Prompt_answers_stream_cursor_input struct {
-}
-
-// prompt_answers_stream_cursor_value_input represents the prompt_answers_stream_cursor_value_input GraphQL type
-type Prompt_answers_stream_cursor_value_input struct {
-}
-
 // prompt_answers_sum_fields represents the prompt_answers_sum_fields GraphQL type
 type Prompt_answers_sum_fields struct {
 
@@ -6099,14 +4156,6 @@ type Prompt_answers_sum_fields struct {
 	Prompt_id int `json:"prompt_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// prompt_answers_sum_order_by represents the prompt_answers_sum_order_by GraphQL type
-type Prompt_answers_sum_order_by struct {
-}
-
-// prompt_answers_updates represents the prompt_answers_updates GraphQL type
-type Prompt_answers_updates struct {
 }
 
 // prompt_answers_var_pop_fields represents the prompt_answers_var_pop_fields GraphQL type
@@ -6123,10 +4172,6 @@ type Prompt_answers_var_pop_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// prompt_answers_var_pop_order_by represents the prompt_answers_var_pop_order_by GraphQL type
-type Prompt_answers_var_pop_order_by struct {
-}
-
 // prompt_answers_var_samp_fields represents the prompt_answers_var_samp_fields GraphQL type
 type Prompt_answers_var_samp_fields struct {
 
@@ -6139,10 +4184,6 @@ type Prompt_answers_var_samp_fields struct {
 	Prompt_id float64 `json:"prompt_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// prompt_answers_var_samp_order_by represents the prompt_answers_var_samp_order_by GraphQL type
-type Prompt_answers_var_samp_order_by struct {
 }
 
 // prompt_answers_variance_fields represents the prompt_answers_variance_fields GraphQL type
@@ -6159,10 +4200,6 @@ type Prompt_answers_variance_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// prompt_answers_variance_order_by represents the prompt_answers_variance_order_by GraphQL type
-type Prompt_answers_variance_order_by struct {
-}
-
 // prompt_books_summary represents the prompt_books_summary GraphQL type
 type Prompt_books_summary struct {
 
@@ -6177,68 +4214,8 @@ type Prompt_books_summary struct {
 	Prompt_id int `json:"prompt_id"`
 }
 
-// prompt_books_summary_aggregate_order_by represents the prompt_books_summary_aggregate_order_by GraphQL type
-type Prompt_books_summary_aggregate_order_by struct {
-}
-
-// prompt_books_summary_avg_order_by represents the prompt_books_summary_avg_order_by GraphQL type
-type Prompt_books_summary_avg_order_by struct {
-}
-
-// prompt_books_summary_bool_exp represents the prompt_books_summary_bool_exp GraphQL type
-type Prompt_books_summary_bool_exp struct {
-}
-
-// prompt_books_summary_max_order_by represents the prompt_books_summary_max_order_by GraphQL type
-type Prompt_books_summary_max_order_by struct {
-}
-
-// prompt_books_summary_min_order_by represents the prompt_books_summary_min_order_by GraphQL type
-type Prompt_books_summary_min_order_by struct {
-}
-
-// prompt_books_summary_order_by represents the prompt_books_summary_order_by GraphQL type
-type Prompt_books_summary_order_by struct {
-}
-
 // prompt_books_summary_select_column represents the prompt_books_summary_select_column GraphQL type
 type Prompt_books_summary_select_column struct {
-}
-
-// prompt_books_summary_stddev_order_by represents the prompt_books_summary_stddev_order_by GraphQL type
-type Prompt_books_summary_stddev_order_by struct {
-}
-
-// prompt_books_summary_stddev_pop_order_by represents the prompt_books_summary_stddev_pop_order_by GraphQL type
-type Prompt_books_summary_stddev_pop_order_by struct {
-}
-
-// prompt_books_summary_stddev_samp_order_by represents the prompt_books_summary_stddev_samp_order_by GraphQL type
-type Prompt_books_summary_stddev_samp_order_by struct {
-}
-
-// prompt_books_summary_stream_cursor_input represents the prompt_books_summary_stream_cursor_input GraphQL type
-type Prompt_books_summary_stream_cursor_input struct {
-}
-
-// prompt_books_summary_stream_cursor_value_input represents the prompt_books_summary_stream_cursor_value_input GraphQL type
-type Prompt_books_summary_stream_cursor_value_input struct {
-}
-
-// prompt_books_summary_sum_order_by represents the prompt_books_summary_sum_order_by GraphQL type
-type Prompt_books_summary_sum_order_by struct {
-}
-
-// prompt_books_summary_var_pop_order_by represents the prompt_books_summary_var_pop_order_by GraphQL type
-type Prompt_books_summary_var_pop_order_by struct {
-}
-
-// prompt_books_summary_var_samp_order_by represents the prompt_books_summary_var_samp_order_by GraphQL type
-type Prompt_books_summary_var_samp_order_by struct {
-}
-
-// prompt_books_summary_variance_order_by represents the prompt_books_summary_variance_order_by GraphQL type
-type Prompt_books_summary_variance_order_by struct {
 }
 
 // prompts represents the prompts GraphQL type
@@ -6281,26 +4258,6 @@ type Prompts struct {
 	Users_count int `json:"users_count"`
 }
 
-// prompts_aggregate_order_by represents the prompts_aggregate_order_by GraphQL type
-type Prompts_aggregate_order_by struct {
-}
-
-// prompts_avg_order_by represents the prompts_avg_order_by GraphQL type
-type Prompts_avg_order_by struct {
-}
-
-// prompts_bool_exp represents the prompts_bool_exp GraphQL type
-type Prompts_bool_exp struct {
-}
-
-// prompts_max_order_by represents the prompts_max_order_by GraphQL type
-type Prompts_max_order_by struct {
-}
-
-// prompts_min_order_by represents the prompts_min_order_by GraphQL type
-type Prompts_min_order_by struct {
-}
-
 // prompts_mutation_response represents the prompts_mutation_response GraphQL type
 type Prompts_mutation_response struct {
 
@@ -6309,48 +4266,8 @@ type Prompts_mutation_response struct {
 	Returning []*Prompts `json:"returning"`
 }
 
-// prompts_order_by represents the prompts_order_by GraphQL type
-type Prompts_order_by struct {
-}
-
 // prompts_select_column represents the prompts_select_column GraphQL type
 type Prompts_select_column struct {
-}
-
-// prompts_stddev_order_by represents the prompts_stddev_order_by GraphQL type
-type Prompts_stddev_order_by struct {
-}
-
-// prompts_stddev_pop_order_by represents the prompts_stddev_pop_order_by GraphQL type
-type Prompts_stddev_pop_order_by struct {
-}
-
-// prompts_stddev_samp_order_by represents the prompts_stddev_samp_order_by GraphQL type
-type Prompts_stddev_samp_order_by struct {
-}
-
-// prompts_stream_cursor_input represents the prompts_stream_cursor_input GraphQL type
-type Prompts_stream_cursor_input struct {
-}
-
-// prompts_stream_cursor_value_input represents the prompts_stream_cursor_value_input GraphQL type
-type Prompts_stream_cursor_value_input struct {
-}
-
-// prompts_sum_order_by represents the prompts_sum_order_by GraphQL type
-type Prompts_sum_order_by struct {
-}
-
-// prompts_var_pop_order_by represents the prompts_var_pop_order_by GraphQL type
-type Prompts_var_pop_order_by struct {
-}
-
-// prompts_var_samp_order_by represents the prompts_var_samp_order_by GraphQL type
-type Prompts_var_samp_order_by struct {
-}
-
-// prompts_variance_order_by represents the prompts_variance_order_by GraphQL type
-type Prompts_variance_order_by struct {
 }
 
 // publishers represents the publishers GraphQL type
@@ -6383,24 +4300,8 @@ type Publishers struct {
 	User_id int `json:"user_id"`
 }
 
-// publishers_bool_exp represents the publishers_bool_exp GraphQL type
-type Publishers_bool_exp struct {
-}
-
-// publishers_order_by represents the publishers_order_by GraphQL type
-type Publishers_order_by struct {
-}
-
 // publishers_select_column represents the publishers_select_column GraphQL type
 type Publishers_select_column struct {
-}
-
-// publishers_stream_cursor_input represents the publishers_stream_cursor_input GraphQL type
-type Publishers_stream_cursor_input struct {
-}
-
-// publishers_stream_cursor_value_input represents the publishers_stream_cursor_value_input GraphQL type
-type Publishers_stream_cursor_value_input struct {
 }
 
 // query_root represents the query_root GraphQL type
@@ -6677,24 +4578,8 @@ type Reading_formats struct {
 	ID int `json:"id"`
 }
 
-// reading_formats_bool_exp represents the reading_formats_bool_exp GraphQL type
-type Reading_formats_bool_exp struct {
-}
-
-// reading_formats_order_by represents the reading_formats_order_by GraphQL type
-type Reading_formats_order_by struct {
-}
-
 // reading_formats_select_column represents the reading_formats_select_column GraphQL type
 type Reading_formats_select_column struct {
-}
-
-// reading_formats_stream_cursor_input represents the reading_formats_stream_cursor_input GraphQL type
-type Reading_formats_stream_cursor_input struct {
-}
-
-// reading_formats_stream_cursor_value_input represents the reading_formats_stream_cursor_value_input GraphQL type
-type Reading_formats_stream_cursor_value_input struct {
 }
 
 // reading_journals represents the reading_journals GraphQL type
@@ -6739,56 +4624,8 @@ type Reading_journals struct {
 	User_id int `json:"user_id"`
 }
 
-// reading_journals_aggregate_order_by represents the reading_journals_aggregate_order_by GraphQL type
-type Reading_journals_aggregate_order_by struct {
-}
-
-// reading_journals_avg_order_by represents the reading_journals_avg_order_by GraphQL type
-type Reading_journals_avg_order_by struct {
-}
-
-// reading_journals_bool_exp represents the reading_journals_bool_exp GraphQL type
-type Reading_journals_bool_exp struct {
-}
-
-// reading_journals_max_order_by represents the reading_journals_max_order_by GraphQL type
-type Reading_journals_max_order_by struct {
-}
-
-// reading_journals_min_order_by represents the reading_journals_min_order_by GraphQL type
-type Reading_journals_min_order_by struct {
-}
-
-// reading_journals_order_by represents the reading_journals_order_by GraphQL type
-type Reading_journals_order_by struct {
-}
-
 // reading_journals_select_column represents the reading_journals_select_column GraphQL type
 type Reading_journals_select_column struct {
-}
-
-// reading_journals_stddev_order_by represents the reading_journals_stddev_order_by GraphQL type
-type Reading_journals_stddev_order_by struct {
-}
-
-// reading_journals_stddev_pop_order_by represents the reading_journals_stddev_pop_order_by GraphQL type
-type Reading_journals_stddev_pop_order_by struct {
-}
-
-// reading_journals_stddev_samp_order_by represents the reading_journals_stddev_samp_order_by GraphQL type
-type Reading_journals_stddev_samp_order_by struct {
-}
-
-// reading_journals_stream_cursor_input represents the reading_journals_stream_cursor_input GraphQL type
-type Reading_journals_stream_cursor_input struct {
-}
-
-// reading_journals_stream_cursor_value_input represents the reading_journals_stream_cursor_value_input GraphQL type
-type Reading_journals_stream_cursor_value_input struct {
-}
-
-// reading_journals_sum_order_by represents the reading_journals_sum_order_by GraphQL type
-type Reading_journals_sum_order_by struct {
 }
 
 // reading_journals_summary represents the reading_journals_summary GraphQL type
@@ -6811,36 +4648,8 @@ type Reading_journals_summary struct {
 	User_id int `json:"user_id"`
 }
 
-// reading_journals_summary_bool_exp represents the reading_journals_summary_bool_exp GraphQL type
-type Reading_journals_summary_bool_exp struct {
-}
-
-// reading_journals_summary_order_by represents the reading_journals_summary_order_by GraphQL type
-type Reading_journals_summary_order_by struct {
-}
-
 // reading_journals_summary_select_column represents the reading_journals_summary_select_column GraphQL type
 type Reading_journals_summary_select_column struct {
-}
-
-// reading_journals_summary_stream_cursor_input represents the reading_journals_summary_stream_cursor_input GraphQL type
-type Reading_journals_summary_stream_cursor_input struct {
-}
-
-// reading_journals_summary_stream_cursor_value_input represents the reading_journals_summary_stream_cursor_value_input GraphQL type
-type Reading_journals_summary_stream_cursor_value_input struct {
-}
-
-// reading_journals_var_pop_order_by represents the reading_journals_var_pop_order_by GraphQL type
-type Reading_journals_var_pop_order_by struct {
-}
-
-// reading_journals_var_samp_order_by represents the reading_journals_var_samp_order_by GraphQL type
-type Reading_journals_var_samp_order_by struct {
-}
-
-// reading_journals_variance_order_by represents the reading_journals_variance_order_by GraphQL type
-type Reading_journals_variance_order_by struct {
 }
 
 // recommendations represents the recommendations GraphQL type
@@ -6871,68 +4680,8 @@ type Recommendations struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// recommendations_aggregate_order_by represents the recommendations_aggregate_order_by GraphQL type
-type Recommendations_aggregate_order_by struct {
-}
-
-// recommendations_avg_order_by represents the recommendations_avg_order_by GraphQL type
-type Recommendations_avg_order_by struct {
-}
-
-// recommendations_bool_exp represents the recommendations_bool_exp GraphQL type
-type Recommendations_bool_exp struct {
-}
-
-// recommendations_max_order_by represents the recommendations_max_order_by GraphQL type
-type Recommendations_max_order_by struct {
-}
-
-// recommendations_min_order_by represents the recommendations_min_order_by GraphQL type
-type Recommendations_min_order_by struct {
-}
-
-// recommendations_order_by represents the recommendations_order_by GraphQL type
-type Recommendations_order_by struct {
-}
-
 // recommendations_select_column represents the recommendations_select_column GraphQL type
 type Recommendations_select_column struct {
-}
-
-// recommendations_stddev_order_by represents the recommendations_stddev_order_by GraphQL type
-type Recommendations_stddev_order_by struct {
-}
-
-// recommendations_stddev_pop_order_by represents the recommendations_stddev_pop_order_by GraphQL type
-type Recommendations_stddev_pop_order_by struct {
-}
-
-// recommendations_stddev_samp_order_by represents the recommendations_stddev_samp_order_by GraphQL type
-type Recommendations_stddev_samp_order_by struct {
-}
-
-// recommendations_stream_cursor_input represents the recommendations_stream_cursor_input GraphQL type
-type Recommendations_stream_cursor_input struct {
-}
-
-// recommendations_stream_cursor_value_input represents the recommendations_stream_cursor_value_input GraphQL type
-type Recommendations_stream_cursor_value_input struct {
-}
-
-// recommendations_sum_order_by represents the recommendations_sum_order_by GraphQL type
-type Recommendations_sum_order_by struct {
-}
-
-// recommendations_var_pop_order_by represents the recommendations_var_pop_order_by GraphQL type
-type Recommendations_var_pop_order_by struct {
-}
-
-// recommendations_var_samp_order_by represents the recommendations_var_samp_order_by GraphQL type
-type Recommendations_var_samp_order_by struct {
-}
-
-// recommendations_variance_order_by represents the recommendations_variance_order_by GraphQL type
-type Recommendations_variance_order_by struct {
 }
 
 // series represents the series GraphQL type
@@ -6975,32 +4724,8 @@ type Series struct {
 	User_id int `json:"user_id"`
 }
 
-// series_bool_exp represents the series_bool_exp GraphQL type
-type Series_bool_exp struct {
-}
-
-// series_order_by represents the series_order_by GraphQL type
-type Series_order_by struct {
-}
-
 // series_select_column represents the series_select_column GraphQL type
 type Series_select_column struct {
-}
-
-// series_stream_cursor_input represents the series_stream_cursor_input GraphQL type
-type Series_stream_cursor_input struct {
-}
-
-// series_stream_cursor_value_input represents the series_stream_cursor_value_input GraphQL type
-type Series_stream_cursor_value_input struct {
-}
-
-// smallint represents the smallint GraphQL type
-type Smallint struct {
-}
-
-// smallint_comparison_exp represents the smallint_comparison_exp GraphQL type
-type Smallint_comparison_exp struct {
 }
 
 // subscription_root represents the subscription_root GraphQL type
@@ -7389,24 +5114,8 @@ type Tag_categories struct {
 	Tags_aggregate *Tags_aggregate `json:"tags_aggregate"`
 }
 
-// tag_categories_bool_exp represents the tag_categories_bool_exp GraphQL type
-type Tag_categories_bool_exp struct {
-}
-
-// tag_categories_order_by represents the tag_categories_order_by GraphQL type
-type Tag_categories_order_by struct {
-}
-
 // tag_categories_select_column represents the tag_categories_select_column GraphQL type
 type Tag_categories_select_column struct {
-}
-
-// tag_categories_stream_cursor_input represents the tag_categories_stream_cursor_input GraphQL type
-type Tag_categories_stream_cursor_input struct {
-}
-
-// tag_categories_stream_cursor_value_input represents the tag_categories_stream_cursor_value_input GraphQL type
-type Tag_categories_stream_cursor_value_input struct {
 }
 
 // taggable_counts represents the taggable_counts GraphQL type
@@ -7435,68 +5144,8 @@ type Taggable_counts struct {
 	Updated_at *Timestamp `json:"updated_at"`
 }
 
-// taggable_counts_aggregate_order_by represents the taggable_counts_aggregate_order_by GraphQL type
-type Taggable_counts_aggregate_order_by struct {
-}
-
-// taggable_counts_avg_order_by represents the taggable_counts_avg_order_by GraphQL type
-type Taggable_counts_avg_order_by struct {
-}
-
-// taggable_counts_bool_exp represents the taggable_counts_bool_exp GraphQL type
-type Taggable_counts_bool_exp struct {
-}
-
-// taggable_counts_max_order_by represents the taggable_counts_max_order_by GraphQL type
-type Taggable_counts_max_order_by struct {
-}
-
-// taggable_counts_min_order_by represents the taggable_counts_min_order_by GraphQL type
-type Taggable_counts_min_order_by struct {
-}
-
-// taggable_counts_order_by represents the taggable_counts_order_by GraphQL type
-type Taggable_counts_order_by struct {
-}
-
 // taggable_counts_select_column represents the taggable_counts_select_column GraphQL type
 type Taggable_counts_select_column struct {
-}
-
-// taggable_counts_stddev_order_by represents the taggable_counts_stddev_order_by GraphQL type
-type Taggable_counts_stddev_order_by struct {
-}
-
-// taggable_counts_stddev_pop_order_by represents the taggable_counts_stddev_pop_order_by GraphQL type
-type Taggable_counts_stddev_pop_order_by struct {
-}
-
-// taggable_counts_stddev_samp_order_by represents the taggable_counts_stddev_samp_order_by GraphQL type
-type Taggable_counts_stddev_samp_order_by struct {
-}
-
-// taggable_counts_stream_cursor_input represents the taggable_counts_stream_cursor_input GraphQL type
-type Taggable_counts_stream_cursor_input struct {
-}
-
-// taggable_counts_stream_cursor_value_input represents the taggable_counts_stream_cursor_value_input GraphQL type
-type Taggable_counts_stream_cursor_value_input struct {
-}
-
-// taggable_counts_sum_order_by represents the taggable_counts_sum_order_by GraphQL type
-type Taggable_counts_sum_order_by struct {
-}
-
-// taggable_counts_var_pop_order_by represents the taggable_counts_var_pop_order_by GraphQL type
-type Taggable_counts_var_pop_order_by struct {
-}
-
-// taggable_counts_var_samp_order_by represents the taggable_counts_var_samp_order_by GraphQL type
-type Taggable_counts_var_samp_order_by struct {
-}
-
-// taggable_counts_variance_order_by represents the taggable_counts_variance_order_by GraphQL type
-type Taggable_counts_variance_order_by struct {
 }
 
 // taggings represents the taggings GraphQL type
@@ -7531,22 +5180,6 @@ type Taggings_aggregate struct {
 	Nodes []*Taggings `json:"nodes"`
 }
 
-// taggings_aggregate_bool_exp represents the taggings_aggregate_bool_exp GraphQL type
-type Taggings_aggregate_bool_exp struct {
-}
-
-// taggings_aggregate_bool_exp_bool_and represents the taggings_aggregate_bool_exp_bool_and GraphQL type
-type Taggings_aggregate_bool_exp_bool_and struct {
-}
-
-// taggings_aggregate_bool_exp_bool_or represents the taggings_aggregate_bool_exp_bool_or GraphQL type
-type Taggings_aggregate_bool_exp_bool_or struct {
-}
-
-// taggings_aggregate_bool_exp_count represents the taggings_aggregate_bool_exp_count GraphQL type
-type Taggings_aggregate_bool_exp_count struct {
-}
-
 // taggings_aggregate_fields represents the taggings_aggregate_fields GraphQL type
 type Taggings_aggregate_fields struct {
 
@@ -7573,10 +5206,6 @@ type Taggings_aggregate_fields struct {
 	Variance *Taggings_variance_fields `json:"variance"`
 }
 
-// taggings_aggregate_order_by represents the taggings_aggregate_order_by GraphQL type
-type Taggings_aggregate_order_by struct {
-}
-
 // taggings_avg_fields represents the taggings_avg_fields GraphQL type
 type Taggings_avg_fields struct {
 
@@ -7587,14 +5216,6 @@ type Taggings_avg_fields struct {
 	Taggable_id float64 `json:"taggable_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// taggings_avg_order_by represents the taggings_avg_order_by GraphQL type
-type Taggings_avg_order_by struct {
-}
-
-// taggings_bool_exp represents the taggings_bool_exp GraphQL type
-type Taggings_bool_exp struct {
 }
 
 // taggings_max_fields represents the taggings_max_fields GraphQL type
@@ -7613,10 +5234,6 @@ type Taggings_max_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// taggings_max_order_by represents the taggings_max_order_by GraphQL type
-type Taggings_max_order_by struct {
-}
-
 // taggings_min_fields represents the taggings_min_fields GraphQL type
 type Taggings_min_fields struct {
 
@@ -7631,14 +5248,6 @@ type Taggings_min_fields struct {
 	Taggable_type string `json:"taggable_type"`
 
 	User_id int `json:"user_id"`
-}
-
-// taggings_min_order_by represents the taggings_min_order_by GraphQL type
-type Taggings_min_order_by struct {
-}
-
-// taggings_order_by represents the taggings_order_by GraphQL type
-type Taggings_order_by struct {
 }
 
 // taggings_select_column represents the taggings_select_column GraphQL type
@@ -7665,10 +5274,6 @@ type Taggings_stddev_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// taggings_stddev_order_by represents the taggings_stddev_order_by GraphQL type
-type Taggings_stddev_order_by struct {
-}
-
 // taggings_stddev_pop_fields represents the taggings_stddev_pop_fields GraphQL type
 type Taggings_stddev_pop_fields struct {
 
@@ -7679,10 +5284,6 @@ type Taggings_stddev_pop_fields struct {
 	Taggable_id float64 `json:"taggable_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// taggings_stddev_pop_order_by represents the taggings_stddev_pop_order_by GraphQL type
-type Taggings_stddev_pop_order_by struct {
 }
 
 // taggings_stddev_samp_fields represents the taggings_stddev_samp_fields GraphQL type
@@ -7697,18 +5298,6 @@ type Taggings_stddev_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// taggings_stddev_samp_order_by represents the taggings_stddev_samp_order_by GraphQL type
-type Taggings_stddev_samp_order_by struct {
-}
-
-// taggings_stream_cursor_input represents the taggings_stream_cursor_input GraphQL type
-type Taggings_stream_cursor_input struct {
-}
-
-// taggings_stream_cursor_value_input represents the taggings_stream_cursor_value_input GraphQL type
-type Taggings_stream_cursor_value_input struct {
-}
-
 // taggings_sum_fields represents the taggings_sum_fields GraphQL type
 type Taggings_sum_fields struct {
 
@@ -7719,10 +5308,6 @@ type Taggings_sum_fields struct {
 	Taggable_id *Bigint `json:"taggable_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// taggings_sum_order_by represents the taggings_sum_order_by GraphQL type
-type Taggings_sum_order_by struct {
 }
 
 // taggings_var_pop_fields represents the taggings_var_pop_fields GraphQL type
@@ -7737,10 +5322,6 @@ type Taggings_var_pop_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// taggings_var_pop_order_by represents the taggings_var_pop_order_by GraphQL type
-type Taggings_var_pop_order_by struct {
-}
-
 // taggings_var_samp_fields represents the taggings_var_samp_fields GraphQL type
 type Taggings_var_samp_fields struct {
 
@@ -7753,10 +5334,6 @@ type Taggings_var_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// taggings_var_samp_order_by represents the taggings_var_samp_order_by GraphQL type
-type Taggings_var_samp_order_by struct {
-}
-
 // taggings_variance_fields represents the taggings_variance_fields GraphQL type
 type Taggings_variance_fields struct {
 
@@ -7767,10 +5344,6 @@ type Taggings_variance_fields struct {
 	Taggable_id float64 `json:"taggable_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// taggings_variance_order_by represents the taggings_variance_order_by GraphQL type
-type Taggings_variance_order_by struct {
 }
 
 // tags represents the tags GraphQL type
@@ -7801,14 +5374,6 @@ type Tags_aggregate struct {
 	Nodes []*Tags `json:"nodes"`
 }
 
-// tags_aggregate_bool_exp represents the tags_aggregate_bool_exp GraphQL type
-type Tags_aggregate_bool_exp struct {
-}
-
-// tags_aggregate_bool_exp_count represents the tags_aggregate_bool_exp_count GraphQL type
-type Tags_aggregate_bool_exp_count struct {
-}
-
 // tags_aggregate_fields represents the tags_aggregate_fields GraphQL type
 type Tags_aggregate_fields struct {
 
@@ -7835,10 +5400,6 @@ type Tags_aggregate_fields struct {
 	Variance *Tags_variance_fields `json:"variance"`
 }
 
-// tags_aggregate_order_by represents the tags_aggregate_order_by GraphQL type
-type Tags_aggregate_order_by struct {
-}
-
 // tags_avg_fields represents the tags_avg_fields GraphQL type
 type Tags_avg_fields struct {
 
@@ -7847,14 +5408,6 @@ type Tags_avg_fields struct {
 	ID float64 `json:"id"`
 
 	Tag_category_id float64 `json:"tag_category_id"`
-}
-
-// tags_avg_order_by represents the tags_avg_order_by GraphQL type
-type Tags_avg_order_by struct {
-}
-
-// tags_bool_exp represents the tags_bool_exp GraphQL type
-type Tags_bool_exp struct {
 }
 
 // tags_max_fields represents the tags_max_fields GraphQL type
@@ -7871,10 +5424,6 @@ type Tags_max_fields struct {
 	Tag_category_id int `json:"tag_category_id"`
 }
 
-// tags_max_order_by represents the tags_max_order_by GraphQL type
-type Tags_max_order_by struct {
-}
-
 // tags_min_fields represents the tags_min_fields GraphQL type
 type Tags_min_fields struct {
 
@@ -7887,14 +5436,6 @@ type Tags_min_fields struct {
 	Tag string `json:"tag"`
 
 	Tag_category_id int `json:"tag_category_id"`
-}
-
-// tags_min_order_by represents the tags_min_order_by GraphQL type
-type Tags_min_order_by struct {
-}
-
-// tags_order_by represents the tags_order_by GraphQL type
-type Tags_order_by struct {
 }
 
 // tags_select_column represents the tags_select_column GraphQL type
@@ -7911,10 +5452,6 @@ type Tags_stddev_fields struct {
 	Tag_category_id float64 `json:"tag_category_id"`
 }
 
-// tags_stddev_order_by represents the tags_stddev_order_by GraphQL type
-type Tags_stddev_order_by struct {
-}
-
 // tags_stddev_pop_fields represents the tags_stddev_pop_fields GraphQL type
 type Tags_stddev_pop_fields struct {
 
@@ -7923,10 +5460,6 @@ type Tags_stddev_pop_fields struct {
 	ID float64 `json:"id"`
 
 	Tag_category_id float64 `json:"tag_category_id"`
-}
-
-// tags_stddev_pop_order_by represents the tags_stddev_pop_order_by GraphQL type
-type Tags_stddev_pop_order_by struct {
 }
 
 // tags_stddev_samp_fields represents the tags_stddev_samp_fields GraphQL type
@@ -7939,18 +5472,6 @@ type Tags_stddev_samp_fields struct {
 	Tag_category_id float64 `json:"tag_category_id"`
 }
 
-// tags_stddev_samp_order_by represents the tags_stddev_samp_order_by GraphQL type
-type Tags_stddev_samp_order_by struct {
-}
-
-// tags_stream_cursor_input represents the tags_stream_cursor_input GraphQL type
-type Tags_stream_cursor_input struct {
-}
-
-// tags_stream_cursor_value_input represents the tags_stream_cursor_value_input GraphQL type
-type Tags_stream_cursor_value_input struct {
-}
-
 // tags_sum_fields represents the tags_sum_fields GraphQL type
 type Tags_sum_fields struct {
 
@@ -7959,10 +5480,6 @@ type Tags_sum_fields struct {
 	ID *Bigint `json:"id"`
 
 	Tag_category_id int `json:"tag_category_id"`
-}
-
-// tags_sum_order_by represents the tags_sum_order_by GraphQL type
-type Tags_sum_order_by struct {
 }
 
 // tags_var_pop_fields represents the tags_var_pop_fields GraphQL type
@@ -7975,10 +5492,6 @@ type Tags_var_pop_fields struct {
 	Tag_category_id float64 `json:"tag_category_id"`
 }
 
-// tags_var_pop_order_by represents the tags_var_pop_order_by GraphQL type
-type Tags_var_pop_order_by struct {
-}
-
 // tags_var_samp_fields represents the tags_var_samp_fields GraphQL type
 type Tags_var_samp_fields struct {
 
@@ -7989,10 +5502,6 @@ type Tags_var_samp_fields struct {
 	Tag_category_id float64 `json:"tag_category_id"`
 }
 
-// tags_var_samp_order_by represents the tags_var_samp_order_by GraphQL type
-type Tags_var_samp_order_by struct {
-}
-
 // tags_variance_fields represents the tags_variance_fields GraphQL type
 type Tags_variance_fields struct {
 
@@ -8001,30 +5510,6 @@ type Tags_variance_fields struct {
 	ID float64 `json:"id"`
 
 	Tag_category_id float64 `json:"tag_category_id"`
-}
-
-// tags_variance_order_by represents the tags_variance_order_by GraphQL type
-type Tags_variance_order_by struct {
-}
-
-// timestamp represents the timestamp GraphQL type
-type Timestamp struct {
-}
-
-// timestamp_comparison_exp represents the timestamp_comparison_exp GraphQL type
-type Timestamp_comparison_exp struct {
-}
-
-// timestamptz represents the timestamptz GraphQL type
-type Timestamptz struct {
-}
-
-// timestamptz_comparison_exp represents the timestamptz_comparison_exp GraphQL type
-type Timestamptz_comparison_exp struct {
-}
-
-// update_user_input represents the update_user_input GraphQL type
-type Update_user_input struct {
 }
 
 // user_blocks represents the user_blocks GraphQL type
@@ -8043,32 +5528,8 @@ type User_blocks struct {
 	User_id int `json:"user_id"`
 }
 
-// user_blocks_aggregate_order_by represents the user_blocks_aggregate_order_by GraphQL type
-type User_blocks_aggregate_order_by struct {
-}
-
-// user_blocks_avg_order_by represents the user_blocks_avg_order_by GraphQL type
-type User_blocks_avg_order_by struct {
-}
-
-// user_blocks_bool_exp represents the user_blocks_bool_exp GraphQL type
-type User_blocks_bool_exp struct {
-}
-
 // user_blocks_constraint represents the user_blocks_constraint GraphQL type
 type User_blocks_constraint struct {
-}
-
-// user_blocks_insert_input represents the user_blocks_insert_input GraphQL type
-type User_blocks_insert_input struct {
-}
-
-// user_blocks_max_order_by represents the user_blocks_max_order_by GraphQL type
-type User_blocks_max_order_by struct {
-}
-
-// user_blocks_min_order_by represents the user_blocks_min_order_by GraphQL type
-type User_blocks_min_order_by struct {
 }
 
 // user_blocks_mutation_response represents the user_blocks_mutation_response GraphQL type
@@ -8079,56 +5540,12 @@ type User_blocks_mutation_response struct {
 	Returning []*User_blocks `json:"returning"`
 }
 
-// user_blocks_on_conflict represents the user_blocks_on_conflict GraphQL type
-type User_blocks_on_conflict struct {
-}
-
-// user_blocks_order_by represents the user_blocks_order_by GraphQL type
-type User_blocks_order_by struct {
-}
-
 // user_blocks_select_column represents the user_blocks_select_column GraphQL type
 type User_blocks_select_column struct {
 }
 
-// user_blocks_stddev_order_by represents the user_blocks_stddev_order_by GraphQL type
-type User_blocks_stddev_order_by struct {
-}
-
-// user_blocks_stddev_pop_order_by represents the user_blocks_stddev_pop_order_by GraphQL type
-type User_blocks_stddev_pop_order_by struct {
-}
-
-// user_blocks_stddev_samp_order_by represents the user_blocks_stddev_samp_order_by GraphQL type
-type User_blocks_stddev_samp_order_by struct {
-}
-
-// user_blocks_stream_cursor_input represents the user_blocks_stream_cursor_input GraphQL type
-type User_blocks_stream_cursor_input struct {
-}
-
-// user_blocks_stream_cursor_value_input represents the user_blocks_stream_cursor_value_input GraphQL type
-type User_blocks_stream_cursor_value_input struct {
-}
-
-// user_blocks_sum_order_by represents the user_blocks_sum_order_by GraphQL type
-type User_blocks_sum_order_by struct {
-}
-
 // user_blocks_update_column represents the user_blocks_update_column GraphQL type
 type User_blocks_update_column struct {
-}
-
-// user_blocks_var_pop_order_by represents the user_blocks_var_pop_order_by GraphQL type
-type User_blocks_var_pop_order_by struct {
-}
-
-// user_blocks_var_samp_order_by represents the user_blocks_var_samp_order_by GraphQL type
-type User_blocks_var_samp_order_by struct {
-}
-
-// user_blocks_variance_order_by represents the user_blocks_variance_order_by GraphQL type
-type User_blocks_variance_order_by struct {
 }
 
 // user_book_reads represents the user_book_reads GraphQL type
@@ -8165,54 +5582,6 @@ type User_book_reads_aggregate struct {
 	Nodes []*User_book_reads `json:"nodes"`
 }
 
-// user_book_reads_aggregate_bool_exp represents the user_book_reads_aggregate_bool_exp GraphQL type
-type User_book_reads_aggregate_bool_exp struct {
-}
-
-// user_book_reads_aggregate_bool_exp_avg represents the user_book_reads_aggregate_bool_exp_avg GraphQL type
-type User_book_reads_aggregate_bool_exp_avg struct {
-}
-
-// user_book_reads_aggregate_bool_exp_corr represents the user_book_reads_aggregate_bool_exp_corr GraphQL type
-type User_book_reads_aggregate_bool_exp_corr struct {
-}
-
-// user_book_reads_aggregate_bool_exp_corr_arguments represents the user_book_reads_aggregate_bool_exp_corr_arguments GraphQL type
-type User_book_reads_aggregate_bool_exp_corr_arguments struct {
-}
-
-// user_book_reads_aggregate_bool_exp_count represents the user_book_reads_aggregate_bool_exp_count GraphQL type
-type User_book_reads_aggregate_bool_exp_count struct {
-}
-
-// user_book_reads_aggregate_bool_exp_covar_samp represents the user_book_reads_aggregate_bool_exp_covar_samp GraphQL type
-type User_book_reads_aggregate_bool_exp_covar_samp struct {
-}
-
-// user_book_reads_aggregate_bool_exp_covar_samp_arguments represents the user_book_reads_aggregate_bool_exp_covar_samp_arguments GraphQL type
-type User_book_reads_aggregate_bool_exp_covar_samp_arguments struct {
-}
-
-// user_book_reads_aggregate_bool_exp_max represents the user_book_reads_aggregate_bool_exp_max GraphQL type
-type User_book_reads_aggregate_bool_exp_max struct {
-}
-
-// user_book_reads_aggregate_bool_exp_min represents the user_book_reads_aggregate_bool_exp_min GraphQL type
-type User_book_reads_aggregate_bool_exp_min struct {
-}
-
-// user_book_reads_aggregate_bool_exp_stddev_samp represents the user_book_reads_aggregate_bool_exp_stddev_samp GraphQL type
-type User_book_reads_aggregate_bool_exp_stddev_samp struct {
-}
-
-// user_book_reads_aggregate_bool_exp_sum represents the user_book_reads_aggregate_bool_exp_sum GraphQL type
-type User_book_reads_aggregate_bool_exp_sum struct {
-}
-
-// user_book_reads_aggregate_bool_exp_var_samp represents the user_book_reads_aggregate_bool_exp_var_samp GraphQL type
-type User_book_reads_aggregate_bool_exp_var_samp struct {
-}
-
 // user_book_reads_aggregate_fields represents the user_book_reads_aggregate_fields GraphQL type
 type User_book_reads_aggregate_fields struct {
 
@@ -8239,10 +5608,6 @@ type User_book_reads_aggregate_fields struct {
 	Variance *User_book_reads_variance_fields `json:"variance"`
 }
 
-// user_book_reads_aggregate_order_by represents the user_book_reads_aggregate_order_by GraphQL type
-type User_book_reads_aggregate_order_by struct {
-}
-
 // user_book_reads_avg_fields represents the user_book_reads_avg_fields GraphQL type
 type User_book_reads_avg_fields struct {
 
@@ -8257,14 +5622,6 @@ type User_book_reads_avg_fields struct {
 	Progress_seconds float64 `json:"progress_seconds"`
 
 	User_book_id float64 `json:"user_book_id"`
-}
-
-// user_book_reads_avg_order_by represents the user_book_reads_avg_order_by GraphQL type
-type User_book_reads_avg_order_by struct {
-}
-
-// user_book_reads_bool_exp represents the user_book_reads_bool_exp GraphQL type
-type User_book_reads_bool_exp struct {
 }
 
 // user_book_reads_max_fields represents the user_book_reads_max_fields GraphQL type
@@ -8289,10 +5646,6 @@ type User_book_reads_max_fields struct {
 	User_book_id int `json:"user_book_id"`
 }
 
-// user_book_reads_max_order_by represents the user_book_reads_max_order_by GraphQL type
-type User_book_reads_max_order_by struct {
-}
-
 // user_book_reads_min_fields represents the user_book_reads_min_fields GraphQL type
 type User_book_reads_min_fields struct {
 
@@ -8313,14 +5666,6 @@ type User_book_reads_min_fields struct {
 	Started_at *Date `json:"started_at"`
 
 	User_book_id int `json:"user_book_id"`
-}
-
-// user_book_reads_min_order_by represents the user_book_reads_min_order_by GraphQL type
-type User_book_reads_min_order_by struct {
-}
-
-// user_book_reads_order_by represents the user_book_reads_order_by GraphQL type
-type User_book_reads_order_by struct {
 }
 
 // user_book_reads_select_column represents the user_book_reads_select_column GraphQL type
@@ -8375,10 +5720,6 @@ type User_book_reads_stddev_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 }
 
-// user_book_reads_stddev_order_by represents the user_book_reads_stddev_order_by GraphQL type
-type User_book_reads_stddev_order_by struct {
-}
-
 // user_book_reads_stddev_pop_fields represents the user_book_reads_stddev_pop_fields GraphQL type
 type User_book_reads_stddev_pop_fields struct {
 
@@ -8393,10 +5734,6 @@ type User_book_reads_stddev_pop_fields struct {
 	Progress_seconds float64 `json:"progress_seconds"`
 
 	User_book_id float64 `json:"user_book_id"`
-}
-
-// user_book_reads_stddev_pop_order_by represents the user_book_reads_stddev_pop_order_by GraphQL type
-type User_book_reads_stddev_pop_order_by struct {
 }
 
 // user_book_reads_stddev_samp_fields represents the user_book_reads_stddev_samp_fields GraphQL type
@@ -8415,18 +5752,6 @@ type User_book_reads_stddev_samp_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 }
 
-// user_book_reads_stddev_samp_order_by represents the user_book_reads_stddev_samp_order_by GraphQL type
-type User_book_reads_stddev_samp_order_by struct {
-}
-
-// user_book_reads_stream_cursor_input represents the user_book_reads_stream_cursor_input GraphQL type
-type User_book_reads_stream_cursor_input struct {
-}
-
-// user_book_reads_stream_cursor_value_input represents the user_book_reads_stream_cursor_value_input GraphQL type
-type User_book_reads_stream_cursor_value_input struct {
-}
-
 // user_book_reads_sum_fields represents the user_book_reads_sum_fields GraphQL type
 type User_book_reads_sum_fields struct {
 
@@ -8441,10 +5766,6 @@ type User_book_reads_sum_fields struct {
 	Progress_seconds int `json:"progress_seconds"`
 
 	User_book_id int `json:"user_book_id"`
-}
-
-// user_book_reads_sum_order_by represents the user_book_reads_sum_order_by GraphQL type
-type User_book_reads_sum_order_by struct {
 }
 
 // user_book_reads_var_pop_fields represents the user_book_reads_var_pop_fields GraphQL type
@@ -8463,10 +5784,6 @@ type User_book_reads_var_pop_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 }
 
-// user_book_reads_var_pop_order_by represents the user_book_reads_var_pop_order_by GraphQL type
-type User_book_reads_var_pop_order_by struct {
-}
-
 // user_book_reads_var_samp_fields represents the user_book_reads_var_samp_fields GraphQL type
 type User_book_reads_var_samp_fields struct {
 
@@ -8483,10 +5800,6 @@ type User_book_reads_var_samp_fields struct {
 	User_book_id float64 `json:"user_book_id"`
 }
 
-// user_book_reads_var_samp_order_by represents the user_book_reads_var_samp_order_by GraphQL type
-type User_book_reads_var_samp_order_by struct {
-}
-
 // user_book_reads_variance_fields represents the user_book_reads_variance_fields GraphQL type
 type User_book_reads_variance_fields struct {
 
@@ -8501,10 +5814,6 @@ type User_book_reads_variance_fields struct {
 	Progress_seconds float64 `json:"progress_seconds"`
 
 	User_book_id float64 `json:"user_book_id"`
-}
-
-// user_book_reads_variance_order_by represents the user_book_reads_variance_order_by GraphQL type
-type User_book_reads_variance_order_by struct {
 }
 
 // user_book_statuses represents the user_book_statuses GraphQL type
@@ -8563,10 +5872,6 @@ type User_book_statuses_avg_fields struct {
 	ID float64 `json:"id"`
 }
 
-// user_book_statuses_bool_exp represents the user_book_statuses_bool_exp GraphQL type
-type User_book_statuses_bool_exp struct {
-}
-
 // user_book_statuses_max_fields represents the user_book_statuses_max_fields GraphQL type
 type User_book_statuses_max_fields struct {
 
@@ -8591,10 +5896,6 @@ type User_book_statuses_min_fields struct {
 	Status string `json:"status"`
 }
 
-// user_book_statuses_order_by represents the user_book_statuses_order_by GraphQL type
-type User_book_statuses_order_by struct {
-}
-
 // user_book_statuses_select_column represents the user_book_statuses_select_column GraphQL type
 type User_book_statuses_select_column struct {
 }
@@ -8615,14 +5916,6 @@ type User_book_statuses_stddev_pop_fields struct {
 type User_book_statuses_stddev_samp_fields struct {
 
 	ID float64 `json:"id"`
-}
-
-// user_book_statuses_stream_cursor_input represents the user_book_statuses_stream_cursor_input GraphQL type
-type User_book_statuses_stream_cursor_input struct {
-}
-
-// user_book_statuses_stream_cursor_value_input represents the user_book_statuses_stream_cursor_value_input GraphQL type
-type User_book_statuses_stream_cursor_value_input struct {
 }
 
 // user_book_statuses_sum_fields represents the user_book_statuses_sum_fields GraphQL type
@@ -8775,62 +6068,6 @@ type User_books_aggregate struct {
 	Nodes []*User_books `json:"nodes"`
 }
 
-// user_books_aggregate_bool_exp represents the user_books_aggregate_bool_exp GraphQL type
-type User_books_aggregate_bool_exp struct {
-}
-
-// user_books_aggregate_bool_exp_avg represents the user_books_aggregate_bool_exp_avg GraphQL type
-type User_books_aggregate_bool_exp_avg struct {
-}
-
-// user_books_aggregate_bool_exp_bool_and represents the user_books_aggregate_bool_exp_bool_and GraphQL type
-type User_books_aggregate_bool_exp_bool_and struct {
-}
-
-// user_books_aggregate_bool_exp_bool_or represents the user_books_aggregate_bool_exp_bool_or GraphQL type
-type User_books_aggregate_bool_exp_bool_or struct {
-}
-
-// user_books_aggregate_bool_exp_corr represents the user_books_aggregate_bool_exp_corr GraphQL type
-type User_books_aggregate_bool_exp_corr struct {
-}
-
-// user_books_aggregate_bool_exp_corr_arguments represents the user_books_aggregate_bool_exp_corr_arguments GraphQL type
-type User_books_aggregate_bool_exp_corr_arguments struct {
-}
-
-// user_books_aggregate_bool_exp_count represents the user_books_aggregate_bool_exp_count GraphQL type
-type User_books_aggregate_bool_exp_count struct {
-}
-
-// user_books_aggregate_bool_exp_covar_samp represents the user_books_aggregate_bool_exp_covar_samp GraphQL type
-type User_books_aggregate_bool_exp_covar_samp struct {
-}
-
-// user_books_aggregate_bool_exp_covar_samp_arguments represents the user_books_aggregate_bool_exp_covar_samp_arguments GraphQL type
-type User_books_aggregate_bool_exp_covar_samp_arguments struct {
-}
-
-// user_books_aggregate_bool_exp_max represents the user_books_aggregate_bool_exp_max GraphQL type
-type User_books_aggregate_bool_exp_max struct {
-}
-
-// user_books_aggregate_bool_exp_min represents the user_books_aggregate_bool_exp_min GraphQL type
-type User_books_aggregate_bool_exp_min struct {
-}
-
-// user_books_aggregate_bool_exp_stddev_samp represents the user_books_aggregate_bool_exp_stddev_samp GraphQL type
-type User_books_aggregate_bool_exp_stddev_samp struct {
-}
-
-// user_books_aggregate_bool_exp_sum represents the user_books_aggregate_bool_exp_sum GraphQL type
-type User_books_aggregate_bool_exp_sum struct {
-}
-
-// user_books_aggregate_bool_exp_var_samp represents the user_books_aggregate_bool_exp_var_samp GraphQL type
-type User_books_aggregate_bool_exp_var_samp struct {
-}
-
 // user_books_aggregate_fields represents the user_books_aggregate_fields GraphQL type
 type User_books_aggregate_fields struct {
 
@@ -8855,10 +6092,6 @@ type User_books_aggregate_fields struct {
 	Var_samp *User_books_var_samp_fields `json:"var_samp"`
 
 	Variance *User_books_variance_fields `json:"variance"`
-}
-
-// user_books_aggregate_order_by represents the user_books_aggregate_order_by GraphQL type
-type User_books_aggregate_order_by struct {
 }
 
 // user_books_avg_fields represents the user_books_avg_fields GraphQL type
@@ -8895,14 +6128,6 @@ type User_books_avg_fields struct {
 	Status_id float64 `json:"status_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// user_books_avg_order_by represents the user_books_avg_order_by GraphQL type
-type User_books_avg_order_by struct {
-}
-
-// user_books_bool_exp represents the user_books_bool_exp GraphQL type
-type User_books_bool_exp struct {
 }
 
 // user_books_max_fields represents the user_books_max_fields GraphQL type
@@ -8975,10 +6200,6 @@ type User_books_max_fields struct {
 	User_id int `json:"user_id"`
 }
 
-// user_books_max_order_by represents the user_books_max_order_by GraphQL type
-type User_books_max_order_by struct {
-}
-
 // user_books_min_fields represents the user_books_min_fields GraphQL type
 type User_books_min_fields struct {
 
@@ -9047,14 +6268,6 @@ type User_books_min_fields struct {
 	URL string `json:"url"`
 
 	User_id int `json:"user_id"`
-}
-
-// user_books_min_order_by represents the user_books_min_order_by GraphQL type
-type User_books_min_order_by struct {
-}
-
-// user_books_order_by represents the user_books_order_by GraphQL type
-type User_books_order_by struct {
 }
 
 // user_books_select_column represents the user_books_select_column GraphQL type
@@ -9137,10 +6350,6 @@ type User_books_stddev_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// user_books_stddev_order_by represents the user_books_stddev_order_by GraphQL type
-type User_books_stddev_order_by struct {
-}
-
 // user_books_stddev_pop_fields represents the user_books_stddev_pop_fields GraphQL type
 type User_books_stddev_pop_fields struct {
 
@@ -9175,10 +6384,6 @@ type User_books_stddev_pop_fields struct {
 	Status_id float64 `json:"status_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// user_books_stddev_pop_order_by represents the user_books_stddev_pop_order_by GraphQL type
-type User_books_stddev_pop_order_by struct {
 }
 
 // user_books_stddev_samp_fields represents the user_books_stddev_samp_fields GraphQL type
@@ -9217,18 +6422,6 @@ type User_books_stddev_samp_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// user_books_stddev_samp_order_by represents the user_books_stddev_samp_order_by GraphQL type
-type User_books_stddev_samp_order_by struct {
-}
-
-// user_books_stream_cursor_input represents the user_books_stream_cursor_input GraphQL type
-type User_books_stream_cursor_input struct {
-}
-
-// user_books_stream_cursor_value_input represents the user_books_stream_cursor_value_input GraphQL type
-type User_books_stream_cursor_value_input struct {
-}
-
 // user_books_sum_fields represents the user_books_sum_fields GraphQL type
 type User_books_sum_fields struct {
 
@@ -9263,10 +6456,6 @@ type User_books_sum_fields struct {
 	Status_id int `json:"status_id"`
 
 	User_id int `json:"user_id"`
-}
-
-// user_books_sum_order_by represents the user_books_sum_order_by GraphQL type
-type User_books_sum_order_by struct {
 }
 
 // user_books_var_pop_fields represents the user_books_var_pop_fields GraphQL type
@@ -9305,10 +6494,6 @@ type User_books_var_pop_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// user_books_var_pop_order_by represents the user_books_var_pop_order_by GraphQL type
-type User_books_var_pop_order_by struct {
-}
-
 // user_books_var_samp_fields represents the user_books_var_samp_fields GraphQL type
 type User_books_var_samp_fields struct {
 
@@ -9343,10 +6528,6 @@ type User_books_var_samp_fields struct {
 	Status_id float64 `json:"status_id"`
 
 	User_id float64 `json:"user_id"`
-}
-
-// user_books_var_samp_order_by represents the user_books_var_samp_order_by GraphQL type
-type User_books_var_samp_order_by struct {
 }
 
 // user_books_variance_fields represents the user_books_variance_fields GraphQL type
@@ -9385,10 +6566,6 @@ type User_books_variance_fields struct {
 	User_id float64 `json:"user_id"`
 }
 
-// user_books_variance_order_by represents the user_books_variance_order_by GraphQL type
-type User_books_variance_order_by struct {
-}
-
 // user_flags represents the user_flags GraphQL type
 type User_flags struct {
 
@@ -9417,32 +6594,8 @@ type User_flags struct {
 	User_submitted *Users `json:"user_submitted"`
 }
 
-// user_flags_aggregate_order_by represents the user_flags_aggregate_order_by GraphQL type
-type User_flags_aggregate_order_by struct {
-}
-
-// user_flags_avg_order_by represents the user_flags_avg_order_by GraphQL type
-type User_flags_avg_order_by struct {
-}
-
-// user_flags_bool_exp represents the user_flags_bool_exp GraphQL type
-type User_flags_bool_exp struct {
-}
-
 // user_flags_constraint represents the user_flags_constraint GraphQL type
 type User_flags_constraint struct {
-}
-
-// user_flags_insert_input represents the user_flags_insert_input GraphQL type
-type User_flags_insert_input struct {
-}
-
-// user_flags_max_order_by represents the user_flags_max_order_by GraphQL type
-type User_flags_max_order_by struct {
-}
-
-// user_flags_min_order_by represents the user_flags_min_order_by GraphQL type
-type User_flags_min_order_by struct {
 }
 
 // user_flags_mutation_response represents the user_flags_mutation_response GraphQL type
@@ -9453,56 +6606,12 @@ type User_flags_mutation_response struct {
 	Returning []*User_flags `json:"returning"`
 }
 
-// user_flags_on_conflict represents the user_flags_on_conflict GraphQL type
-type User_flags_on_conflict struct {
-}
-
-// user_flags_order_by represents the user_flags_order_by GraphQL type
-type User_flags_order_by struct {
-}
-
 // user_flags_select_column represents the user_flags_select_column GraphQL type
 type User_flags_select_column struct {
 }
 
-// user_flags_stddev_order_by represents the user_flags_stddev_order_by GraphQL type
-type User_flags_stddev_order_by struct {
-}
-
-// user_flags_stddev_pop_order_by represents the user_flags_stddev_pop_order_by GraphQL type
-type User_flags_stddev_pop_order_by struct {
-}
-
-// user_flags_stddev_samp_order_by represents the user_flags_stddev_samp_order_by GraphQL type
-type User_flags_stddev_samp_order_by struct {
-}
-
-// user_flags_stream_cursor_input represents the user_flags_stream_cursor_input GraphQL type
-type User_flags_stream_cursor_input struct {
-}
-
-// user_flags_stream_cursor_value_input represents the user_flags_stream_cursor_value_input GraphQL type
-type User_flags_stream_cursor_value_input struct {
-}
-
-// user_flags_sum_order_by represents the user_flags_sum_order_by GraphQL type
-type User_flags_sum_order_by struct {
-}
-
 // user_flags_update_column represents the user_flags_update_column GraphQL type
 type User_flags_update_column struct {
-}
-
-// user_flags_var_pop_order_by represents the user_flags_var_pop_order_by GraphQL type
-type User_flags_var_pop_order_by struct {
-}
-
-// user_flags_var_samp_order_by represents the user_flags_var_samp_order_by GraphQL type
-type User_flags_var_samp_order_by struct {
-}
-
-// user_flags_variance_order_by represents the user_flags_variance_order_by GraphQL type
-type User_flags_variance_order_by struct {
 }
 
 // user_referrals represents the user_referrals GraphQL type
@@ -9525,24 +6634,8 @@ type User_referrals struct {
 	User_id int `json:"user_id"`
 }
 
-// user_referrals_bool_exp represents the user_referrals_bool_exp GraphQL type
-type User_referrals_bool_exp struct {
-}
-
-// user_referrals_order_by represents the user_referrals_order_by GraphQL type
-type User_referrals_order_by struct {
-}
-
 // user_referrals_select_column represents the user_referrals_select_column GraphQL type
 type User_referrals_select_column struct {
-}
-
-// user_referrals_stream_cursor_input represents the user_referrals_stream_cursor_input GraphQL type
-type User_referrals_stream_cursor_input struct {
-}
-
-// user_referrals_stream_cursor_value_input represents the user_referrals_stream_cursor_value_input GraphQL type
-type User_referrals_stream_cursor_value_input struct {
 }
 
 // user_statuses represents the user_statuses GraphQL type
@@ -9555,24 +6648,8 @@ type User_statuses struct {
 	Users []*Users `json:"users"`
 }
 
-// user_statuses_bool_exp represents the user_statuses_bool_exp GraphQL type
-type User_statuses_bool_exp struct {
-}
-
-// user_statuses_order_by represents the user_statuses_order_by GraphQL type
-type User_statuses_order_by struct {
-}
-
 // user_statuses_select_column represents the user_statuses_select_column GraphQL type
 type User_statuses_select_column struct {
-}
-
-// user_statuses_stream_cursor_input represents the user_statuses_stream_cursor_input GraphQL type
-type User_statuses_stream_cursor_input struct {
-}
-
-// user_statuses_stream_cursor_value_input represents the user_statuses_stream_cursor_value_input GraphQL type
-type User_statuses_stream_cursor_value_input struct {
 }
 
 // users represents the users GraphQL type
@@ -9731,87 +6808,11 @@ type Users_aggregate_by_created_at_date struct {
 	Created_at *Date `json:"created_at"`
 }
 
-// users_aggregate_by_created_at_date_bool_exp represents the users_aggregate_by_created_at_date_bool_exp GraphQL type
-type Users_aggregate_by_created_at_date_bool_exp struct {
-}
-
-// users_aggregate_by_created_at_date_order_by represents the users_aggregate_by_created_at_date_order_by GraphQL type
-type Users_aggregate_by_created_at_date_order_by struct {
-}
-
 // users_aggregate_by_created_at_date_select_column represents the users_aggregate_by_created_at_date_select_column GraphQL type
 type Users_aggregate_by_created_at_date_select_column struct {
 }
 
-// users_aggregate_by_created_at_date_stream_cursor_input represents the users_aggregate_by_created_at_date_stream_cursor_input GraphQL type
-type Users_aggregate_by_created_at_date_stream_cursor_input struct {
-}
-
-// users_aggregate_by_created_at_date_stream_cursor_value_input represents the users_aggregate_by_created_at_date_stream_cursor_value_input GraphQL type
-type Users_aggregate_by_created_at_date_stream_cursor_value_input struct {
-}
-
-// users_aggregate_order_by represents the users_aggregate_order_by GraphQL type
-type Users_aggregate_order_by struct {
-}
-
-// users_avg_order_by represents the users_avg_order_by GraphQL type
-type Users_avg_order_by struct {
-}
-
-// users_bool_exp represents the users_bool_exp GraphQL type
-type Users_bool_exp struct {
-}
-
-// users_max_order_by represents the users_max_order_by GraphQL type
-type Users_max_order_by struct {
-}
-
-// users_min_order_by represents the users_min_order_by GraphQL type
-type Users_min_order_by struct {
-}
-
-// users_order_by represents the users_order_by GraphQL type
-type Users_order_by struct {
-}
-
 // users_select_column represents the users_select_column GraphQL type
 type Users_select_column struct {
-}
-
-// users_stddev_order_by represents the users_stddev_order_by GraphQL type
-type Users_stddev_order_by struct {
-}
-
-// users_stddev_pop_order_by represents the users_stddev_pop_order_by GraphQL type
-type Users_stddev_pop_order_by struct {
-}
-
-// users_stddev_samp_order_by represents the users_stddev_samp_order_by GraphQL type
-type Users_stddev_samp_order_by struct {
-}
-
-// users_stream_cursor_input represents the users_stream_cursor_input GraphQL type
-type Users_stream_cursor_input struct {
-}
-
-// users_stream_cursor_value_input represents the users_stream_cursor_value_input GraphQL type
-type Users_stream_cursor_value_input struct {
-}
-
-// users_sum_order_by represents the users_sum_order_by GraphQL type
-type Users_sum_order_by struct {
-}
-
-// users_var_pop_order_by represents the users_var_pop_order_by GraphQL type
-type Users_var_pop_order_by struct {
-}
-
-// users_var_samp_order_by represents the users_var_samp_order_by GraphQL type
-type Users_var_samp_order_by struct {
-}
-
-// users_variance_order_by represents the users_variance_order_by GraphQL type
-type Users_variance_order_by struct {
 }
 

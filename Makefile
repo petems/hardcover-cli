@@ -48,11 +48,9 @@ clean:
 ## Generate Go types from GraphQL schema
 generate-types: ## Generate Go types from remote GraphQL schema
 	@echo "Generating Go types from GraphQL schema..."
-	@if [ -z "$(HARDCOVER_API_KEY)" ]; then \
-		echo "Error: HARDCOVER_API_KEY environment variable is required"; \
-		exit 1; \
-	fi
+	@echo "Generation started at: $(shell date '+%Y-%m-%d %H:%M:%S %Z')"
 	@go run scripts/generate-types.go
+	@echo "Generation completed at: $(shell date '+%Y-%m-%d %H:%M:%S %Z')"
 
 ## Help
 help:
