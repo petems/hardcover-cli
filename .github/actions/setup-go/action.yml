@@ -7,9 +7,9 @@ inputs:
     required: false
     default: '1.23'
   cache-key:
-    description: 'Cache key for Go modules'
+    description: 'Cache key for Go modules (optional, will auto-generate if not provided)'
     required: false
-    default: '${{ runner.os }}-go-${{ inputs.go-version }}-${{ hashFiles(''**/go.sum'') }}'
+    default: ''
 
 runs:
   using: 'composite'
@@ -25,7 +25,7 @@ runs:
         path: |
           ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ inputs.cache-key }}
+        key: ${{ inputs.cache-key || format('{0}-go-{1}-{2}', runner.os, inputs.go-version, hashFiles('**/go.sum')) }}
         restore-keys: |
           ${{ runner.os }}-go-${{ inputs.go-version }}-
           ${{ runner.os }}-go-
