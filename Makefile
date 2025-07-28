@@ -22,7 +22,13 @@ test:
 
 ## Run linter
 lint:
+	@echo "Checking golangci-lint version..."
+	@$(LINT) version | grep -q "golangci-lint has version" || (echo "golangci-lint not found. Please install it first." && exit 1)
+	@$(LINT) version | grep -oE "version [0-9]+\.[0-9]+\.[0-9]+" | cut -d' ' -f2 | awk -F. '{if ($$1 > 2 || ($$1 == 2 && $$2 >= 3)) exit 0; else exit 1}' || (echo "golangci-lint version 2.3.0 or higher required. Current version:" && $(LINT) version && exit 1)
 	$(LINT) run
+
+lint-fix:
+	$(LINT) run --fix
 
 ## Format code
 fmt:

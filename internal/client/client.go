@@ -1,3 +1,4 @@
+// Package client provides HTTP client functionality for interacting with the Hardcover API.
 package client
 
 import (
@@ -10,110 +11,125 @@ import (
 	"time"
 )
 
-// Client represents a GraphQL client
+// Client represents a GraphQL client for the Hardcover API.
 type Client struct {
-	httpClient *http.Client
 	endpoint   string
 	apiKey     string
+	httpClient *http.Client
 }
 
-// NewClient creates a new GraphQL client
-func NewClient(endpoint, apiKey string) *Client {
-	return &Client{
-		endpoint: endpoint,
-		apiKey:   apiKey,
-		httpClient: &http.Client{
-			Timeout: 30 * time.Second, //nolint:mnd // 30 seconds is a reasonable timeout for HTTP requests
-		},
-	}
-}
-
-// GraphQLRequest represents a GraphQL request
+// GraphQLRequest represents a GraphQL request.
 type GraphQLRequest struct {
-	Variables map[string]interface{} `json:"variables,omitempty"`
 	Query     string                 `json:"query"`
+	Variables map[string]interface{} `json:"variables,omitempty"`
 }
 
-// GraphQLResponse represents a GraphQL response
+// GraphQLResponse represents a GraphQL response.
 type GraphQLResponse struct {
 	Data   json.RawMessage `json:"data"`
-	Errors []GraphQLError  `json:"errors"`
+	Errors []GraphQLError  `json:"errors,omitempty"`
 }
 
-// GraphQLError represents a GraphQL error
+// GraphQLError represents a GraphQL error.
 type GraphQLError struct {
 	Message   string                 `json:"message"`
-	Locations []GraphQLErrorLocation `json:"locations"`
-	Path      []interface{}          `json:"path"`
+	Locations []GraphQLErrorLocation `json:"locations,omitempty"`
 }
 
-// GraphQLErrorLocation represents the location of a GraphQL error
+// GraphQLErrorLocation represents the location of a GraphQL error.
 type GraphQLErrorLocation struct {
 	Line   int `json:"line"`
 	Column int `json:"column"`
 }
 
-// Error implements the error interface for GraphQLError
+// Error implements the error interface for GraphQLError.
 func (e GraphQLError) Error() string {
 	return e.Message
 }
 
-// Execute executes a GraphQL query
-func (c *Client) Execute(ctx context.Context, query string, variables map[string]interface{}, result interface{}) error { //nolint:lll // Function signature is long but necessary
-	req := GraphQLRequest{
+// NewClient creates a new GraphQL client.
+func NewClient(endpoint, apiKey string) *Client {
+	return &Client{
+		endpoint: endpoint,
+		apiKey:   apiKey,
+		httpClient: &http.Client{
+			Timeout: 30 * time.Second, // 30 seconds is a reasonable timeout for HTTP requests
+		},
+	}
+}
+
+// Execute performs a GraphQL query and unmarshals the result.
+func (c *Client) Execute(
+	ctx context.Context,
+	query string,
+	variables map[string]interface{},
+	result interface{},
+) error {
+	// Prepare the GraphQL request
+	gqlReq := GraphQLRequest{
 		Query:     query,
 		Variables: variables,
 	}
 
-	jsonData, err := json.Marshal(req)
+	jsonData, err := json.Marshal(gqlReq)
 	if err != nil {
-		return fmt.Errorf("failed to marshal request: %w", err)
+		return fmt.Errorf("failed to marshal GraphQL request: %w", err)
 	}
 
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", c.endpoint, bytes.NewBuffer(jsonData))
+	// Create HTTP request
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, c.endpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
+		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 
+	// Set headers
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("User-Agent", "hardcover-cli/1.0.0")
 
+	// Set authorization header if API key is provided
 	if c.apiKey != "" {
 		httpReq.Header.Set("Authorization", "Bearer "+c.apiKey)
 	}
 
-	resp, err := c.httpClient.Do(httpReq)
+	// Make the HTTP request
+	httpResp, err := c.httpClient.Do(httpReq)
 	if err != nil {
 		return fmt.Errorf("failed to execute request: %w", err)
 	}
 	defer func() {
-		if closeErr := resp.Body.Close(); closeErr != nil {
-			// Log the error but don't return it as it's in a defer
-			_ = closeErr
+		if closeErr := httpResp.Body.Close(); closeErr != nil {
+			// Log the error but don't fail the request
+			// This is a common pattern for defer statements
+			_ = closeErr // explicitly ignore the error
 		}
 	}()
 
-	body, err := io.ReadAll(resp.Body)
+	// Read response body
+	body, err := io.ReadAll(httpResp.Body)
 	if err != nil {
-		return fmt.Errorf("failed to read response: %w", err)
+		return fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("HTTP error %d: %s", resp.StatusCode, string(body))
+	// Check for HTTP errors
+	if httpResp.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP error %d: %s", httpResp.StatusCode, string(body))
 	}
 
+	// Parse GraphQL response
 	var gqlResp GraphQLResponse
-	if err := json.Unmarshal(body, &gqlResp); err != nil {
-		return fmt.Errorf("failed to unmarshal response: %w", err)
+	if unmarshalErr := json.Unmarshal(body, &gqlResp); unmarshalErr != nil {
+		return fmt.Errorf("failed to unmarshal response: %w", unmarshalErr)
 	}
 
+	// Check for GraphQL errors
 	if len(gqlResp.Errors) > 0 {
 		return fmt.Errorf("GraphQL errors: %v", gqlResp.Errors)
 	}
 
+	// Unmarshal the data into the result if provided
 	if result != nil {
-		if err := json.Unmarshal(gqlResp.Data, result); err != nil {
-			return fmt.Errorf("failed to unmarshal data: %w", err)
+		if dataErr := json.Unmarshal(gqlResp.Data, result); dataErr != nil {
+			return fmt.Errorf("failed to unmarshal data: %w", dataErr)
 		}
 	}
 
