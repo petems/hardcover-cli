@@ -1,82 +1,60 @@
 package cmd
 
 import (
-	"bytes"
-	"context"
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hardcover-cli/internal/client"
-	"hardcover-cli/internal/config"
+	"hardcover-cli/internal/testutil"
 )
 
 func TestSearchBooksCmd_Success(t *testing.T) {
-	// Create test server
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request
-		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+	// Setup test data
+	searchData := map[string]interface{}{
+		"search": map[string]interface{}{
+			"results": map[string]interface{}{
+				"hits": []interface{}{
+					map[string]interface{}{
+						"document": map[string]interface{}{
+							"id":            "book1",
+							"title":         "Go Programming Language",
+							"subtitle":      "A Book About Go",
+							"author_names":  []interface{}{"Alan Donovan", "Brian Kernighan"},
+							"release_year":  2015,
+							"slug":          "go-programming-language",
+							"rating":        4.5,
+							"ratings_count": 123,
+							"isbns":         []interface{}{"978-0134190440"},
+							"series_names":  []interface{}{"Go Series"},
+						},
+					},
+					map[string]interface{}{
+						"document": map[string]interface{}{
+							"id":            "book2",
+							"title":         "Effective Go",
+							"author_names":  []interface{}{"Go Team"},
+							"release_year":  2020,
+							"slug":          "effective-go",
+							"rating":        4.2,
+							"ratings_count": 89,
+						},
+					},
+				},
+			},
+		},
+	}
 
-		// Send response (new structure)
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"search": {
-					"results": {
-						"hits": [
-							{
-								"document": {
-									"id": "book1",
-									"title": "Go Programming Language",
-									"subtitle": "A Book About Go",
-									"author_names": ["Alan Donovan", "Brian Kernighan"],
-									"release_year": 2015,
-									"slug": "go-programming-language",
-									"rating": 4.5,
-									"ratings_count": 123,
-									"isbns": ["978-0134190440"],
-									"series_names": ["Go Series"]
-								}
-							},
-							{
-								"document": {
-									"id": "book2",
-									"title": "Effective Go",
-									"author_names": ["Go Team"],
-									"release_year": 2020,
-									"slug": "effective-go",
-									"rating": 4.2,
-									"ratings_count": 89
-								}
-							}
-						]
-					}
-				}
-			}`),
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-	}))
+	// Create test server
+	server := testutil.CreateTestServer(t, testutil.SuccessResponse(searchData))
 	defer server.Close()
 
-	// Create command with test context
-	cfg := &config.Config{
+	// Setup config and command
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
-
-	// Capture output
-	var output bytes.Buffer
-	cmd.SetOut(&output)
+	})
+	cmd, output := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
@@ -102,15 +80,12 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 }
 
 func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
-	// Create command with empty API key
-	cfg := &config.Config{
+	// Setup config with empty API key
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
+	})
+	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
@@ -119,33 +94,25 @@ func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
 }
 
 func TestSearchBooksCmd_NoResults(t *testing.T) {
-	// Create test server that returns no results
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"search": {
-					"results": { "hits": [] }
-				}
-			}`),
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-	}))
+	// Setup test data with no results
+	searchData := map[string]interface{}{
+		"search": map[string]interface{}{
+			"results": map[string]interface{}{
+				"hits": []interface{}{},
+			},
+		},
+	}
+
+	// Create test server
+	server := testutil.CreateTestServer(t, testutil.SuccessResponse(searchData))
 	defer server.Close()
 
-	// Create command with test context
-	cfg := &config.Config{
+	// Setup config and command
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
-
-	// Capture output
-	var output bytes.Buffer
-	cmd.SetOut(&output)
+	})
+	cmd, output := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"nonexistent"})
@@ -158,29 +125,18 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 
 func TestSearchBooksCmd_APIError(t *testing.T) {
 	// Create test server that returns error
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`null`),
-			Errors: []client.GraphQLError{
-				{
-					Message: "Search failed",
-				},
-			},
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-	}))
+	errors := []testutil.GraphQLError{
+		{Message: "Search failed"},
+	}
+	server := testutil.CreateTestServer(t, testutil.ErrorResponse(errors))
 	defer server.Close()
 
-	// Create command with test context
-	cfg := &config.Config{
+	// Setup config and command
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
+	})
+	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"golang"})
@@ -189,42 +145,32 @@ func TestSearchBooksCmd_APIError(t *testing.T) {
 }
 
 func TestSearchBooksCmd_MinimalData(t *testing.T) {
-	// Create test server with minimal book data
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		response := client.GraphQLResponse{
-			Data: json.RawMessage(`{
-				"search": {
-					"results": {
-						"hits": [
-							{
-								"document": {
-									"id": "book1",
-									"title": "Simple Book"
-								}
-							}
-						]
-					}
-				}
-			}`),
-		}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
-	}))
+	// Setup test data with minimal book data
+	searchData := map[string]interface{}{
+		"search": map[string]interface{}{
+			"results": map[string]interface{}{
+				"hits": []interface{}{
+					map[string]interface{}{
+						"document": map[string]interface{}{
+							"id":    "book1",
+							"title": "Simple Book",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	// Create test server
+	server := testutil.CreateTestServer(t, testutil.SuccessResponse(searchData))
 	defer server.Close()
 
-	// Create command with test context
-	cfg := &config.Config{
+	// Setup config and command
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
-
-	// Capture output
-	var output bytes.Buffer
-	cmd.SetOut(&output)
+	})
+	cmd, output := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Execute command
 	err := searchBooksCmd.RunE(cmd, []string{"simple"})
@@ -246,14 +192,11 @@ func TestSearchBooksCmd_CommandProperties(t *testing.T) {
 
 func TestSearchBooksCmd_RequiresArgument(t *testing.T) {
 	// Test that the command requires exactly one argument
-	cfg := &config.Config{
+	cfg := testutil.SetupTestConfig(&testutil.TestConfig{
 		APIKey:  "test-api-key",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
-	}
-	ctx := withConfig(context.Background(), cfg)
-
-	cmd := &cobra.Command{}
-	cmd.SetContext(ctx)
+	})
+	cmd, _ := testutil.SetupTestCommand(t, cfg, withTestConfig)
 
 	// Test with no arguments - this should fail validation before reaching RunE
 	err := searchBooksCmd.Args(cmd, []string{})

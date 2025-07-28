@@ -7,6 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"hardcover-cli/internal/testutil"
 )
 
 func TestDefaultConfig(t *testing.T) {
@@ -17,10 +19,12 @@ func TestDefaultConfig(t *testing.T) {
 }
 
 func TestLoadConfig_FromEnvironment(t *testing.T) {
-	// Set environment variable
+	// Setup environment
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+
 	expectedAPIKey := "test-api-key-from-env"
-	os.Setenv("HARDCOVER_API_KEY", expectedAPIKey)
-	defer os.Unsetenv("HARDCOVER_API_KEY")
+	envMgr.SetEnv("HARDCOVER_API_KEY", expectedAPIKey)
 
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
@@ -29,9 +33,11 @@ func TestLoadConfig_FromEnvironment(t *testing.T) {
 }
 
 func TestLoadConfig_FromFile(t *testing.T) {
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-	configDir := filepath.Join(tempDir, ".hardcover")
+	// Setup temp directory
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
+
+	configDir := filepath.Join(tempDirMgr.GetTempDir(), ".hardcover")
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
@@ -44,11 +50,6 @@ base_url: https://api.hardcover.app/v1/graphql`
 	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
 
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
-
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
 	assert.Equal(t, "test-api-key-from-file", cfg.APIKey)
@@ -56,16 +57,13 @@ base_url: https://api.hardcover.app/v1/graphql`
 }
 
 func TestLoadConfig_NoFileExists(t *testing.T) {
-	// Make sure no environment variable is set
-	os.Unsetenv("HARDCOVER_API_KEY")
+	// Setup environment and temp directory
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+	envMgr.UnsetEnv("HARDCOVER_API_KEY")
 
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
 
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
@@ -74,13 +72,9 @@ func TestLoadConfig_NoFileExists(t *testing.T) {
 }
 
 func TestSaveConfig(t *testing.T) {
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
+	// Setup temp directory
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
 
 	cfg := &Config{
 		APIKey:  "test-api-key",
@@ -91,7 +85,7 @@ func TestSaveConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify file was created
-	configPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	configPath := tempDirMgr.GetConfigPath()
 	_, err = os.Stat(configPath)
 	require.NoError(t, err)
 
@@ -103,25 +97,26 @@ func TestSaveConfig(t *testing.T) {
 }
 
 func TestGetConfigPath(t *testing.T) {
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
+	// Setup temp directory
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
 
 	configPath, err := GetConfigPath()
 	require.NoError(t, err)
 
-	expectedPath := filepath.Join(tempDir, ".hardcover", "config.yaml")
+	expectedPath := tempDirMgr.GetConfigPath()
 	assert.Equal(t, expectedPath, configPath)
 }
 
 func TestLoadConfig_EnvironmentOverridesFile(t *testing.T) {
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-	configDir := filepath.Join(tempDir, ".hardcover")
+	// Setup environment and temp directory
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
+
+	configDir := filepath.Join(tempDirMgr.GetTempDir(), ".hardcover")
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
@@ -136,13 +131,7 @@ base_url: https://api.hardcover.app/v1/graphql`
 
 	// Set environment variable with different API key
 	envAPIKey := "env-api-key"
-	os.Setenv("HARDCOVER_API_KEY", envAPIKey)
-	defer os.Unsetenv("HARDCOVER_API_KEY")
-
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
+	envMgr.SetEnv("HARDCOVER_API_KEY", envAPIKey)
 
 	cfg, err := LoadConfig()
 	require.NoError(t, err)
@@ -152,9 +141,11 @@ base_url: https://api.hardcover.app/v1/graphql`
 }
 
 func TestLoadConfig_InvalidYAML(t *testing.T) {
-	// Create temporary directory for config
-	tempDir := t.TempDir()
-	configDir := filepath.Join(tempDir, ".hardcover")
+	// Setup temp directory
+	tempDirMgr := testutil.NewTempDirManager(t)
+	defer tempDirMgr.Cleanup()
+
+	configDir := filepath.Join(tempDirMgr.GetTempDir(), ".hardcover")
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
@@ -167,11 +158,6 @@ base_url: https://api.hardcover.app/v1/graphql
 invalid_yaml: [unclosed bracket`
 	err = os.WriteFile(configPath, []byte(configContent), 0o600)
 	require.NoError(t, err)
-
-	// Mock the home directory for testing
-	oldHome := os.Getenv("HOME")
-	os.Setenv("HOME", tempDir)
-	defer os.Setenv("HOME", oldHome)
 
 	_, err = LoadConfig()
 	assert.Error(t, err)

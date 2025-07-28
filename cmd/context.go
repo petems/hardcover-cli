@@ -23,3 +23,22 @@ func withConfig(ctx context.Context, cfg *config.Config) context.Context {
 	globalConfig = cfg
 	return ctx
 }
+
+// withTestConfig is a test helper function that converts testutil.Config to config.Config
+func withTestConfig(ctx context.Context, cfg interface{}) context.Context {
+	// Convert testutil.Config to config.Config
+	if testCfg, ok := cfg.(testConfigConvertible); ok {
+		realCfg := &config.Config{
+			APIKey:  testCfg.GetAPIKey(),
+			BaseURL: testCfg.GetBaseURL(),
+		}
+		return withConfig(ctx, realCfg)
+	}
+	return ctx
+}
+
+// testConfigConvertible interface to avoid import cycle
+type testConfigConvertible interface {
+	GetAPIKey() string
+	GetBaseURL() string
+}
