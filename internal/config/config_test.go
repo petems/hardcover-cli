@@ -34,7 +34,11 @@ func TestLoadConfig_FromEnvironment(t *testing.T) {
 }
 
 func TestLoadConfig_FromFile(t *testing.T) {
-	// Setup temp directory
+	// Setup environment and temp directory
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
@@ -73,7 +77,11 @@ func TestLoadConfig_NoFileExists(t *testing.T) {
 }
 
 func TestSaveConfig(t *testing.T) {
-	// Setup temp directory
+	// Setup environment and temp directory
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
@@ -142,7 +150,11 @@ base_url: https://api.hardcover.app/v1/graphql`
 }
 
 func TestLoadConfig_InvalidYAML(t *testing.T) {
-	// Setup temp directory
+	// Setup environment and temp directory
+	envMgr := testutil.NewEnvironmentManager(t)
+	defer envMgr.Cleanup()
+	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+
 	tempDirMgr := testutil.NewTempDirManager(t)
 	defer tempDirMgr.Cleanup()
 
