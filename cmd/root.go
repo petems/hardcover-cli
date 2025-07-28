@@ -4,14 +4,21 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"hardcover-cli/internal/config"
+	"hardcover-cli/internal/contextutil"
 )
 
 var cfgFile string
 var globalConfig *config.Config // Global config storage
+
+// WithConfig injects configuration into context for testing.
+func WithConfig(ctx context.Context, cfg *config.Config) context.Context {
+	return contextutil.WithConfig(ctx, cfg)
+}
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
@@ -86,9 +93,32 @@ func initConfig() {
 	globalConfig = cfg
 }
 
-// getConfig retrieves the configuration - updated to use global config.
-func getConfig(_ context.Context) (*config.Config, bool) {
-	// First check context (for tests)
+// getConfig retrieves the configuration with context support.
+func getConfig(ctx context.Context) (*config.Config, bool) {
+	// Check if context is cancelled
+	select {
+	case <-ctx.Done():
+		return nil, false
+	default:
+	}
+
+	// Add a timeout for config retrieval (useful for future async operations)
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	// Check for cancellation again after timeout setup
+	select {
+	case <-ctx.Done():
+		return nil, false
+	default:
+	}
+
+	// First check if config is available in context (for testing)
+	if cfg, ok := ctx.Value(contextutil.ConfigContextKey{}).(*config.Config); ok && cfg != nil {
+		return cfg, true
+	}
+
+	// Return global config
 	if globalConfig != nil {
 		return globalConfig, true
 	}

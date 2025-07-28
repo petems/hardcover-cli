@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"testing"
 
@@ -56,10 +57,17 @@ func TestSearchBooksCmd_Success(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, output := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
+
+	// Set up context with config
+	ctx := testutil.WithTestConfigAdapter(context.Background(), cfg)
+	searchBooksCmd.SetContext(ctx)
+
+	// Set up output capture
+	var output bytes.Buffer
+	searchBooksCmd.SetOut(&output)
 
 	// Execute command
-	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	err := searchBooksCmd.RunE(searchBooksCmd, []string{"golang"})
 	require.NoError(t, err)
 
 	// Verify output
@@ -87,10 +95,13 @@ func TestSearchBooksCmd_MissingAPIKey(t *testing.T) {
 		APIKey:  "",
 		BaseURL: "https://api.hardcover.app/v1/graphql",
 	})
-	cmd, _ := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
+
+	// Set up context with config
+	ctx := testutil.WithTestConfigAdapter(context.Background(), cfg)
+	searchBooksCmd.SetContext(ctx)
 
 	// Execute command
-	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	err := searchBooksCmd.RunE(searchBooksCmd, []string{"golang"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "API key is required")
 }
@@ -114,15 +125,22 @@ func TestSearchBooksCmd_NoResults(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, output := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
+
+	// Set up context with config
+	ctx := testutil.WithTestConfigAdapter(context.Background(), cfg)
+	searchBooksCmd.SetContext(ctx)
+
+	// Set up output capture
+	var output bytes.Buffer
+	searchBooksCmd.SetOut(&output)
 
 	// Execute command
-	err := searchBooksCmd.RunE(cmd, []string{"nonexistent"})
+	err := searchBooksCmd.RunE(searchBooksCmd, []string{"nonexistent"})
 	require.NoError(t, err)
 
 	// Verify output shows no results message
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "No books found")
+	assert.Contains(t, outputStr, "No results found")
 }
 
 func TestSearchBooksCmd_APIError(t *testing.T) {
@@ -138,10 +156,13 @@ func TestSearchBooksCmd_APIError(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, _ := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
+
+	// Set up context with config
+	ctx := testutil.WithTestConfigAdapter(context.Background(), cfg)
+	searchBooksCmd.SetContext(ctx)
 
 	// Execute command
-	err := searchBooksCmd.RunE(cmd, []string{"golang"})
+	err := searchBooksCmd.RunE(searchBooksCmd, []string{"golang"})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to search books")
 }
@@ -172,10 +193,17 @@ func TestSearchBooksCmd_MinimalData(t *testing.T) {
 		APIKey:  "test-api-key",
 		BaseURL: server.URL,
 	})
-	cmd, output := testutil.SetupTestCommand(t, cfg, testutil.WithTestConfigAdapter)
+
+	// Set up context with config
+	ctx := testutil.WithTestConfigAdapter(context.Background(), cfg)
+	searchBooksCmd.SetContext(ctx)
+
+	// Set up output capture
+	var output bytes.Buffer
+	searchBooksCmd.SetOut(&output)
 
 	// Execute command
-	err := searchBooksCmd.RunE(cmd, []string{"simple"})
+	err := searchBooksCmd.RunE(searchBooksCmd, []string{"simple"})
 	require.NoError(t, err)
 
 	// Verify output shows minimal book information

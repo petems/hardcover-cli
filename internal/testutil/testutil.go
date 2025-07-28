@@ -14,6 +14,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
+
+	"hardcover-cli/internal/config"
+	"hardcover-cli/internal/contextutil"
 )
 
 // TestConfig represents common test configuration options.
@@ -148,21 +151,8 @@ func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string,
 	})
 }
 
-// Config represents a configuration (copied to avoid import cycle).
-type Config struct {
-	APIKey  string `yaml:"api_key"`
-	BaseURL string `yaml:"base_url"`
-}
-
-// GetAPIKey returns the API key (for interface compatibility).
-func (c *Config) GetAPIKey() string {
-	return c.APIKey
-}
-
-// GetBaseURL returns the base URL (for interface compatibility).
-func (c *Config) GetBaseURL() string {
-	return c.BaseURL
-}
+// Config represents the test configuration (using the same type as main app).
+type Config = config.Config
 
 // SetupTestConfig creates a Config for testing.
 func SetupTestConfig(testCfg *TestConfig) *Config {
@@ -180,10 +170,9 @@ func SetupTestConfig(testCfg *TestConfig) *Config {
 type WithConfigFunc func(ctx context.Context, cfg interface{}) context.Context
 
 // WithConfig is a test helper function to inject configuration into context.
-func WithConfig(ctx context.Context, _ *Config) context.Context {
+func WithConfig(ctx context.Context, cfg *Config) context.Context {
 	// This function is used by tests to inject test configuration
-	// The actual implementation depends on the specific command package
-	return ctx
+	return contextutil.WithConfig(ctx, cfg)
 }
 
 // WithTestConfig is a test helper function that converts TestConfig to Config.
@@ -197,8 +186,8 @@ func WithTestConfig(ctx context.Context, testCfg *TestConfig) context.Context {
 
 // WithTestConfigAdapter creates a WithConfigFunc that works with Config.
 func WithTestConfigAdapter(ctx context.Context, cfg interface{}) context.Context {
-	if config, ok := cfg.(*Config); ok {
-		return WithConfig(ctx, config)
+	if cfg, ok := cfg.(*Config); ok {
+		return WithConfig(ctx, cfg)
 	}
 	return ctx
 }
@@ -216,6 +205,20 @@ func SetupTestCommand(t *testing.T, cfg *Config, withConfigFunc WithConfigFunc) 
 	} else {
 		cmd.SetContext(context.Background())
 	}
+
+	// Set up output capture
+	var output bytes.Buffer
+	cmd.SetOut(&output)
+
+	return cmd, &output
+}
+
+// SetupTestCommandWithContext creates a command with the given context and returns it along with output buffer.
+func SetupTestCommandWithContext(ctx context.Context, t *testing.T) (*cobra.Command, *bytes.Buffer) {
+	t.Helper()
+
+	cmd := &cobra.Command{}
+	cmd.SetContext(ctx)
 
 	// Set up output capture
 	var output bytes.Buffer

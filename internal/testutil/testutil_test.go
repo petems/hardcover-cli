@@ -35,8 +35,8 @@ func TestConfig_Methods(t *testing.T) {
 		APIKey:  "test-key",
 		BaseURL: "test-url",
 	}
-	assert.Equal(t, "test-key", cfg.GetAPIKey())
-	assert.Equal(t, "test-url", cfg.GetBaseURL())
+	assert.Equal(t, "test-key", cfg.APIKey)
+	assert.Equal(t, "test-url", cfg.BaseURL)
 }
 
 func TestCreateTestServer_Success(t *testing.T) {
@@ -197,7 +197,7 @@ func TestSetupTestCommand(t *testing.T) {
 
 	// Verify context was set
 	ctx := cmd.Context()
-	assert.NotNil(t, ctx.Value("test-config"))
+	assert.NotNil(t, ctx.Value(testConfigKey{}))
 }
 
 func TestResponseBuilders(t *testing.T) {

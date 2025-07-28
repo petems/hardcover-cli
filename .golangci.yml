@@ -79,11 +79,17 @@ linters:
           files:
             - "cmd/**/*.go"
             - "main.go"
+            - "internal/**/*.go"
           allow:
             - $gostd
             - github.com/spf13/cobra
             - hardcover-cli/internal/client
             - hardcover-cli/internal/config
+            - hardcover-cli/internal/contextutil
+          deny:
+            - pkg: hardcover-cli/internal/testutil
+              desc: "testutil package should only be used in test files"
+
         test:
           files:
             - "**/*_test.go"
@@ -142,6 +148,7 @@ linters:
         - style
         - experimental
         - diagnostic
+
 
     gocyclo:
       # Minimal code complexity to report.
@@ -224,6 +231,7 @@ linters:
         - name: var-declaration
         - name: var-naming
 
+
     staticcheck:
       # Enable all checks.
       # Default: ["*"]
@@ -252,6 +260,8 @@ linters:
           - funlen
           - gocognit
           - cyclop
+      
+
       
       # Exclude testpackage linter for cmd_test packages
       - linters:
