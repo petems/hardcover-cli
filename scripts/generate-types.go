@@ -167,7 +167,7 @@ import (
 
 {{range .Types}}
 // {{.Name}} represents the {{.Name}} GraphQL type
-type {{.Name}} struct {
+type {{toCamelCase .Name}} struct {
 {{range .Fields}}{{if not (hasPrefix .Name "__")}}	{{toCamelCase .Name}} {{getGoType .Type}} ` + "`json:\"{{.Name}}\"`" + `
 {{end}}{{end}}}
 {{end}}
@@ -301,8 +301,10 @@ func getGoType(typeRef TypeRef) string {
 		return "*json.RawMessage"
 	case "jsonb":
 		return "*json.RawMessage"
+	case "citext":
+		return "string"
 	default:
-		return "*" + typeRef.Name
+		return "*" + toCamelCase(typeRef.Name)
 	}
 }
 

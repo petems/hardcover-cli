@@ -5,25 +5,42 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hardcover-cli/internal/client"
 	"hardcover-cli/internal/testutil"
 )
 
 func TestMeCmd_Success(t *testing.T) {
-	// Setup test data
-	userData := map[string]interface{}{
-		"me": map[string]interface{}{
-			"id":       "user123",
-			"username": "testuser",
-		},
-	}
-
 	// Create test server
-	server := testutil.CreateTestServer(t, testutil.SuccessResponse(userData))
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request
+		assert.Equal(t, "POST", r.Method)
+		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
+
+		// Verify GraphQL query
+		var req client.GraphQLRequest
+		err := json.NewDecoder(r.Body).Decode(&req)
+		require.NoError(t, err)
+		assert.Contains(t, req.Query, "query GetCurrentUser")
+		assert.Contains(t, req.Query, "me")
+
+		// Send response
+		response := client.GraphQLResponse{
+			Data: json.RawMessage(`{
+				"me": {
+					"id": 123,
+					"username": "testuser"
+				}
+			}`),
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
 	defer server.Close()
 
 	// Setup config and command
@@ -47,7 +64,7 @@ func TestMeCmd_Success(t *testing.T) {
 	// Verify output
 	outputStr := output.String()
 	assert.Contains(t, outputStr, "User Profile:")
-	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.Contains(t, outputStr, "Username: testuser")
 }
 
@@ -129,16 +146,19 @@ func TestMeCmd_HTTPError(t *testing.T) {
 }
 
 func TestMeCmd_PartialData(t *testing.T) {
-	// Setup test data with minimal user data
-	userData := map[string]interface{}{
-		"me": map[string]interface{}{
-			"id":       "user123",
-			"username": "testuser",
-		},
-	}
-
-	// Create test server
-	server := testutil.CreateTestServer(t, testutil.SuccessResponse(userData))
+	// Create test server with minimal user data
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := client.GraphQLResponse{
+			Data: json.RawMessage(`{
+				"me": {
+					"id": 123,
+					"username": "testuser"
+				}
+			}`),
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
+	}))
 	defer server.Close()
 
 	// Setup config and command
@@ -161,8 +181,7 @@ func TestMeCmd_PartialData(t *testing.T) {
 
 	// Verify output shows partial user information
 	outputStr := output.String()
-	assert.Contains(t, outputStr, "User Profile:")
-	assert.Contains(t, outputStr, "ID: user123")
+	assert.Contains(t, outputStr, "ID: 123")
 	assert.Contains(t, outputStr, "Username: testuser")
 }
 
@@ -195,7 +214,7 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 	// Test JSON unmarshaling
 	jsonData := `{
 		"me": {
-			"id": "user123",
+			"id": 123,
 			"username": "testuser"
 		}
 	}`
@@ -205,8 +224,7 @@ func TestGetCurrentUserResponse_JSONUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify the response contains the expected data
-	if userData, ok := response.Me.(map[string]interface{}); ok {
-		assert.Equal(t, "user123", userData["id"])
-		assert.Equal(t, "testuser", userData["username"])
-	}
+	require.NotNil(t, response.Me)
+	assert.Equal(t, 123, response.Me.ID)
+	assert.Equal(t, "testuser", response.Me.Username)
 }
