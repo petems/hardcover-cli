@@ -11,35 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-    
     - name: Check out code
       uses: actions/checkout@v4
     
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.23-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
+    - name: Setup Go Environment
+      uses: ./.github/actions/setup-go
     
     - name: Run tests
-      run: go test -v -race ./...
-    
-    - name: Run linter
-      uses: golangci/golangci-lint-action@v8
+      uses: ./.github/actions/go-tasks
       with:
-        version: latest
+        task: test
+    
+    - name: golangci-lint
+      uses: ./.github/actions/go-tasks
+      with:
+        task: lint
 
   build:
     name: Build and Release
@@ -56,27 +42,11 @@ jobs:
             goarch: arm64
     
     steps:
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-    
     - name: Check out code
       uses: actions/checkout@v4
     
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-1.23-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-1.23-
-          ${{ runner.os }}-go-
-    
-    - name: Download dependencies
-      run: go mod download
+    - name: Setup Go Environment
+      uses: ./.github/actions/setup-go
     
     - name: Build binary
       env:
@@ -89,22 +59,22 @@ jobs:
           BINARY_NAME="${BINARY_NAME}.exe"
         fi
         
-        go build -ldflags="-s -w -X main.version=${VERSION}" -o ${BINARY_NAME} .
+        go build -ldflags="-s -w -X main.version=${VERSION}" -o "${BINARY_NAME}" .
         
         # Create archive
         ARCHIVE_NAME="hardcover-${VERSION}-${{ matrix.goos }}-${{ matrix.goarch }}"
         if [ "${{ matrix.goos }}" = "windows" ]; then
-          zip "${ARCHIVE_NAME}.zip" ${BINARY_NAME} README.md LICENSE
-          echo "ASSET=${ARCHIVE_NAME}.zip" >> $GITHUB_ENV
+          zip "${ARCHIVE_NAME}.zip" "${BINARY_NAME}" README.md LICENSE
+          echo "ASSET=${ARCHIVE_NAME}.zip" >> "$GITHUB_ENV"
         else
-          tar -czf "${ARCHIVE_NAME}.tar.gz" ${BINARY_NAME} README.md LICENSE
-          echo "ASSET=${ARCHIVE_NAME}.tar.gz" >> $GITHUB_ENV
+          tar -czf "${ARCHIVE_NAME}.tar.gz" "${BINARY_NAME}" README.md LICENSE
+          echo "ASSET=${ARCHIVE_NAME}.tar.gz" >> "$GITHUB_ENV"
         fi
     
     - name: Upload binary
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.ASSET }}
+        name: hardcover-${{ github.ref }}-${{ matrix.goos }}-${{ matrix.goarch }}
         path: ${{ env.ASSET }}
 
   release:
@@ -192,8 +162,8 @@ jobs:
       uses: mislav/bump-homebrew-formula-action@v3
       with:
         formula-name: hardcover-cli
-        homebrew-tap: your-username/homebrew-tap
-        base-branch: main
+        homebrew-tap: petems/homebrew-tap
+        base-branch: master
         download-url: https://github.com/${{ github.repository }}/releases/download/${{ github.ref }}/hardcover-${{ github.ref }}-darwin-amd64.tar.gz
       env:
         COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
