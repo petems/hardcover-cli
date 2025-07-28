@@ -14,8 +14,8 @@ type SearchBooksResponse struct {
 
 // BookSearchResults represents the search results for books
 type BookSearchResults struct {
-	TotalCount int      `json:"totalCount"`
 	Results    []*Books `json:"results"`
+	TotalCount int      `json:"totalCount"`
 }
 
 // GetBookResponse represents the response from the GetBook query

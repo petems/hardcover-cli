@@ -142,9 +142,9 @@ type Field struct {
 }
 
 type Input struct {
+	Type        TypeRef `json:"type"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Type        TypeRef `json:"type"`
 }
 
 type Enum struct {
@@ -153,9 +153,9 @@ type Enum struct {
 }
 
 type TypeRef struct {
+	OfType *TypeRef `json:"ofType"`
 	Kind   string   `json:"kind"`
 	Name   string   `json:"name"`
-	OfType *TypeRef `json:"ofType"`
 }
 
 const typesTemplate = `// Code generated from GraphQL schema, DO NOT EDIT.
@@ -182,6 +182,23 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Fetch GraphQL schema
+	schema, err := fetchGraphQLSchema(apiKey)
+	if err != nil {
+		fmt.Printf("Failed to fetch GraphQL schema: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Generate types file
+	if err := generateTypesFile(schema); err != nil {
+		fmt.Printf("Failed to generate types file: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Successfully generated Go types from GraphQL schema")
+}
+
+func fetchGraphQLSchema(apiKey string) (*GraphQLResponse, error) {
 	// Create GraphQL request
 	req := GraphQLRequest{
 		Query: introspectionQuery,
@@ -189,8 +206,7 @@ func main() {
 
 	jsonData, err := json.Marshal(req)
 	if err != nil {
-		fmt.Printf("Failed to marshal request: %v\n", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to marshal request: %w", err)
 	}
 
 	// Create HTTP request
@@ -198,8 +214,7 @@ func main() {
 	httpReq, err := http.NewRequestWithContext(
 		ctx, "POST", "https://api.hardcover.app/v1/graphql", bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Printf("Failed to create request: %v\n", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -210,34 +225,34 @@ func main() {
 	client := &http.Client{}
 	resp, err := client.Do(httpReq)
 	if err != nil {
-		fmt.Printf("Failed to execute request: %v\n", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to execute request: %w", err)
 	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf("Failed to read response: %v\n", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to read response: %w", err)
 	}
 	if closeErr := resp.Body.Close(); closeErr != nil {
-		fmt.Printf("Failed to close response body: %v\n", closeErr)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to close response body: %w", closeErr)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("HTTP error %d: %s\n", resp.StatusCode, string(body))
-		os.Exit(1)
+		return nil, fmt.Errorf("HTTP error %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Parse response
 	var gqlResp GraphQLResponse
 	if unmarshalErr := json.Unmarshal(body, &gqlResp); unmarshalErr != nil {
-		fmt.Printf("Failed to unmarshal response: %v\n", unmarshalErr)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to unmarshal response: %w", unmarshalErr)
 	}
 
+	return &gqlResp, nil
+}
+
+func generateTypesFile(schema *GraphQLResponse) error {
 	// Filter out introspection types and conflicting types
 	var filteredTypes []Type
-	for _, t := range gqlResp.Data.Schema.Types {
+	for _, t := range schema.Data.Schema.Types {
 		if t.Name != "" && !strings.HasPrefix(t.Name, "__") && t.Name != "json" {
 			filteredTypes = append(filteredTypes, t)
 		}
@@ -250,21 +265,18 @@ func main() {
 		"hasPrefix":   strings.HasPrefix,
 	}).Parse(typesTemplate)
 	if err != nil {
-		fmt.Printf("Failed to parse template: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse template: %w", err)
 	}
 
 	// Create output directory
 	if mkdirErr := os.MkdirAll("internal/client", dirPermissions); mkdirErr != nil {
-		fmt.Printf("Failed to create directory: %v\n", mkdirErr)
-		os.Exit(1)
+		return fmt.Errorf("failed to create directory: %w", mkdirErr)
 	}
 
 	// Generate types file
 	typesFile, err := os.Create("internal/client/types.go")
 	if err != nil {
-		fmt.Printf("Failed to create types file: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to create types file: %w", err)
 	}
 
 	// Execute template
@@ -275,19 +287,17 @@ func main() {
 	}
 
 	if err := tmpl.Execute(typesFile, data); err != nil {
-		fmt.Printf("Failed to execute template: %v\n", err)
 		if closeErr := typesFile.Close(); closeErr != nil {
-			fmt.Printf("Failed to close types file: %v\n", closeErr)
+			return fmt.Errorf("failed to execute template: %w, and failed to close file: %w", err, closeErr)
 		}
-		os.Exit(1)
+		return fmt.Errorf("failed to execute template: %w", err)
 	}
 
 	if err := typesFile.Close(); err != nil {
-		fmt.Printf("Failed to close types file: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to close types file: %w", err)
 	}
 
-	fmt.Println("Successfully generated Go types from GraphQL schema")
+	return nil
 }
 
 const (
