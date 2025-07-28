@@ -1,0 +1,44 @@
+?   	hardcover-cli	[no test files]
+goos: linux
+goarch: amd64
+pkg: hardcover-cli/cmd
+cpu: Intel(R) Xeon(R) Processor
+BenchmarkSearchBooksCmd_ResponseProcessing-4   	    8088	    173586 ns/op	   39357 B/op	     622 allocs/op
+BenchmarkSearchUsersCmd_ResponseProcessing-4   	   10000	    115910 ns/op	   24668 B/op	     363 allocs/op
+BenchmarkStringBuilding/Current-strings.Join-4 	14883316	        81.19 ns/op	     128 B/op	       2 allocs/op
+BenchmarkStringBuilding/Optimized-strings.Builder-4         	14959882	        79.06 ns/op	     112 B/op	       3 allocs/op
+BenchmarkStringProcessing/Book-Current-4                    	 2836993	       427.6 ns/op	     322 B/op	       9 allocs/op
+BenchmarkStringProcessing/Book-Optimized-4                  	 2485666	       472.4 ns/op	     775 B/op	       6 allocs/op
+BenchmarkStringProcessing/User-Current-4                    	 5580758	       214.2 ns/op	      88 B/op	       5 allocs/op
+BenchmarkStringProcessing/User-Optimized-4                  	 5590680	       206.3 ns/op	     263 B/op	       2 allocs/op
+BenchmarkBatchProcessing/Sequential-Current-4               	  287598	      4040 ns/op	    2640 B/op	      80 allocs/op
+BenchmarkBatchProcessing/Batch-Optimized-4                  	  151755	      7566 ns/op	   18528 B/op	      56 allocs/op
+BenchmarkOptimizedStringBuilder/strings.Join-4              	 5681492	       209.8 ns/op	     288 B/op	       8 allocs/op
+BenchmarkOptimizedStringBuilder/OptimizedStringBuilder-4    	 6488854	       185.0 ns/op	     272 B/op	       7 allocs/op
+BenchmarkOptimizedStringBuilder/OptimizedStringBuilder-Reuse-4         	 4980033	       245.3 ns/op	     280 B/op	      10 allocs/op
+PASS
+ok  	hardcover-cli/cmd	17.976s
+goos: linux
+goarch: amd64
+pkg: hardcover-cli/internal/client
+cpu: Intel(R) Xeon(R) Processor
+BenchmarkClient_Execute_JSONMarshaling-4         	   20700	     55576 ns/op	   11070 B/op	     134 allocs/op
+BenchmarkClient_Execute_LargeResponse-4          	     879	   1385882 ns/op	  601635 B/op	    8295 allocs/op
+BenchmarkClient_Execute_ConcurrentRequests-4     	   76815	     15403 ns/op	   12752 B/op	     142 allocs/op
+BenchmarkJSON_Operations/Marshal-4               	  582890	      1789 ns/op	     960 B/op	      26 allocs/op
+BenchmarkJSON_Operations/Unmarshal-4             	  433864	      2699 ns/op	    2368 B/op	      47 allocs/op
+BenchmarkClient_Original_vs_Optimized/Original-4 	   20551	     57248 ns/op	   11041 B/op	     134 allocs/op
+BenchmarkClient_Original_vs_Optimized/Optimized-4         	   21670	     53884 ns/op	   10632 B/op	     134 allocs/op
+BenchmarkClient_LargeResponse_Optimized/Original-Large-4  	    1502	    823520 ns/op	  301558 B/op	    4275 allocs/op
+BenchmarkClient_LargeResponse_Optimized/Optimized-Large-4 	    1494	    804305 ns/op	  273534 B/op	    4266 allocs/op
+BenchmarkClient_LargeResponse_Optimized/Optimized-Streaming-4         	    2496	    588847 ns/op	  156560 B/op	    1337 allocs/op
+BenchmarkClient_ConcurrentRequests_Optimized/Original-Concurrent-4    	   75376	     15229 ns/op	   12576 B/op	     142 allocs/op
+BenchmarkClient_ConcurrentRequests_Optimized/Optimized-Concurrent-4   	   94267	     12882 ns/op	   10643 B/op	     133 allocs/op
+PASS
+ok  	hardcover-cli/internal/client	17.005s
+PASS
+ok  	hardcover-cli/internal/config	0.005s
+PASS
+ok  	hardcover-cli/internal/contextutil	0.004s
+PASS
+ok  	hardcover-cli/internal/testutil	0.005s
