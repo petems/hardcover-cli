@@ -7,7 +7,7 @@ LINT := golangci-lint
 
 BUILD_FLAGS := -ldflags "-X main.Version=${VERSION}"
 
-.PHONY: all build test lint install clean help release fmt
+.PHONY: all build test lint install clean help release fmt generate-types
 
 all: build
 
@@ -44,6 +44,15 @@ clean:
 	@echo "Cleaning..."
 	rm -rf bin/
 	$(GO) clean -cache ./...
+
+## Generate Go types from GraphQL schema
+generate-types: ## Generate Go types from remote GraphQL schema
+	@echo "Generating Go types from GraphQL schema..."
+	@if [ -z "$(HARDCOVER_API_KEY)" ]; then \
+		echo "Error: HARDCOVER_API_KEY environment variable is required"; \
+		exit 1; \
+	fi
+	@go run scripts/generate-types.go
 
 ## Help
 help:
