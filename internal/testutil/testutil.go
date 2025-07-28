@@ -348,6 +348,62 @@ func (tdm *TempDirManager) Cleanup() {
 	}
 }
 
+// ConfigTestManager combines EnvironmentManager and TempDirManager for config tests.
+type ConfigTestManager struct {
+	envMgr  *EnvironmentManager
+	tempMgr *TempDirManager
+	t       *testing.T
+}
+
+// NewConfigTestManager creates a new config test manager that handles both
+// environment variables and temp directories for config testing.
+func NewConfigTestManager(t *testing.T) *ConfigTestManager {
+	t.Helper()
+
+	envMgr := NewEnvironmentManager(t)
+	tempMgr := NewTempDirManager(t)
+
+	// Clear HARDCOVER_API_KEY by default for config tests
+	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+
+	return &ConfigTestManager{
+		envMgr:  envMgr,
+		tempMgr: tempMgr,
+		t:       t,
+	}
+}
+
+// GetTempDir returns the temporary directory path.
+func (ctm *ConfigTestManager) GetTempDir() string {
+	return ctm.tempMgr.GetTempDir()
+}
+
+// GetConfigPath returns the config file path in the temp directory.
+func (ctm *ConfigTestManager) GetConfigPath() string {
+	return ctm.tempMgr.GetConfigPath()
+}
+
+// CreateConfig creates a config file in the temp directory.
+func (ctm *ConfigTestManager) CreateConfig(cfg *Config) {
+	ctm.tempMgr.CreateConfig(ctm.t, cfg)
+}
+
+// SetEnv sets an environment variable.
+func (ctm *ConfigTestManager) SetEnv(key, value string) {
+	ctm.envMgr.SetEnv(key, value)
+}
+
+// UnsetEnv unsets an environment variable.
+func (ctm *ConfigTestManager) UnsetEnv(key string) {
+	ctm.envMgr.UnsetEnv(key)
+}
+
+// Cleanup restores all environment variables and the HOME directory.
+func (ctm *ConfigTestManager) Cleanup() {
+	ctm.envMgr.Cleanup()
+	ctm.tempMgr.Cleanup()
+}
+
 // TestCase represents a common test case structure.
 type TestCase struct {
 	Name    string

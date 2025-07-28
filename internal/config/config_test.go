@@ -34,15 +34,11 @@ func TestLoadConfig_FromEnvironment(t *testing.T) {
 }
 
 func TestLoadConfig_FromFile(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
-
-	configDir := filepath.Join(tempDirMgr.GetTempDir(), ".hardcover")
+	configDir := filepath.Join(ctm.GetTempDir(), ".hardcover")
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
@@ -77,13 +73,9 @@ func TestLoadConfig_NoFileExists(t *testing.T) {
 }
 
 func TestSaveConfig(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
-
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
 	cfg := &config.Config{
 		APIKey:  "test-api-key",
@@ -94,7 +86,7 @@ func TestSaveConfig(t *testing.T) {
 	require.NoError(t, err)
 
 	// Verify file was created
-	configPath := tempDirMgr.GetConfigPath()
+	configPath := ctm.GetConfigPath()
 	_, err = os.Stat(configPath)
 	require.NoError(t, err)
 
@@ -150,15 +142,11 @@ base_url: https://api.hardcover.app/v1/graphql`
 }
 
 func TestLoadConfig_InvalidYAML(t *testing.T) {
-	// Setup environment and temp directory
-	envMgr := testutil.NewEnvironmentManager(t)
-	defer envMgr.Cleanup()
-	envMgr.UnsetEnv("HARDCOVER_API_KEY")
+	// Setup config test manager
+	ctm := testutil.NewConfigTestManager(t)
+	defer ctm.Cleanup()
 
-	tempDirMgr := testutil.NewTempDirManager(t)
-	defer tempDirMgr.Cleanup()
-
-	configDir := filepath.Join(tempDirMgr.GetTempDir(), ".hardcover")
+	configDir := filepath.Join(ctm.GetTempDir(), ".hardcover")
 	configPath := filepath.Join(configDir, "config.yaml")
 
 	// Create config directory
