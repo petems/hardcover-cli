@@ -100,6 +100,7 @@ linters:
             - hardcover-cli/internal/client
             - hardcover-cli/internal/config
             - hardcover-cli/internal/testutil
+            - hardcover-cli/internal/contextutil
             - gopkg.in/yaml.v3
 
     dupl:
