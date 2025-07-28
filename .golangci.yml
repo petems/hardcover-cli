@@ -1,4 +1,4 @@
-version: "2"
+# version: "2"  # Commented out as this is deprecated
 run:
   issues-exit-code: 1
   tests: true
@@ -18,7 +18,7 @@ linters:
     - gosec
     - lll
     - misspell
-    - mnd
+    - gomnd
     - nakedret
     - noctx
     - nolintlint
