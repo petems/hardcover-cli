@@ -226,7 +226,12 @@ Example:
 						// Rating
 						if rating, ok := book["rating"].(float64); ok && rating > 0 {
 							if ratingsCount, ok := book["ratings_count"].(float64); ok {
-								printToStdoutf(cmd.OutOrStdout(), "   Rating: %.2f/5 (%.0f ratings)\n", rating, ratingsCount)
+								printToStdoutf(
+									cmd.OutOrStdout(),
+									"   Rating: %.2f/5 (%.0f ratings)\n",
+									rating,
+									ratingsCount,
+								)
 							}
 						}
 						// ISBNs

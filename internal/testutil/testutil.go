@@ -31,8 +31,8 @@ func DefaultTestConfig() *TestConfig {
 
 // GraphQLError represents a GraphQL error (copied to avoid import cycle)
 type GraphQLError struct {
-	Message   string                   `json:"message"`
-	Locations []GraphQLErrorLocation   `json:"locations,omitempty"`
+	Message   string                 `json:"message"`
+	Locations []GraphQLErrorLocation `json:"locations,omitempty"`
 }
 
 // Error implements the error interface
@@ -67,7 +67,7 @@ type TestServerHandler func(w http.ResponseWriter, r *http.Request)
 func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Server {
 	t.Helper()
 
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		// Set default status code
 		statusCode := response.StatusCode
 		if statusCode == 0 {
@@ -83,7 +83,10 @@ func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Serv
 		if statusCode != http.StatusOK {
 			w.WriteHeader(statusCode)
 			if response.Data != nil {
-				w.Write([]byte(response.Data.(string)))
+				_, writeErr := w.Write([]byte(response.Data.(string)))
+				if writeErr != nil {
+					t.Errorf("Failed to write response: %v", writeErr)
+				}
 			}
 			return
 		}
@@ -103,7 +106,9 @@ func CreateTestServer(t *testing.T, response *TestServerResponse) *httptest.Serv
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(statusCode)
-		json.NewEncoder(w).Encode(graphqlResponse)
+		if err := json.NewEncoder(w).Encode(graphqlResponse); err != nil {
+			t.Errorf("Failed to encode response: %v", err)
+		}
 	}))
 }
 
@@ -113,7 +118,8 @@ func CreateTestServerWithHandler(handler TestServerHandler) *httptest.Server {
 }
 
 // CreateTestServerWithAPIKeyValidation creates a test server that validates API key
-func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string, response *TestServerResponse) *httptest.Server {
+func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string,
+	response *TestServerResponse) *httptest.Server {
 	t.Helper()
 
 	return CreateTestServerWithHandler(func(w http.ResponseWriter, r *http.Request) {
@@ -121,7 +127,9 @@ func CreateTestServerWithAPIKeyValidation(t *testing.T, expectedAPIKey string, r
 		expectedAuth := "Bearer " + expectedAPIKey
 		if r.Header.Get("Authorization") != expectedAuth {
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
+			if _, err := w.Write([]byte("Unauthorized")); err != nil {
+				t.Errorf("Failed to write unauthorized response: %v", err)
+			}
 			return
 		}
 
@@ -329,6 +337,8 @@ func RunTestCases(t *testing.T, testCases []TestCase) {
 }
 
 // Common response builders for GraphQL tests
+
+// SuccessResponse creates a successful test server response
 func SuccessResponse(data interface{}) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       data,
@@ -337,6 +347,7 @@ func SuccessResponse(data interface{}) *TestServerResponse {
 	}
 }
 
+// ErrorResponse creates an error test server response
 func ErrorResponse(errors []GraphQLError) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       nil,
@@ -346,6 +357,7 @@ func ErrorResponse(errors []GraphQLError) *TestServerResponse {
 	}
 }
 
+// HTTPErrorResponse creates an HTTP error test server response
 func HTTPErrorResponse(statusCode int, body string) *TestServerResponse {
 	return &TestServerResponse{
 		Data:       body,

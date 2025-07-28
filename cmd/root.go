@@ -13,7 +13,7 @@ import (
 var cfgFile string
 var globalConfig *config.Config // Global config storage
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "hardcover-cli",
 	Short: "A CLI tool for interacting with the Hardcover.app GraphQL API",
@@ -28,22 +28,23 @@ Before using the CLI, you need to set your Hardcover.app API key:
   # Or set via config file
   hardcover config set-api-key "your-api-key-here"
 
-Examples:
-  hardcover me                           # Get your user profile
-  hardcover search books "golang"        # Search for books about golang
-  hardcover search users "john"          # Search for users named john
-  hardcover config set-api-key "key"     # Set your API key`,
+Get your API key from: https://hardcover.app/account/developer
+
+Available Commands:
+  config    Manage configuration settings
+  me        Get your user profile information
+  search    Search for books and users
+  help      Help about any command`,
 }
 
-// SetupCommands initializes all commands and their relationships
+// SetupCommands initializes all commands and their relationships.
 func SetupCommands() {
 	setupRootCommand()
+	setupConfigCommands()
 	setupMeCommands()
 	setupSearchCommands()
-	setupConfigCommands()
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
@@ -52,7 +53,7 @@ func Execute() {
 	}
 }
 
-// setupRootCommand configures the root command with flags and initialization
+// setupRootCommand configures the root command with flags and initialization.
 func setupRootCommand() {
 	cobra.OnInitialize(initConfig)
 
@@ -61,34 +62,33 @@ func setupRootCommand() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hardcover/config.yaml)")
-	rootCmd.PersistentFlags().StringP("api-key", "k", "",
-		"Hardcover.app API key (can also be set via HARDCOVER_API_KEY environment variable)")
+	rootCmd.PersistentFlags().String("api-key", "", "Hardcover API key (overrides config file)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Run the setup commands when the package is loaded
+	SetupCommands()
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// Load configuration
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Warning: failed to load config: %v\n", err)
-		globalConfig = config.DefaultConfig()
-		return
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
+		os.Exit(1)
 	}
 
-	// Override with command-line flag if provided
-	if apiKey, err := rootCmd.PersistentFlags().GetString("api-key"); err == nil && apiKey != "" {
-		cfg.APIKey = apiKey
+	// Check for API key flag override
+	if apiKeyFlag, flagErr := rootCmd.PersistentFlags().GetString("api-key"); flagErr == nil && apiKeyFlag != "" {
+		cfg.APIKey = apiKeyFlag
 	}
 
-	// Store config globally
+	// Store globally for access in commands
 	globalConfig = cfg
 }
 
-// getConfig retrieves the configuration - updated to use global config
-func getConfig(_ context.Context) (*config.Config, bool) {
+// getConfig retrieves the configuration - updated to use global config.
+func getConfig(ctx context.Context) (*config.Config, bool) {
+	// First check context (for tests)
 	if globalConfig != nil {
 		return globalConfig, true
 	}
