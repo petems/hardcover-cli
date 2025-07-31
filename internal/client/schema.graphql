@@ -1,70 +1,4483 @@
+# Generated from GraphQL introspection, DO NOT EDIT.
+# Generated at: 2025-07-28 02:03:06 BST
+
 scalar ID
 scalar String
 scalar Int
+scalar Float
 scalar Boolean
+scalar Date
+scalar Timestamp
+scalar Timestamptz
+scalar Numeric
+scalar Float8
+scalar Bigint
+scalar Smallint
+scalar Citext
+scalar Json
+scalar Jsonb
 
-type Query {
-  me: User
-  book(id: ID!): Book
-  search(query: String!, type: SearchType!): SearchResults
+type AuthorIdType {
+  author: authors
+  errors: [String]
+  id: Int
 }
 
-type User {
-  id: ID!
-  username: String!
-  email: String
-  createdAt: String
-  updatedAt: String
+type BasicTagType {
+  category: String!
+  categorySlug: String!
+  count: Int
+  spoiler: Boolean!
+  tag: String!
+  tagSlug: String!
 }
 
-type Book {
-  id: ID!
-  title: String!
+type BookIdType {
+  book: books
+  errors: [String]
+  id: Int
+}
+
+type BookMappingIdType {
+  book_mapping: book_mappings
+  errors: [String]
+  id: Int
+}
+
+type CharacterIdType {
+  character: characters
+  errors: [String]
+  id: Int
+}
+
+type CollectionImportIdType {
+  collection_import: collection_imports
+  id: Int
+}
+
+type CollectionImportResultIdType {
+  collection_import_result: collection_import_results
+  id: Int
+}
+
+type DeleteFollowedPromptType {
+  success: Boolean!
+}
+
+type DeleteListType {
+  success: Boolean!
+}
+
+type DeleteReadingJournalOutput {
+  id: Int!
+}
+
+type DeleteReadingJournalsOutput {
+  ids: [Int]
+}
+
+type EditionIdType {
+  edition: editions
+  errors: [String]
+  id: Int
+}
+
+type FollowedListType {
+  errors: [String]
+  followed_list: followed_lists
+  id: Int
+}
+
+type FollowedPromptType {
+  errors: [String]
+  followed_prompt: followed_prompts
+  id: Int
+}
+
+type FollowedUserType {
+  error: String
+  followed_user: users
+  followed_user_id: Int
+  followed_users: followed_users
+  id: Int
+  user: users
+  user_id: Int
+}
+
+type GoalIdType {
+  errors: [String]
+  goal: goals
+  id: Int
+}
+
+type ImageIdType {
+  id: Int!
+  image: images
+}
+
+type InsertBlockOutput {
+  error: String
+  id: Int
+  user_block: user_blocks
+}
+
+type LikeDeleteType {
+  likes_count: Int!
+}
+
+type LikeType {
+  id: Int!
+  like: likes
+  likes_count: Int!
+}
+
+type ListBookDeleteType {
+  id: Int
+  list: lists
+  list_id: Int
+}
+
+type ListBookIdType {
+  id: Int
+  list_book: list_books
+}
+
+type ListDeleteType {
+  success: Boolean!
+}
+
+type ListIdType {
+  errors: [String]
+  id: Int
+  list: lists
+}
+
+type NewBookIdType {
+  book: books
+  edition: editions
+  edition_id: Int
+  errors: [String]
+  id: Int
+}
+
+type NewsletterStatusType {
+  subscribed: Boolean!
+}
+
+type OptionalEditionIdType {
+  edition: editions
+  errors: [String]
+  id: Int
+}
+
+type PromptAnswerIdType {
+  book_id: Int!
+  id: Int
+  prompt_answer: prompt_answers
+  prompt_book: prompt_books_summary
+  prompt_id: Int!
+  user_id: Int!
+}
+
+type PromptIdType {
+  error: String
+  id: Int
+  prompt: prompts
+}
+
+type PublisherIdType {
+  errors: [String]
+  id: Int
+  publisher: publishers
+}
+
+type ReadingJournalOutput {
+  errors: [String]
+  id: Int
+  reading_journal: reading_journals
+}
+
+type ReferralType {
+  book: books
+  book_id: Int!
+  count: Int!
+}
+
+type ReportOutput {
+  complete: Boolean
+  created: Boolean
+  errors: [String]
+}
+
+type SearchOutput {
+  error: String
+  ids: [Int]
+  page: Int
+  per_page: Int
+  query: String
+  query_type: String
+  results: jsonb
+}
+
+type SeriesIdType {
+  errors: [String]
+  id: Int
+  series: series
+}
+
+type SubscriptionsType {
+  billing_portal_url: String
+  membership: String
+  membership_ends_at: timestamp
+  monthly_session_id: String
+  monthly_session_url: String
+  payment_system: String
+  yearly_session_id: String
+  yearly_session_url: String
+}
+
+type SuccessType {
+  success: Boolean!
+}
+
+type TagsType {
+  tags: [BasicTagType]!
+}
+
+type TrendingBookType {
+  error: String
+  ids: [Int]
+}
+
+type UserBookDeleteType {
+  book_id: Int
+  id: Int
+  user_book: user_books
+  user_id: Int
+}
+
+type UserBookIdType {
+  error: String
+  id: Int
+  user_book: user_books
+}
+
+type UserBookReadIdType {
+  error: String
+  id: Int
+  user_book_read: user_book_reads
+}
+
+type UserBooksReadUpsertType {
+  error: String
+  user_book: user_books
+  user_book_id: Int
+}
+
+type UserIdType {
+  errors: [String]
+  id: Int
+  user: users
+}
+
+type ValidateReceiptType {
+  result: jsonb!
+  supporter: Boolean
+}
+
+type activities {
+  book: books
+  book_id: Int
+  created_at: timestamptz
+  data: jsonb!
+  event: String!
+  followers: [followed_users!]!
+  id: Int!
+  likes: [likes!]!
+  likes_count: Int!
+  object_type: String!
+  original_book_id: Int
+  privacy_setting: privacy_settings!
+  privacy_setting_id: Int!
+  uid: String!
+  user: users!
+  user_id: Int!
+}
+
+type activities_mutation_response {
+  affected_rows: Int!
+  returning: [activities!]!
+}
+
+type authors {
+  alias: [authors!]!
+  alias_id: Int
+  alternate_names: jsonb!
+  bio: String
+  books_count: Int!
+  born_date: date
+  born_year: Int
+  cached_image: jsonb!
+  canonical: authors
+  canonical_id: Int
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  creator: users
+  death_date: date
+  death_year: Int
+  gender_id: Int
+  id: Int!
+  identifiers: jsonb!
+  image: images
+  image_id: Int
+  is_bipoc: Boolean
+  is_lgbtq: Boolean
+  links: jsonb!
+  location: String
+  locked: Boolean!
+  name: String!
+  name_personal: String
+  slug: String
+  state: String!
+  title: String
+  user_id: Int
+  users_count: Int!
+}
+
+type book_categories {
+  id: bigint!
+  name: String!
+}
+
+type book_characters {
+  book: books
+  book_id: bigint!
+  character: characters
+  character_id: bigint!
+  id: bigint!
+  only_mentioned: Boolean!
+  position: Int!
+  spoiler: Boolean!
+}
+
+type book_collections {
+  book_id: Int!
+  child_book_id: Int!
+  id: bigint!
+  position: Int!
+}
+
+type book_mappings {
+  attempts: Int
+  book: books!
+  book_id: Int!
+  created_at: timestamptz
+  dto_external: json!
+  edition: editions
+  edition_id: Int
+  external_data_id: Int
+  external_id: String!
+  id: Int!
+  loaded: Boolean
+  loaded_at: timestamp
+  normalized_at: timestamp
+  original_book_id: Int
+  platform: platforms!
+  platform_id: Int!
+  state: String!
+  updated_at: timestamptz
+  verified: Boolean
+  verified_at: timestamp
+}
+
+type book_series {
+  book: books
+  book_id: Int!
+  created_at: timestamp!
+  details: String
+  featured: Boolean!
+  id: bigint!
+  position: float8
+  series: series
+  series_id: Int!
+  updated_at: timestamp!
+}
+
+type book_series_aggregate {
+  aggregate: book_series_aggregate_fields
+  nodes: [book_series!]!
+}
+
+type book_series_aggregate_fields {
+  avg: book_series_avg_fields
+  count: Int!
+  max: book_series_max_fields
+  min: book_series_min_fields
+  stddev: book_series_stddev_fields
+  stddev_pop: book_series_stddev_pop_fields
+  stddev_samp: book_series_stddev_samp_fields
+  sum: book_series_sum_fields
+  var_pop: book_series_var_pop_fields
+  var_samp: book_series_var_samp_fields
+  variance: book_series_variance_fields
+}
+
+type book_series_avg_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_max_fields {
+  book_id: Int
+  created_at: timestamp
+  details: String
+  id: bigint
+  position: float8
+  series_id: Int
+  updated_at: timestamp
+}
+
+type book_series_min_fields {
+  book_id: Int
+  created_at: timestamp
+  details: String
+  id: bigint
+  position: float8
+  series_id: Int
+  updated_at: timestamp
+}
+
+type book_series_stddev_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_stddev_pop_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_stddev_samp_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_sum_fields {
+  book_id: Int
+  id: bigint
+  position: float8
+  series_id: Int
+}
+
+type book_series_var_pop_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_var_samp_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_series_variance_fields {
+  book_id: Float
+  id: Float
+  position: Float
+  series_id: Float
+}
+
+type book_statuses {
+  books: [books!]!
+  books_aggregate: books_aggregate!
+  id: smallint!
+  name: String!
+}
+
+type bookles {
+  book: books
+  book_id: Int
+  created_at: timestamp
+  date: date
+  id: bigint!
+}
+
+type books {
+  activities_count: Int!
+  alternative_titles: json!
+  audio_seconds: Int
+  book_category_id: Int!
+  book_characters: [book_characters!]!
+  book_mappings: [book_mappings!]!
+  book_series: [book_series!]!
+  book_series_aggregate: book_series_aggregate!
+  book_status: book_statuses!
+  book_status_id: smallint!
+  cached_contributors: json!
+  cached_featured_series: jsonb
+  cached_header_image: jsonb!
+  cached_image: jsonb!
+  cached_tags: json!
+  canonical: books
+  canonical_id: Int
+  collection_import_results: [collection_import_results!]!
+  compilation: Boolean!
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  created_at: timestamp!
+  created_by_user_id: Int
+  default_audio_edition: editions
+  default_audio_edition_id: Int
+  default_cover_edition: editions
+  default_cover_edition_id: Int
+  default_ebook_edition: editions
+  default_ebook_edition_id: Int
+  default_physical_edition: editions
+  default_physical_edition_id: Int
   description: String
+  dto: json
+  dto_combined: json
+  dto_external: json
+  editions: [editions!]!
+  editions_count: Int!
+  featured_book_series: book_series
+  featured_book_series_id: Int
+  header_image_id: Int
+  headline: String
+  id: Int!
+  image: images
+  image_id: Int
+  images: [images!]!
+  import_platform_id: Int!
+  journals_count: Int!
+  links: jsonb!
+  list_books: [list_books!]!
+  list_books_aggregate: list_books_aggregate!
+  lists_count: Int
+  literary_type_id: Int
+  locked: Boolean!
+  pages: Int
+  prompt_answers: [prompt_answers!]!
+  prompt_answers_aggregate: prompt_answers_aggregate!
+  prompt_summaries: [prompt_books_summary!]!
+  prompts_count: Int!
+  rating: numeric
+  ratings_count: Int!
+  ratings_distribution: jsonb!
+  recommendations: [recommendations!]!
+  release_date: date
+  release_year: Int
+  reviews_count: Int!
+  slug: String
+  state: String
+  subtitle: String
+  taggable_counts: [taggable_counts!]!
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+  title: String
+  updated_at: timestamptz
+  user_added: Boolean!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  users_count: Int!
+  users_read_count: Int!
+}
+
+type books_aggregate {
+  aggregate: books_aggregate_fields
+  nodes: [books!]!
+}
+
+type books_aggregate_fields {
+  avg: books_avg_fields
+  count: Int!
+  max: books_max_fields
+  min: books_min_fields
+  stddev: books_stddev_fields
+  stddev_pop: books_stddev_pop_fields
+  stddev_samp: books_stddev_samp_fields
+  sum: books_sum_fields
+  var_pop: books_var_pop_fields
+  var_samp: books_var_samp_fields
+  variance: books_variance_fields
+}
+
+type books_avg_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_max_fields {
+  activities_count: Int
+  audio_seconds: Int
+  book_category_id: Int
+  book_status_id: smallint
+  canonical_id: Int
+  created_at: timestamp
+  created_by_user_id: Int
+  default_audio_edition_id: Int
+  default_cover_edition_id: Int
+  default_ebook_edition_id: Int
+  default_physical_edition_id: Int
+  description: String
+  editions_count: Int
+  featured_book_series_id: Int
+  header_image_id: Int
+  headline: String
+  id: Int
+  image_id: Int
+  import_platform_id: Int
+  journals_count: Int
+  lists_count: Int
+  literary_type_id: Int
+  pages: Int
+  prompts_count: Int
+  rating: numeric
+  ratings_count: Int
+  release_date: date
+  release_year: Int
+  reviews_count: Int
+  slug: String
+  state: String
+  subtitle: String
+  title: String
+  updated_at: timestamptz
+  users_count: Int
+  users_read_count: Int
+}
+
+type books_min_fields {
+  activities_count: Int
+  audio_seconds: Int
+  book_category_id: Int
+  book_status_id: smallint
+  canonical_id: Int
+  created_at: timestamp
+  created_by_user_id: Int
+  default_audio_edition_id: Int
+  default_cover_edition_id: Int
+  default_ebook_edition_id: Int
+  default_physical_edition_id: Int
+  description: String
+  editions_count: Int
+  featured_book_series_id: Int
+  header_image_id: Int
+  headline: String
+  id: Int
+  image_id: Int
+  import_platform_id: Int
+  journals_count: Int
+  lists_count: Int
+  literary_type_id: Int
+  pages: Int
+  prompts_count: Int
+  rating: numeric
+  ratings_count: Int
+  release_date: date
+  release_year: Int
+  reviews_count: Int
+  slug: String
+  state: String
+  subtitle: String
+  title: String
+  updated_at: timestamptz
+  users_count: Int
+  users_read_count: Int
+}
+
+type books_stddev_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_stddev_pop_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_stddev_samp_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_sum_fields {
+  activities_count: Int
+  audio_seconds: Int
+  book_category_id: Int
+  book_status_id: smallint
+  canonical_id: Int
+  created_by_user_id: Int
+  default_audio_edition_id: Int
+  default_cover_edition_id: Int
+  default_ebook_edition_id: Int
+  default_physical_edition_id: Int
+  editions_count: Int
+  featured_book_series_id: Int
+  header_image_id: Int
+  id: Int
+  image_id: Int
+  import_platform_id: Int
+  journals_count: Int
+  lists_count: Int
+  literary_type_id: Int
+  pages: Int
+  prompts_count: Int
+  rating: numeric
+  ratings_count: Int
+  release_year: Int
+  reviews_count: Int
+  users_count: Int
+  users_read_count: Int
+}
+
+type books_var_pop_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_var_samp_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type books_variance_fields {
+  activities_count: Float
+  audio_seconds: Float
+  book_category_id: Float
+  book_status_id: Float
+  canonical_id: Float
+  created_by_user_id: Float
+  default_audio_edition_id: Float
+  default_cover_edition_id: Float
+  default_ebook_edition_id: Float
+  default_physical_edition_id: Float
+  editions_count: Float
+  featured_book_series_id: Float
+  header_image_id: Float
+  id: Float
+  image_id: Float
+  import_platform_id: Float
+  journals_count: Float
+  lists_count: Float
+  literary_type_id: Float
+  pages: Float
+  prompts_count: Float
+  rating: Float
+  ratings_count: Float
+  release_year: Float
+  reviews_count: Float
+  users_count: Float
+  users_read_count: Float
+}
+
+type characters {
+  biography: String
+  book_characters: [book_characters!]!
+  books_count: Int!
+  cached_tags: json!
+  canonical: characters
+  canonical_books_count: Int!
+  canonical_id: Int
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  created_at: timestamp!
+  gender_id: bigint
+  has_disability: Boolean
+  id: bigint!
+  image_id: Int
+  is_lgbtq: Boolean
+  is_poc: Boolean
+  locked: Boolean
+  name: String!
+  object_type: String!
+  openlibrary_url: String
   slug: String!
-  isbn: String
-  publicationYear: Int
-  pageCount: Int
-  cached_contributors: [Contributor!]!
-  cached_genres: [Genre!]!
-  image: String
-  averageRating: Float
-  ratingsCount: Int
-  createdAt: String
-  updatedAt: String
+  state: String!
+  updated_at: timestamp!
+  user_id: Int
 }
 
-type Contributor {
-  id: ID!
-  name: String!
-  role: String
+type collection_import_results {
+  author: String
+  book: books
+  book_found_method: String
+  book_id: Int
+  collection_import: collection_imports!
+  collection_import_id: Int!
+  contents: jsonb!
+  external_id: String!
+  id: Int!
+  report: Int
+  state: String!
+  title: String!
 }
 
-type Genre {
-  id: ID!
-  name: String!
+type collection_import_results_mutation_response {
+  affected_rows: Int!
+  returning: [collection_import_results!]!
+}
+
+type collection_imports {
+  collection_import_results: [collection_import_results!]!
+  completed_at: timestamptz
+  contents_key: String
+  created_at: timestamptz
+  current_book: String
+  error_message: String
+  failure_count: Int!
+  id: Int!
+  override_date_read: Boolean
+  override_ratings: Boolean!
+  override_shelves: Boolean!
+  platform_id: Int
+  processed_count: Int!
+  reimport_count: Int!
+  started_at: timestamptz
+  state: String!
+  success_count: Int!
+  tag_resolution: Int!
+  total_count: Int!
+  updated_at: timestamptz
+  user: users!
+  user_id: Int!
+}
+
+type contributions {
+  author: authors
+  author_id: Int!
+  book: books
+  contributable_id: Int!
+  contributable_type: String!
+  contribution: String
+  created_at: timestamp!
+  id: bigint!
+  updated_at: timestamp!
+}
+
+type contributions_aggregate {
+  aggregate: contributions_aggregate_fields
+  nodes: [contributions!]!
+}
+
+type contributions_aggregate_fields {
+  avg: contributions_avg_fields
+  count: Int!
+  max: contributions_max_fields
+  min: contributions_min_fields
+  stddev: contributions_stddev_fields
+  stddev_pop: contributions_stddev_pop_fields
+  stddev_samp: contributions_stddev_samp_fields
+  sum: contributions_sum_fields
+  var_pop: contributions_var_pop_fields
+  var_samp: contributions_var_samp_fields
+  variance: contributions_variance_fields
+}
+
+type contributions_avg_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_max_fields {
+  author_id: Int
+  contributable_id: Int
+  contributable_type: String
+  contribution: String
+  created_at: timestamp
+  id: bigint
+  updated_at: timestamp
+}
+
+type contributions_min_fields {
+  author_id: Int
+  contributable_id: Int
+  contributable_type: String
+  contribution: String
+  created_at: timestamp
+  id: bigint
+  updated_at: timestamp
+}
+
+type contributions_stddev_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_stddev_pop_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_stddev_samp_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_sum_fields {
+  author_id: Int
+  contributable_id: Int
+  id: bigint
+}
+
+type contributions_var_pop_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_var_samp_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type contributions_variance_fields {
+  author_id: Float
+  contributable_id: Float
+  id: Float
+}
+
+type countries {
+  code2: String
+  code3: String
+  created_at: timestamp!
+  editions: [editions!]!
+  id: bigint!
+  intermediate_region: String
+  intermediate_region_code: String
+  iso_3166: String
+  name: String
+  phone_code: String
+  region: String
+  region_code: String
+  sub_region: String
+  sub_region_code: String
+  updated_at: timestamp!
+}
+
+type editions {
+  alternative_titles: json!
+  asin: String
+  audio_seconds: Int
+  book: books!
+  book_id: Int!
+  book_mappings: [book_mappings!]!
+  cached_contributors: json!
+  cached_image: jsonb!
+  cached_tags: json!
+  compilation: Boolean!
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  country: countries
+  country_id: Int
+  created_at: timestamp!
+  created_by_user_id: Int
+  dto: json!
+  dto_combined: json!
+  dto_external: json!
+  edition_format: String
+  edition_information: String
+  id: Int!
+  image: images
+  image_id: Int
+  images: [images!]!
+  isbn_10: String
+  isbn_13: String
+  language: languages
+  language_id: Int
+  list_books: [list_books!]!
+  list_books_aggregate: list_books_aggregate!
+  lists_count: Int!
+  locked: Boolean!
+  normalized_at: timestamp
+  object_type: String!
+  original_book_id: Int
+  pages: Int
+  physical_format: String
+  physical_information: String
+  publisher: publishers
+  publisher_id: Int
+  rating: numeric
+  reading_format: reading_formats
+  reading_format_id: Int!
+  release_date: date
+  release_year: Int
+  score: Int!
+  source: String
+  state: String!
+  subtitle: String
+  title: String
+  updated_at: timestamp!
+  user_added: Boolean!
+  users_count: Int!
+  users_read_count: Int!
+}
+
+type flag_statuses {
+  id: Int!
+  status: String!
+  user_flags: [user_flags!]!
+}
+
+type followed_lists {
+  created_at: timestamptz!
+  id: Int!
+  list: lists!
+  list_id: Int!
+  user: users!
+  user_id: Int!
+}
+
+type followed_prompts {
+  created_at: timestamptz
+  id: Int!
+  order: Int!
+  prompt: prompts!
+  prompt_id: Int!
+  user: users!
+  user_id: Int!
+}
+
+type followed_prompts_mutation_response {
+  affected_rows: Int!
+  returning: [followed_prompts!]!
+}
+
+type followed_user_books {
+  book: books
+  book_id: Int
+  follower_user: users
+  follower_user_id: Int
+  user: users
+  user_book: user_books
+  user_book_id: Int
+  user_id: Int
+}
+
+type followed_user_books_aggregate {
+  aggregate: followed_user_books_aggregate_fields
+  nodes: [followed_user_books!]!
+}
+
+type followed_user_books_aggregate_fields {
+  avg: followed_user_books_avg_fields
+  count: Int!
+  max: followed_user_books_max_fields
+  min: followed_user_books_min_fields
+  stddev: followed_user_books_stddev_fields
+  stddev_pop: followed_user_books_stddev_pop_fields
+  stddev_samp: followed_user_books_stddev_samp_fields
+  sum: followed_user_books_sum_fields
+  var_pop: followed_user_books_var_pop_fields
+  var_samp: followed_user_books_var_samp_fields
+  variance: followed_user_books_variance_fields
+}
+
+type followed_user_books_avg_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_max_fields {
+  book_id: Int
+  follower_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type followed_user_books_min_fields {
+  book_id: Int
+  follower_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type followed_user_books_stddev_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_stddev_pop_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_stddev_samp_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_sum_fields {
+  book_id: Int
+  follower_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type followed_user_books_var_pop_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_var_samp_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_user_books_variance_fields {
+  book_id: Float
+  follower_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type followed_users {
+  created_at: timestamptz
+  followed_user: users!
+  followed_user_id: Int!
+  id: Int!
+  user: users!
+  user_id: Int!
+}
+
+type followed_users_mutation_response {
+  affected_rows: Int!
+  returning: [followed_users!]!
+}
+
+type following_user_books {
+  book: books
+  book_id: Int
+  followed_user_id: Int
+  following_user: users
+  user: users
+  user_book: user_books
+  user_book_id: Int
+  user_id: Int
+}
+
+type following_user_books_aggregate {
+  aggregate: following_user_books_aggregate_fields
+  nodes: [following_user_books!]!
+}
+
+type following_user_books_aggregate_fields {
+  avg: following_user_books_avg_fields
+  count: Int!
+  max: following_user_books_max_fields
+  min: following_user_books_min_fields
+  stddev: following_user_books_stddev_fields
+  stddev_pop: following_user_books_stddev_pop_fields
+  stddev_samp: following_user_books_stddev_samp_fields
+  sum: following_user_books_sum_fields
+  var_pop: following_user_books_var_pop_fields
+  var_samp: following_user_books_var_samp_fields
+  variance: following_user_books_variance_fields
+}
+
+type following_user_books_avg_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_max_fields {
+  book_id: Int
+  followed_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type following_user_books_min_fields {
+  book_id: Int
+  followed_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type following_user_books_stddev_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_stddev_pop_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_stddev_samp_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_sum_fields {
+  book_id: Int
+  followed_user_id: Int
+  user_book_id: Int
+  user_id: Int
+}
+
+type following_user_books_var_pop_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_var_samp_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type following_user_books_variance_fields {
+  book_id: Float
+  followed_user_id: Float
+  user_book_id: Float
+  user_id: Float
+}
+
+type goals {
+  archived: Boolean!
+  completed_at: timestamptz
+  conditions: jsonb!
   description: String
+  end_date: date!
+  followers: [followed_users!]!
+  goal: Int!
+  id: Int!
+  metric: String!
+  privacy_setting_id: Int
+  progress: numeric!
+  start_date: date!
+  state: String!
+  user: users!
+  user_id: Int!
 }
 
-enum SearchType {
-  BOOKS
-  AUTHORS
-  USERS
+type goals_mutation_response {
+  affected_rows: Int!
+  returning: [goals!]!
 }
 
-union SearchResults = BookSearchResults | AuthorSearchResults | UserSearchResults
-
-type BookSearchResults {
-  results: [Book!]!
-  totalCount: Int!
+type images {
+  color: String
+  colors: jsonb
+  height: Int
+  id: bigint!
+  imageable_id: Int
+  imageable_type: String
+  ratio: float8
+  url: String
+  width: Int
 }
 
-type AuthorSearchResults {
-  results: [Contributor!]!
-  totalCount: Int!
+type languages {
+  code2: String
+  code3: String
+  id: Int!
+  language: String!
 }
 
-type UserSearchResults {
-  results: [User!]!
-  totalCount: Int!
+type likes {
+  activity: activities
+  created_at: timestamptz
+  followers: [followed_users!]!
+  id: Int!
+  likeable_id: Int!
+  likeable_type: String!
+  list: lists
+  user: users!
+  user_book: user_books
+  user_id: Int!
 }
+
+type list_books {
+  book: books!
+  book_id: Int!
+  created_at: timestamp
+  date_added: timestamptz
+  edition: editions
+  edition_id: Int
+  id: Int!
+  imported: Boolean
+  list: lists!
+  list_id: Int!
+  merged_at: timestamp
+  original_book_id: Int
+  original_edition_id: Int
+  position: Int
+  reason: String
+  updated_at: timestamptz
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+}
+
+type list_books_aggregate {
+  aggregate: list_books_aggregate_fields
+  nodes: [list_books!]!
+}
+
+type list_books_aggregate_fields {
+  avg: list_books_avg_fields
+  count: Int!
+  max: list_books_max_fields
+  min: list_books_min_fields
+  stddev: list_books_stddev_fields
+  stddev_pop: list_books_stddev_pop_fields
+  stddev_samp: list_books_stddev_samp_fields
+  sum: list_books_sum_fields
+  var_pop: list_books_var_pop_fields
+  var_samp: list_books_var_samp_fields
+  variance: list_books_variance_fields
+}
+
+type list_books_avg_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_max_fields {
+  book_id: Int
+  created_at: timestamp
+  date_added: timestamptz
+  edition_id: Int
+  id: Int
+  list_id: Int
+  merged_at: timestamp
+  original_book_id: Int
+  original_edition_id: Int
+  position: Int
+  reason: String
+  updated_at: timestamptz
+}
+
+type list_books_min_fields {
+  book_id: Int
+  created_at: timestamp
+  date_added: timestamptz
+  edition_id: Int
+  id: Int
+  list_id: Int
+  merged_at: timestamp
+  original_book_id: Int
+  original_edition_id: Int
+  position: Int
+  reason: String
+  updated_at: timestamptz
+}
+
+type list_books_mutation_response {
+  affected_rows: Int!
+  returning: [list_books!]!
+}
+
+type list_books_stddev_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_stddev_pop_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_stddev_samp_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_sum_fields {
+  book_id: Int
+  edition_id: Int
+  id: Int
+  list_id: Int
+  original_book_id: Int
+  original_edition_id: Int
+  position: Int
+}
+
+type list_books_var_pop_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_var_samp_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type list_books_variance_fields {
+  book_id: Float
+  edition_id: Float
+  id: Float
+  list_id: Float
+  original_book_id: Float
+  original_edition_id: Float
+  position: Float
+}
+
+type lists {
+  books_count: Int!
+  created_at: timestamp
+  default_view: String!
+  description: String
+  featured: Boolean!
+  featured_profile: Boolean!
+  followed_lists: [followed_lists!]!
+  followers: [followed_users!]!
+  followers_count: Int
+  id: Int!
+  imported: Boolean!
+  likes: [likes!]!
+  likes_count: Int!
+  list_books: [list_books!]!
+  list_books_aggregate: list_books_aggregate!
+  name: String!
+  object_type: String!
+  privacy_setting: privacy_settings!
+  privacy_setting_id: Int!
+  public: Boolean!
+  ranked: Boolean!
+  slug: String
+  updated_at: timestamptz
+  url: String
+  user: users!
+  user_id: Int!
+}
+
+type lists_aggregate {
+  aggregate: lists_aggregate_fields
+  nodes: [lists!]!
+}
+
+type lists_aggregate_fields {
+  avg: lists_avg_fields
+  count: Int!
+  max: lists_max_fields
+  min: lists_min_fields
+  stddev: lists_stddev_fields
+  stddev_pop: lists_stddev_pop_fields
+  stddev_samp: lists_stddev_samp_fields
+  sum: lists_sum_fields
+  var_pop: lists_var_pop_fields
+  var_samp: lists_var_samp_fields
+  variance: lists_variance_fields
+}
+
+type lists_avg_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_max_fields {
+  books_count: Int
+  created_at: timestamp
+  default_view: String
+  description: String
+  followers_count: Int
+  id: Int
+  likes_count: Int
+  name: String
+  object_type: String
+  privacy_setting_id: Int
+  slug: String
+  updated_at: timestamptz
+  url: String
+  user_id: Int
+}
+
+type lists_min_fields {
+  books_count: Int
+  created_at: timestamp
+  default_view: String
+  description: String
+  followers_count: Int
+  id: Int
+  likes_count: Int
+  name: String
+  object_type: String
+  privacy_setting_id: Int
+  slug: String
+  updated_at: timestamptz
+  url: String
+  user_id: Int
+}
+
+type lists_stddev_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_stddev_pop_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_stddev_samp_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_sum_fields {
+  books_count: Int
+  followers_count: Int
+  id: Int
+  likes_count: Int
+  privacy_setting_id: Int
+  user_id: Int
+}
+
+type lists_var_pop_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_var_samp_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type lists_variance_fields {
+  books_count: Float
+  followers_count: Float
+  id: Float
+  likes_count: Float
+  privacy_setting_id: Float
+  user_id: Float
+}
+
+type mutation_root {
+  book_mapping_normalize: BookMappingIdType
+  book_normalize: BookIdType
+  collection_import_result_reimport: CollectionImportResultIdType
+  collection_import_retry: CollectionImportIdType
+  delete_activities: activities_mutation_response
+  delete_activities_by_pk: activities
+  delete_book_mapping: BookMappingIdType
+  delete_followed_list: DeleteListType
+  delete_followed_prompt: DeleteFollowedPromptType
+  delete_followed_prompts: followed_prompts_mutation_response
+  delete_followed_prompts_by_pk: followed_prompts
+  delete_followed_user: FollowedUserType
+  delete_followed_users: followed_users_mutation_response
+  delete_followed_users_by_pk: followed_users
+  delete_goals: goals_mutation_response
+  delete_goals_by_pk: goals
+  delete_like: LikeDeleteType
+  delete_list: ListDeleteType
+  delete_list_book: ListBookDeleteType
+  delete_prompt_answer: PromptAnswerIdType
+  delete_prompts: prompts_mutation_response
+  delete_prompts_by_pk: prompts
+  delete_reading_journal: DeleteReadingJournalOutput
+  delete_reading_journals_for_book: DeleteReadingJournalsOutput
+  delete_user_blocks: user_blocks_mutation_response
+  delete_user_blocks_by_pk: user_blocks
+  delete_user_book: UserBookDeleteType
+  delete_user_book_read: UserBookReadIdType
+  edition_normalize: EditionIdType
+  edition_owned: ListBookIdType
+  email_user_delete_confirmation: SuccessType
+  insert_author: AuthorIdType
+  insert_block: InsertBlockOutput
+  insert_book: OptionalEditionIdType
+  insert_book_mapping: BookMappingIdType
+  insert_character: CharacterIdType
+  insert_collection_import: CollectionImportIdType
+  insert_edition: EditionIdType
+  insert_followed_prompts: followed_prompts_mutation_response
+  insert_followed_prompts_one: followed_prompts
+  insert_followed_user: FollowedUserType
+  insert_goal: GoalIdType
+  insert_image: ImageIdType
+  insert_list: ListIdType
+  insert_list_book: ListBookIdType
+  insert_notification_settings: notification_settings_mutation_response
+  insert_notification_settings_one: notification_settings
+  insert_prompt: PromptIdType
+  insert_prompt_answer: PromptAnswerIdType
+  insert_publisher: PublisherIdType
+  insert_reading_journal: ReadingJournalOutput
+  insert_report: ReportOutput
+  insert_serie: SeriesIdType
+  insert_user: UserIdType
+  insert_user_blocks: user_blocks_mutation_response
+  insert_user_blocks_one: user_blocks
+  insert_user_book: UserBookIdType
+  insert_user_book_read: UserBookReadIdType
+  insert_user_flags: user_flags_mutation_response
+  insert_user_flags_one: user_flags
+  receipt_validate: ValidateReceiptType
+  update_author: AuthorIdType
+  update_book: BookIdType
+  update_character: CharacterIdType
+  update_collection_import_results: collection_import_results_mutation_response
+  update_collection_import_results_by_pk: collection_import_results
+  update_collection_import_results_many: [collection_import_results_mutation_response]
+  update_edition: EditionIdType
+  update_followed_prompts: followed_prompts_mutation_response
+  update_followed_prompts_by_pk: followed_prompts
+  update_followed_prompts_many: [followed_prompts_mutation_response]
+  update_goal: GoalIdType
+  update_goal_progress: GoalIdType
+  update_list: ListIdType
+  update_list_books: list_books_mutation_response
+  update_list_books_by_pk: list_books
+  update_list_books_many: [list_books_mutation_response]
+  update_newsletter: NewsletterStatusType
+  update_notification_deliveries: notification_deliveries_mutation_response
+  update_notification_deliveries_by_pk: notification_deliveries
+  update_notification_deliveries_many: [notification_deliveries_mutation_response]
+  update_notification_settings: notification_settings_mutation_response
+  update_notification_settings_by_pk: notification_settings
+  update_notification_settings_many: [notification_settings_mutation_response]
+  update_prompt: PromptIdType
+  update_prompt_answers: prompt_answers_mutation_response
+  update_prompt_answers_by_pk: prompt_answers
+  update_prompt_answers_many: [prompt_answers_mutation_response]
+  update_publisher: PublisherIdType
+  update_reading_journal: ReadingJournalOutput
+  update_serie: SeriesIdType
+  update_user: UserIdType
+  update_user_book: UserBookIdType
+  update_user_book_read: UserBookReadIdType
+  update_user_privacy_setting: UserIdType
+  upsert_book: NewBookIdType
+  upsert_followed_list: FollowedListType
+  upsert_followed_prompt: FollowedPromptType
+  upsert_like: LikeType
+  upsert_tags: TagsType
+  upsert_user_book_reads: UserBooksReadUpsertType
+  user_login: UserIdType
+}
+
+type notification_channels {
+  channel: String!
+  id: bigint!
+}
+
+type notification_deliveries {
+  channel: notification_channels
+  channel_id: Int!
+  id: bigint!
+  notification: notifications
+  notification_id: Int!
+  read: Boolean!
+  read_at: timestamp
+  sent_at: timestamp
+  user: users
+  user_id: Int!
+}
+
+type notification_deliveries_aggregate {
+  aggregate: notification_deliveries_aggregate_fields
+  nodes: [notification_deliveries!]!
+}
+
+type notification_deliveries_aggregate_fields {
+  avg: notification_deliveries_avg_fields
+  count: Int!
+  max: notification_deliveries_max_fields
+  min: notification_deliveries_min_fields
+  stddev: notification_deliveries_stddev_fields
+  stddev_pop: notification_deliveries_stddev_pop_fields
+  stddev_samp: notification_deliveries_stddev_samp_fields
+  sum: notification_deliveries_sum_fields
+  var_pop: notification_deliveries_var_pop_fields
+  var_samp: notification_deliveries_var_samp_fields
+  variance: notification_deliveries_variance_fields
+}
+
+type notification_deliveries_avg_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_max_fields {
+  channel_id: Int
+  id: bigint
+  notification_id: Int
+  read_at: timestamp
+  sent_at: timestamp
+  user_id: Int
+}
+
+type notification_deliveries_min_fields {
+  channel_id: Int
+  id: bigint
+  notification_id: Int
+  read_at: timestamp
+  sent_at: timestamp
+  user_id: Int
+}
+
+type notification_deliveries_mutation_response {
+  affected_rows: Int!
+  returning: [notification_deliveries!]!
+}
+
+type notification_deliveries_stddev_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_stddev_pop_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_stddev_samp_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_sum_fields {
+  channel_id: Int
+  id: bigint
+  notification_id: Int
+  user_id: Int
+}
+
+type notification_deliveries_var_pop_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_var_samp_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_deliveries_variance_fields {
+  channel_id: Float
+  id: Float
+  notification_id: Float
+  user_id: Float
+}
+
+type notification_settings {
+  channel_ids: json!
+  id: bigint!
+  notification_type_id: Int!
+  user: users
+  user_id: Int!
+}
+
+type notification_settings_mutation_response {
+  affected_rows: Int!
+  returning: [notification_settings!]!
+}
+
+type notification_types {
+  active: Boolean
+  default_channel_ids: json!
+  default_priority: Int
+  description: String
+  id: bigint!
+  name: String!
+  notification_settings: [notification_settings!]!
+  uid: String!
+}
+
+type notifications {
+  created_at: timestamptz!
+  description: String!
+  id: Int!
+  link: String
+  link_text: String
+  notification_deliveries: [notification_deliveries!]!
+  notification_deliveries_aggregate: notification_deliveries_aggregate!
+  notification_type_id: Int!
+  notifierUser: users
+  notifier_user_id: Int!
+  priority: Int
+  title: String!
+  uid: String!
+}
+
+type platforms {
+  book_mappings: [book_mappings!]!
+  id: Int!
+  name: String!
+  url: String
+}
+
+type privacy_settings {
+  activities: [activities!]!
+  id: Int!
+  lists: [lists!]!
+  lists_aggregate: lists_aggregate!
+  prompts: [prompts!]!
+  setting: String!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  users: [users!]!
+  users_by_activity: [users!]!
+}
+
+type prompt_answers {
+  book: books!
+  book_id: Int!
+  created_at: timestamptz
+  description: String
+  id: Int!
+  merged_at: timestamp
+  original_book_id: Int
+  prompt: prompts!
+  prompt_book: prompt_books_summary
+  prompt_id: Int!
+  user: users!
+  user_id: Int!
+}
+
+type prompt_answers_aggregate {
+  aggregate: prompt_answers_aggregate_fields
+  nodes: [prompt_answers!]!
+}
+
+type prompt_answers_aggregate_fields {
+  avg: prompt_answers_avg_fields
+  count: Int!
+  max: prompt_answers_max_fields
+  min: prompt_answers_min_fields
+  stddev: prompt_answers_stddev_fields
+  stddev_pop: prompt_answers_stddev_pop_fields
+  stddev_samp: prompt_answers_stddev_samp_fields
+  sum: prompt_answers_sum_fields
+  var_pop: prompt_answers_var_pop_fields
+  var_samp: prompt_answers_var_samp_fields
+  variance: prompt_answers_variance_fields
+}
+
+type prompt_answers_avg_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_max_fields {
+  book_id: Int
+  created_at: timestamptz
+  description: String
+  id: Int
+  merged_at: timestamp
+  original_book_id: Int
+  prompt_id: Int
+  user_id: Int
+}
+
+type prompt_answers_min_fields {
+  book_id: Int
+  created_at: timestamptz
+  description: String
+  id: Int
+  merged_at: timestamp
+  original_book_id: Int
+  prompt_id: Int
+  user_id: Int
+}
+
+type prompt_answers_mutation_response {
+  affected_rows: Int!
+  returning: [prompt_answers!]!
+}
+
+type prompt_answers_stddev_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_stddev_pop_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_stddev_samp_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_sum_fields {
+  book_id: Int
+  id: Int
+  original_book_id: Int
+  prompt_id: Int
+  user_id: Int
+}
+
+type prompt_answers_var_pop_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_var_samp_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_answers_variance_fields {
+  book_id: Float
+  id: Float
+  original_book_id: Float
+  prompt_id: Float
+  user_id: Float
+}
+
+type prompt_books_summary {
+  answers_count: bigint
+  book: books
+  book_id: Int
+  prompt: prompts
+  prompt_id: Int
+}
+
+type prompts {
+  answers_count: Int!
+  books_count: Int!
+  created_at: timestamptz
+  description: String!
+  featured: Boolean!
+  followed_prompts: [followed_prompts!]!
+  followers: [followed_users!]!
+  id: Int!
+  privacy_setting: privacy_settings!
+  privacy_setting_id: Int!
+  prompt_answers: [prompt_answers!]!
+  prompt_answers_aggregate: prompt_answers_aggregate!
+  prompt_books: [prompt_books_summary!]!
+  question: String!
+  slug: String!
+  user: users!
+  user_id: Int!
+  users_count: Int!
+}
+
+type prompts_mutation_response {
+  affected_rows: Int!
+  returning: [prompts!]!
+}
+
+type publishers {
+  canonical_id: Int
+  created_at: timestamp!
+  editions: [editions!]!
+  editions_count: Int!
+  id: bigint!
+  locked: Boolean!
+  name: String
+  parent_id: Int
+  parent_publisher: publishers
+  slug: String!
+  state: String!
+  updated_at: timestamp!
+  user_id: Int
+}
+
+type query_root {
+  activities: [activities!]!
+  activities_by_pk: activities
+  activity_feed: [activities!]!
+  activity_foryou_feed: [activities!]!
+  authors: [authors!]!
+  authors_by_pk: authors
+  book_categories: [book_categories!]!
+  book_categories_by_pk: book_categories
+  book_characters: [book_characters!]!
+  book_characters_by_pk: book_characters
+  book_collections: [book_collections!]!
+  book_collections_by_pk: book_collections
+  book_mappings: [book_mappings!]!
+  book_mappings_by_pk: book_mappings
+  book_series: [book_series!]!
+  book_series_aggregate: book_series_aggregate!
+  book_series_by_pk: book_series
+  book_statuses: [book_statuses!]!
+  book_statuses_by_pk: book_statuses
+  bookles: [bookles!]!
+  bookles_by_pk: bookles
+  books: [books!]!
+  books_aggregate: books_aggregate!
+  books_by_pk: books
+  books_trending: TrendingBookType
+  characters: [characters!]!
+  characters_by_pk: characters
+  collection_import_results: [collection_import_results!]!
+  collection_import_results_by_pk: collection_import_results
+  collection_imports: [collection_imports!]!
+  collection_imports_by_pk: collection_imports
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  contributions_by_pk: contributions
+  countries: [countries!]!
+  countries_by_pk: countries
+  editions: [editions!]!
+  editions_by_pk: editions
+  flag_statuses: [flag_statuses!]!
+  flag_statuses_by_pk: flag_statuses
+  followed_lists: [followed_lists!]!
+  followed_lists_by_pk: followed_lists
+  followed_prompts: [followed_prompts!]!
+  followed_prompts_by_pk: followed_prompts
+  followed_user_books: [followed_user_books!]!
+  followed_user_books_aggregate: followed_user_books_aggregate!
+  followed_users: [followed_users!]!
+  followed_users_by_pk: followed_users
+  following_user_books: [following_user_books!]!
+  following_user_books_aggregate: following_user_books_aggregate!
+  goals: [goals!]!
+  goals_by_pk: goals
+  images: [images!]!
+  images_by_pk: images
+  languages: [languages!]!
+  languages_by_pk: languages
+  likes: [likes!]!
+  likes_by_pk: likes
+  list_books: [list_books!]!
+  list_books_aggregate: list_books_aggregate!
+  list_books_by_pk: list_books
+  lists: [lists!]!
+  lists_aggregate: lists_aggregate!
+  lists_by_pk: lists
+  me: [users!]!
+  newsletter: NewsletterStatusType
+  notification_channels: [notification_channels!]!
+  notification_channels_by_pk: notification_channels
+  notification_deliveries: [notification_deliveries!]!
+  notification_deliveries_aggregate: notification_deliveries_aggregate!
+  notification_deliveries_by_pk: notification_deliveries
+  notification_settings: [notification_settings!]!
+  notification_settings_by_pk: notification_settings
+  notification_types: [notification_types!]!
+  notification_types_by_pk: notification_types
+  notifications: [notifications!]!
+  notifications_by_pk: notifications
+  platforms: [platforms!]!
+  platforms_by_pk: platforms
+  privacy_settings: [privacy_settings!]!
+  privacy_settings_by_pk: privacy_settings
+  prompt_answers: [prompt_answers!]!
+  prompt_answers_aggregate: prompt_answers_aggregate!
+  prompt_answers_by_pk: prompt_answers
+  prompt_books_summary: [prompt_books_summary!]!
+  prompts: [prompts!]!
+  prompts_by_pk: prompts
+  publishers: [publishers!]!
+  publishers_by_pk: publishers
+  reading_formats: [reading_formats!]!
+  reading_formats_by_pk: reading_formats
+  reading_journals: [reading_journals!]!
+  reading_journals_by_pk: reading_journals
+  reading_journals_summary: [reading_journals_summary!]!
+  recommendations: [recommendations!]!
+  recommendations_by_pk: recommendations
+  referrals_for_user: [ReferralType]
+  search: SearchOutput
+  series: [series!]!
+  series_by_pk: series
+  subscriptions: SubscriptionsType
+  tag_categories: [tag_categories!]!
+  tag_categories_by_pk: tag_categories
+  taggable_counts: [taggable_counts!]!
+  taggable_counts_by_pk: taggable_counts
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+  taggings_by_pk: taggings
+  tags: [tags!]!
+  tags_aggregate: tags_aggregate!
+  tags_by_pk: tags
+  user_blocks: [user_blocks!]!
+  user_blocks_by_pk: user_blocks
+  user_book_reads: [user_book_reads!]!
+  user_book_reads_aggregate: user_book_reads_aggregate!
+  user_book_reads_by_pk: user_book_reads
+  user_book_statuses: [user_book_statuses!]!
+  user_book_statuses_aggregate: user_book_statuses_aggregate!
+  user_book_statuses_by_pk: user_book_statuses
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  user_books_by_pk: user_books
+  user_flags: [user_flags!]!
+  user_flags_by_pk: user_flags
+  user_referrals: [user_referrals!]!
+  user_referrals_by_pk: user_referrals
+  user_statuses: [user_statuses!]!
+  user_statuses_by_pk: user_statuses
+  users: [users!]!
+  users_aggregate_by_created_at_date: [users_aggregate_by_created_at_date!]!
+  users_by_pk: users
+}
+
+type reading_formats {
+  format: String!
+  id: Int!
+}
+
+type reading_journals {
+  book: books
+  book_id: Int
+  created_at: timestamp!
+  edition: editions
+  edition_id: Int
+  entry: String
+  event: String
+  followers: [followed_users!]!
+  id: bigint!
+  likes: [likes!]!
+  likes_count: Int!
+  metadata: jsonb!
+  object_type: String!
+  privacy_setting_id: Int!
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+  updated_at: timestamp!
+  user: users
+  user_id: Int
+}
+
+type reading_journals_summary {
+  book: books
+  book_id: Int
+  followers: [followed_users!]!
+  journals_count: bigint
+  last_updated_at: timestamp
+  reading_journals: [reading_journals!]!
+  user: users
+  user_id: Int
+}
+
+type recommendations {
+  context: String
+  created_at: timestamp!
+  id: bigint!
+  item_book: books
+  item_id: bigint
+  item_type: String
+  item_user: users
+  score: float8
+  subject_id: bigint
+  subject_type: String
+  subject_user: users
+  updated_at: timestamp!
+}
+
+type series {
+  author: authors
+  author_id: Int
+  book_series: [book_series!]!
+  book_series_aggregate: book_series_aggregate!
+  books_count: Int!
+  canonical: series
+  canonical_id: Int
+  creator: users
+  description: String
+  id: Int!
+  identifiers: jsonb!
+  is_completed: Boolean
+  locked: Boolean!
+  name: String!
+  primary_books_count: Int
+  slug: String!
+  state: String!
+  user_id: Int
+}
+
+type subscription_root {
+  activities: [activities!]!
+  activities_by_pk: activities
+  activities_stream: [activities!]!
+  activity_feed: [activities!]!
+  activity_foryou_feed: [activities!]!
+  authors: [authors!]!
+  authors_by_pk: authors
+  authors_stream: [authors!]!
+  book_categories: [book_categories!]!
+  book_categories_by_pk: book_categories
+  book_categories_stream: [book_categories!]!
+  book_characters: [book_characters!]!
+  book_characters_by_pk: book_characters
+  book_characters_stream: [book_characters!]!
+  book_collections: [book_collections!]!
+  book_collections_by_pk: book_collections
+  book_collections_stream: [book_collections!]!
+  book_mappings: [book_mappings!]!
+  book_mappings_by_pk: book_mappings
+  book_mappings_stream: [book_mappings!]!
+  book_series: [book_series!]!
+  book_series_aggregate: book_series_aggregate!
+  book_series_by_pk: book_series
+  book_series_stream: [book_series!]!
+  book_statuses: [book_statuses!]!
+  book_statuses_by_pk: book_statuses
+  book_statuses_stream: [book_statuses!]!
+  bookles: [bookles!]!
+  bookles_by_pk: bookles
+  bookles_stream: [bookles!]!
+  books: [books!]!
+  books_aggregate: books_aggregate!
+  books_by_pk: books
+  books_stream: [books!]!
+  characters: [characters!]!
+  characters_by_pk: characters
+  characters_stream: [characters!]!
+  collection_import_results: [collection_import_results!]!
+  collection_import_results_by_pk: collection_import_results
+  collection_import_results_stream: [collection_import_results!]!
+  collection_imports: [collection_imports!]!
+  collection_imports_by_pk: collection_imports
+  collection_imports_stream: [collection_imports!]!
+  contributions: [contributions!]!
+  contributions_aggregate: contributions_aggregate!
+  contributions_by_pk: contributions
+  contributions_stream: [contributions!]!
+  countries: [countries!]!
+  countries_by_pk: countries
+  countries_stream: [countries!]!
+  editions: [editions!]!
+  editions_by_pk: editions
+  editions_stream: [editions!]!
+  flag_statuses: [flag_statuses!]!
+  flag_statuses_by_pk: flag_statuses
+  flag_statuses_stream: [flag_statuses!]!
+  followed_lists: [followed_lists!]!
+  followed_lists_by_pk: followed_lists
+  followed_lists_stream: [followed_lists!]!
+  followed_prompts: [followed_prompts!]!
+  followed_prompts_by_pk: followed_prompts
+  followed_prompts_stream: [followed_prompts!]!
+  followed_user_books: [followed_user_books!]!
+  followed_user_books_aggregate: followed_user_books_aggregate!
+  followed_user_books_stream: [followed_user_books!]!
+  followed_users: [followed_users!]!
+  followed_users_by_pk: followed_users
+  followed_users_stream: [followed_users!]!
+  following_user_books: [following_user_books!]!
+  following_user_books_aggregate: following_user_books_aggregate!
+  following_user_books_stream: [following_user_books!]!
+  goals: [goals!]!
+  goals_by_pk: goals
+  goals_stream: [goals!]!
+  images: [images!]!
+  images_by_pk: images
+  images_stream: [images!]!
+  languages: [languages!]!
+  languages_by_pk: languages
+  languages_stream: [languages!]!
+  likes: [likes!]!
+  likes_by_pk: likes
+  likes_stream: [likes!]!
+  list_books: [list_books!]!
+  list_books_aggregate: list_books_aggregate!
+  list_books_by_pk: list_books
+  list_books_stream: [list_books!]!
+  lists: [lists!]!
+  lists_aggregate: lists_aggregate!
+  lists_by_pk: lists
+  lists_stream: [lists!]!
+  me: [users!]!
+  notification_channels: [notification_channels!]!
+  notification_channels_by_pk: notification_channels
+  notification_channels_stream: [notification_channels!]!
+  notification_deliveries: [notification_deliveries!]!
+  notification_deliveries_aggregate: notification_deliveries_aggregate!
+  notification_deliveries_by_pk: notification_deliveries
+  notification_deliveries_stream: [notification_deliveries!]!
+  notification_settings: [notification_settings!]!
+  notification_settings_by_pk: notification_settings
+  notification_settings_stream: [notification_settings!]!
+  notification_types: [notification_types!]!
+  notification_types_by_pk: notification_types
+  notification_types_stream: [notification_types!]!
+  notifications: [notifications!]!
+  notifications_by_pk: notifications
+  notifications_stream: [notifications!]!
+  platforms: [platforms!]!
+  platforms_by_pk: platforms
+  platforms_stream: [platforms!]!
+  privacy_settings: [privacy_settings!]!
+  privacy_settings_by_pk: privacy_settings
+  privacy_settings_stream: [privacy_settings!]!
+  prompt_answers: [prompt_answers!]!
+  prompt_answers_aggregate: prompt_answers_aggregate!
+  prompt_answers_by_pk: prompt_answers
+  prompt_answers_stream: [prompt_answers!]!
+  prompt_books_summary: [prompt_books_summary!]!
+  prompt_books_summary_stream: [prompt_books_summary!]!
+  prompts: [prompts!]!
+  prompts_by_pk: prompts
+  prompts_stream: [prompts!]!
+  publishers: [publishers!]!
+  publishers_by_pk: publishers
+  publishers_stream: [publishers!]!
+  reading_formats: [reading_formats!]!
+  reading_formats_by_pk: reading_formats
+  reading_formats_stream: [reading_formats!]!
+  reading_journals: [reading_journals!]!
+  reading_journals_by_pk: reading_journals
+  reading_journals_stream: [reading_journals!]!
+  reading_journals_summary: [reading_journals_summary!]!
+  reading_journals_summary_stream: [reading_journals_summary!]!
+  recommendations: [recommendations!]!
+  recommendations_by_pk: recommendations
+  recommendations_stream: [recommendations!]!
+  series: [series!]!
+  series_by_pk: series
+  series_stream: [series!]!
+  tag_categories: [tag_categories!]!
+  tag_categories_by_pk: tag_categories
+  tag_categories_stream: [tag_categories!]!
+  taggable_counts: [taggable_counts!]!
+  taggable_counts_by_pk: taggable_counts
+  taggable_counts_stream: [taggable_counts!]!
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+  taggings_by_pk: taggings
+  taggings_stream: [taggings!]!
+  tags: [tags!]!
+  tags_aggregate: tags_aggregate!
+  tags_by_pk: tags
+  tags_stream: [tags!]!
+  user_blocks: [user_blocks!]!
+  user_blocks_by_pk: user_blocks
+  user_blocks_stream: [user_blocks!]!
+  user_book_reads: [user_book_reads!]!
+  user_book_reads_aggregate: user_book_reads_aggregate!
+  user_book_reads_by_pk: user_book_reads
+  user_book_reads_stream: [user_book_reads!]!
+  user_book_statuses: [user_book_statuses!]!
+  user_book_statuses_aggregate: user_book_statuses_aggregate!
+  user_book_statuses_by_pk: user_book_statuses
+  user_book_statuses_stream: [user_book_statuses!]!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  user_books_by_pk: user_books
+  user_books_stream: [user_books!]!
+  user_flags: [user_flags!]!
+  user_flags_by_pk: user_flags
+  user_flags_stream: [user_flags!]!
+  user_referrals: [user_referrals!]!
+  user_referrals_by_pk: user_referrals
+  user_referrals_stream: [user_referrals!]!
+  user_statuses: [user_statuses!]!
+  user_statuses_by_pk: user_statuses
+  user_statuses_stream: [user_statuses!]!
+  users: [users!]!
+  users_aggregate_by_created_at_date: [users_aggregate_by_created_at_date!]!
+  users_aggregate_by_created_at_date_stream: [users_aggregate_by_created_at_date!]!
+  users_by_pk: users
+  users_stream: [users!]!
+}
+
+type tag_categories {
+  category: String
+  created_at: timestamp
+  id: bigint!
+  slug: String
+  tags: [tags!]!
+  tags_aggregate: tags_aggregate!
+}
+
+type taggable_counts {
+  book: books
+  count: Int!
+  created_at: timestamp!
+  hardcover_tagged: Boolean!
+  id: bigint!
+  spoiler_ratio: float8
+  tag: tags
+  tag_id: Int!
+  taggable_id: bigint!
+  taggable_type: String!
+  updated_at: timestamp!
+}
+
+type taggings {
+  book: books
+  created_at: timestamp
+  id: bigint!
+  spoiler: Boolean!
+  tag: tags!
+  tag_id: Int!
+  taggable_id: bigint
+  taggable_type: String
+  user: users!
+  user_id: Int!
+}
+
+type taggings_aggregate {
+  aggregate: taggings_aggregate_fields
+  nodes: [taggings!]!
+}
+
+type taggings_aggregate_fields {
+  avg: taggings_avg_fields
+  count: Int!
+  max: taggings_max_fields
+  min: taggings_min_fields
+  stddev: taggings_stddev_fields
+  stddev_pop: taggings_stddev_pop_fields
+  stddev_samp: taggings_stddev_samp_fields
+  sum: taggings_sum_fields
+  var_pop: taggings_var_pop_fields
+  var_samp: taggings_var_samp_fields
+  variance: taggings_variance_fields
+}
+
+type taggings_avg_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_max_fields {
+  created_at: timestamp
+  id: bigint
+  tag_id: Int
+  taggable_id: bigint
+  taggable_type: String
+  user_id: Int
+}
+
+type taggings_min_fields {
+  created_at: timestamp
+  id: bigint
+  tag_id: Int
+  taggable_id: bigint
+  taggable_type: String
+  user_id: Int
+}
+
+type taggings_stddev_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_stddev_pop_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_stddev_samp_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_sum_fields {
+  id: bigint
+  tag_id: Int
+  taggable_id: bigint
+  user_id: Int
+}
+
+type taggings_var_pop_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_var_samp_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type taggings_variance_fields {
+  id: Float
+  tag_id: Float
+  taggable_id: Float
+  user_id: Float
+}
+
+type tags {
+  count: Int!
+  id: bigint!
+  slug: String!
+  tag: String!
+  tag_category: tag_categories!
+  tag_category_id: Int!
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+}
+
+type tags_aggregate {
+  aggregate: tags_aggregate_fields
+  nodes: [tags!]!
+}
+
+type tags_aggregate_fields {
+  avg: tags_avg_fields
+  count: Int!
+  max: tags_max_fields
+  min: tags_min_fields
+  stddev: tags_stddev_fields
+  stddev_pop: tags_stddev_pop_fields
+  stddev_samp: tags_stddev_samp_fields
+  sum: tags_sum_fields
+  var_pop: tags_var_pop_fields
+  var_samp: tags_var_samp_fields
+  variance: tags_variance_fields
+}
+
+type tags_avg_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_max_fields {
+  count: Int
+  id: bigint
+  slug: String
+  tag: String
+  tag_category_id: Int
+}
+
+type tags_min_fields {
+  count: Int
+  id: bigint
+  slug: String
+  tag: String
+  tag_category_id: Int
+}
+
+type tags_stddev_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_stddev_pop_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_stddev_samp_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_sum_fields {
+  count: Int
+  id: bigint
+  tag_category_id: Int
+}
+
+type tags_var_pop_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_var_samp_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type tags_variance_fields {
+  count: Float
+  id: Float
+  tag_category_id: Float
+}
+
+type user_blocks {
+  blocked_user: users
+  blocked_user_id: Int
+  created_at: timestamp!
+  id: bigint!
+  user: users
+  user_id: Int
+}
+
+type user_blocks_mutation_response {
+  affected_rows: Int!
+  returning: [user_blocks!]!
+}
+
+type user_book_reads {
+  edition: editions
+  edition_id: Int
+  finished_at: date
+  id: Int!
+  paused_at: date
+  progress: float8
+  progress_pages: Int
+  progress_seconds: Int
+  started_at: date
+  user_book: user_books
+  user_book_id: Int!
+}
+
+type user_book_reads_aggregate {
+  aggregate: user_book_reads_aggregate_fields
+  nodes: [user_book_reads!]!
+}
+
+type user_book_reads_aggregate_fields {
+  avg: user_book_reads_avg_fields
+  count: Int!
+  max: user_book_reads_max_fields
+  min: user_book_reads_min_fields
+  stddev: user_book_reads_stddev_fields
+  stddev_pop: user_book_reads_stddev_pop_fields
+  stddev_samp: user_book_reads_stddev_samp_fields
+  sum: user_book_reads_sum_fields
+  var_pop: user_book_reads_var_pop_fields
+  var_samp: user_book_reads_var_samp_fields
+  variance: user_book_reads_variance_fields
+}
+
+type user_book_reads_avg_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_max_fields {
+  edition_id: Int
+  finished_at: date
+  id: Int
+  paused_at: date
+  progress: float8
+  progress_pages: Int
+  progress_seconds: Int
+  started_at: date
+  user_book_id: Int
+}
+
+type user_book_reads_min_fields {
+  edition_id: Int
+  finished_at: date
+  id: Int
+  paused_at: date
+  progress: float8
+  progress_pages: Int
+  progress_seconds: Int
+  started_at: date
+  user_book_id: Int
+}
+
+type user_book_reads_stddev_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_stddev_pop_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_stddev_samp_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_sum_fields {
+  edition_id: Int
+  id: Int
+  progress: float8
+  progress_pages: Int
+  progress_seconds: Int
+  user_book_id: Int
+}
+
+type user_book_reads_var_pop_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_var_samp_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_reads_variance_fields {
+  edition_id: Float
+  id: Float
+  progress: Float
+  progress_pages: Float
+  progress_seconds: Float
+  user_book_id: Float
+}
+
+type user_book_statuses {
+  description: String
+  id: Int!
+  slug: String
+  status: String!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+}
+
+type user_book_statuses_aggregate {
+  aggregate: user_book_statuses_aggregate_fields
+  nodes: [user_book_statuses!]!
+}
+
+type user_book_statuses_aggregate_fields {
+  avg: user_book_statuses_avg_fields
+  count: Int!
+  max: user_book_statuses_max_fields
+  min: user_book_statuses_min_fields
+  stddev: user_book_statuses_stddev_fields
+  stddev_pop: user_book_statuses_stddev_pop_fields
+  stddev_samp: user_book_statuses_stddev_samp_fields
+  sum: user_book_statuses_sum_fields
+  var_pop: user_book_statuses_var_pop_fields
+  var_samp: user_book_statuses_var_samp_fields
+  variance: user_book_statuses_variance_fields
+}
+
+type user_book_statuses_avg_fields {
+  id: Float
+}
+
+type user_book_statuses_max_fields {
+  description: String
+  id: Int
+  slug: String
+  status: String
+}
+
+type user_book_statuses_min_fields {
+  description: String
+  id: Int
+  slug: String
+  status: String
+}
+
+type user_book_statuses_stddev_fields {
+  id: Float
+}
+
+type user_book_statuses_stddev_pop_fields {
+  id: Float
+}
+
+type user_book_statuses_stddev_samp_fields {
+  id: Float
+}
+
+type user_book_statuses_sum_fields {
+  id: Int
+}
+
+type user_book_statuses_var_pop_fields {
+  id: Float
+}
+
+type user_book_statuses_var_samp_fields {
+  id: Float
+}
+
+type user_book_statuses_variance_fields {
+  id: Float
+}
+
+type user_books {
+  book: books!
+  book_id: Int!
+  cached_match_score: float8
+  created_at: timestamptz!
+  date_added: date!
+  edition: editions
+  edition_id: Int
+  first_read_date: date
+  first_started_reading_date: date
+  followers: [followed_users!]!
+  has_review: Boolean!
+  id: Int!
+  imported: Boolean
+  last_read_date: date
+  likes: [likes!]!
+  likes_count: Int!
+  media_url: String
+  merged_at: timestamp
+  object_type: String!
+  original_book_id: Int
+  original_edition_id: Int
+  owned: Boolean!
+  owned_copies: Int
+  privacy_setting: privacy_settings!
+  privacy_setting_id: Int!
+  private_notes: String
+  rating: numeric
+  read_count: Int!
+  reading_format: reading_formats
+  reading_format_id: Int!
+  reading_journal_summary: reading_journals_summary
+  reading_journals: [reading_journals!]!
+  recommended_by: String
+  recommended_for: String
+  referrer: users
+  referrer_user_id: Int
+  review: String
+  review_has_spoilers: Boolean!
+  review_html: String
+  review_length: Int!
+  review_migrated: Boolean
+  review_object: jsonb!
+  review_raw: String
+  review_slate: jsonb!
+  reviewed_at: timestamp
+  sponsored_review: Boolean!
+  starred: Boolean!
+  status_id: Int!
+  updated_at: timestamptz
+  url: String
+  user: users!
+  user_book_reads: [user_book_reads!]!
+  user_book_reads_aggregate: user_book_reads_aggregate!
+  user_book_status: user_book_statuses!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  user_id: Int!
+}
+
+type user_books_aggregate {
+  aggregate: user_books_aggregate_fields
+  nodes: [user_books!]!
+}
+
+type user_books_aggregate_fields {
+  avg: user_books_avg_fields
+  count: Int!
+  max: user_books_max_fields
+  min: user_books_min_fields
+  stddev: user_books_stddev_fields
+  stddev_pop: user_books_stddev_pop_fields
+  stddev_samp: user_books_stddev_samp_fields
+  sum: user_books_sum_fields
+  var_pop: user_books_var_pop_fields
+  var_samp: user_books_var_samp_fields
+  variance: user_books_variance_fields
+}
+
+type user_books_avg_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_max_fields {
+  book_id: Int
+  cached_match_score: float8
+  created_at: timestamptz
+  date_added: date
+  edition_id: Int
+  first_read_date: date
+  first_started_reading_date: date
+  id: Int
+  last_read_date: date
+  likes_count: Int
+  media_url: String
+  merged_at: timestamp
+  object_type: String
+  original_book_id: Int
+  original_edition_id: Int
+  owned_copies: Int
+  privacy_setting_id: Int
+  private_notes: String
+  rating: numeric
+  read_count: Int
+  reading_format_id: Int
+  recommended_by: String
+  recommended_for: String
+  referrer_user_id: Int
+  review: String
+  review_html: String
+  review_length: Int
+  review_raw: String
+  reviewed_at: timestamp
+  status_id: Int
+  updated_at: timestamptz
+  url: String
+  user_id: Int
+}
+
+type user_books_min_fields {
+  book_id: Int
+  cached_match_score: float8
+  created_at: timestamptz
+  date_added: date
+  edition_id: Int
+  first_read_date: date
+  first_started_reading_date: date
+  id: Int
+  last_read_date: date
+  likes_count: Int
+  media_url: String
+  merged_at: timestamp
+  object_type: String
+  original_book_id: Int
+  original_edition_id: Int
+  owned_copies: Int
+  privacy_setting_id: Int
+  private_notes: String
+  rating: numeric
+  read_count: Int
+  reading_format_id: Int
+  recommended_by: String
+  recommended_for: String
+  referrer_user_id: Int
+  review: String
+  review_html: String
+  review_length: Int
+  review_raw: String
+  reviewed_at: timestamp
+  status_id: Int
+  updated_at: timestamptz
+  url: String
+  user_id: Int
+}
+
+type user_books_stddev_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_stddev_pop_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_stddev_samp_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_sum_fields {
+  book_id: Int
+  cached_match_score: float8
+  edition_id: Int
+  id: Int
+  likes_count: Int
+  original_book_id: Int
+  original_edition_id: Int
+  owned_copies: Int
+  privacy_setting_id: Int
+  rating: numeric
+  read_count: Int
+  reading_format_id: Int
+  referrer_user_id: Int
+  review_length: Int
+  status_id: Int
+  user_id: Int
+}
+
+type user_books_var_pop_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_var_samp_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_books_variance_fields {
+  book_id: Float
+  cached_match_score: Float
+  edition_id: Float
+  id: Float
+  likes_count: Float
+  original_book_id: Float
+  original_edition_id: Float
+  owned_copies: Float
+  privacy_setting_id: Float
+  rating: Float
+  read_count: Float
+  reading_format_id: Float
+  referrer_user_id: Float
+  review_length: Float
+  status_id: Float
+  user_id: Float
+}
+
+type user_flags {
+  action_id: Int
+  action_type: String
+  category: String!
+  created_at: timestamptz
+  details: String!
+  flag_status: flag_statuses!
+  flag_status_id: Int!
+  id: Int!
+  reported_user_id: Int!
+  user_id: Int!
+  user_reported: users!
+  user_submitted: users!
+}
+
+type user_flags_mutation_response {
+  affected_rows: Int!
+  returning: [user_flags!]!
+}
+
+type user_referrals {
+  created_at: timestamp!
+  id: bigint!
+  referrer: users
+  referrer_id: Int
+  state: String
+  updated_at: timestamp!
+  user: users
+  user_id: Int
+}
+
+type user_statuses {
+  id: Int!
+  status: String!
+  users: [users!]!
+}
+
+type users {
+  access_level: Int
+  account_privacy_setting_id: Int!
+  activities: [activities!]!
+  activity_privacy_settings_id: Int!
+  admin: Boolean!
+  bio: String
+  birthdate: date
+  blocked_users: [user_blocks!]!
+  books_count: Int!
+  cached_cover: jsonb!
+  cached_genres: jsonb!
+  cached_image: jsonb!
+  collection_imports: [collection_imports!]!
+  confirmation_sent_at: timestamp
+  confirmed_at: timestamp
+  created_at: timestamptz!
+  current_sign_in_at: timestamp
+  email: String
+  email_verified: timestamptz
+  flair: String
+  followed_by_users: [followed_users!]!
+  followed_lists: [followed_lists!]!
+  followed_prompts: [followed_prompts!]!
+  followed_users: [followed_users!]!
+  followed_users_count: Int!
+  followers_count: Int!
+  goals: [goals!]!
+  id: Int!
+  image: images
+  image_id: Int
+  last_activity_at: timestamp
+  last_sign_in_at: timestamp
+  librarian_roles: jsonb!
+  link: String
+  lists: [lists!]!
+  lists_aggregate: lists_aggregate!
+  location: String
+  locked_at: timestamp
+  match_updated_at: timestamp
+  membership: String
+  membership_ends_at: timestamp
+  name: String
+  notification_deliveries: [notification_deliveries!]!
+  notification_deliveries_aggregate: notification_deliveries_aggregate!
+  object_type: String
+  onboarded: Boolean!
+  payment_system_id: Int
+  pro: Boolean!
+  prompt_answers: [prompt_answers!]!
+  prompt_answers_aggregate: prompt_answers_aggregate!
+  prompts: [prompts!]!
+  pronoun_personal: String!
+  pronoun_possessive: String!
+  recommendations: [recommendations!]!
+  recommended: [recommendations!]!
+  referrer_id: Int
+  referrer_url: String
+  referrered_users: [user_books!]!
+  referrered_users_aggregate: user_books_aggregate!
+  remember_created_at: timestamp
+  reported_user_flags: [user_flags!]!
+  reset_password_sent_at: timestamp
+  sign_in_count: Int
+  status_id: Int!
+  taggings: [taggings!]!
+  taggings_aggregate: taggings_aggregate!
+  unconfirmed_email: String
+  updated_at: timestamptz!
+  user_books: [user_books!]!
+  user_books_aggregate: user_books_aggregate!
+  user_flags: [user_flags!]!
+  username: citext
+}
+
+type users_aggregate_by_created_at_date {
+  count: bigint
+  created_at: date
+}
+
+enum activities_select_column {
+  book_id
+  created_at
+  data
+  event
+  id
+  likes_count
+  object_type
+  original_book_id
+  privacy_setting_id
+  uid
+  user_id
+}
+
+enum authors_select_column {
+  alias_id
+  alternate_names
+  bio
+  books_count
+  born_date
+  born_year
+  cached_image
+  canonical_id
+  death_date
+  death_year
+  gender_id
+  id
+  identifiers
+  image_id
+  is_bipoc
+  is_lgbtq
+  links
+  location
+  locked
+  name
+  name_personal
+  slug
+  state
+  title
+  user_id
+  users_count
+}
+
+enum book_categories_select_column {
+  id
+  name
+}
+
+enum book_characters_select_column {
+  book_id
+  character_id
+  id
+  only_mentioned
+  position
+  spoiler
+}
+
+enum book_collections_select_column {
+  book_id
+  child_book_id
+  id
+  position
+}
+
+enum book_mappings_select_column {
+  attempts
+  book_id
+  created_at
+  dto_external
+  edition_id
+  external_data_id
+  external_id
+  id
+  loaded
+  loaded_at
+  normalized_at
+  original_book_id
+  platform_id
+  state
+  updated_at
+  verified
+  verified_at
+}
+
+enum book_series_select_column {
+  book_id
+  created_at
+  details
+  featured
+  id
+  position
+  series_id
+  updated_at
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_avg_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_bool_and_arguments_columns {
+  featured
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_bool_or_arguments_columns {
+  featured
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_corr_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_covar_samp_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_max_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_min_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_stddev_samp_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_sum_arguments_columns {
+  position
+}
+
+enum book_series_select_column_book_series_aggregate_bool_exp_var_samp_arguments_columns {
+  position
+}
+
+enum book_statuses_select_column {
+  id
+  name
+}
+
+enum bookles_select_column {
+  book_id
+  created_at
+  date
+  id
+}
+
+enum books_select_column {
+  activities_count
+  alternative_titles
+  audio_seconds
+  book_category_id
+  book_status_id
+  cached_contributors
+  cached_featured_series
+  cached_header_image
+  cached_image
+  cached_tags
+  canonical_id
+  compilation
+  created_at
+  created_by_user_id
+  default_audio_edition_id
+  default_cover_edition_id
+  default_ebook_edition_id
+  default_physical_edition_id
+  description
+  dto
+  dto_combined
+  dto_external
+  editions_count
+  featured_book_series_id
+  header_image_id
+  headline
+  id
+  image_id
+  import_platform_id
+  journals_count
+  links
+  lists_count
+  literary_type_id
+  locked
+  pages
+  prompts_count
+  rating
+  ratings_count
+  ratings_distribution
+  release_date
+  release_year
+  reviews_count
+  slug
+  state
+  subtitle
+  title
+  updated_at
+  user_added
+  users_count
+  users_read_count
+}
+
+enum books_select_column_books_aggregate_bool_exp_bool_and_arguments_columns {
+  compilation
+  locked
+  user_added
+}
+
+enum books_select_column_books_aggregate_bool_exp_bool_or_arguments_columns {
+  compilation
+  locked
+  user_added
+}
+
+enum characters_select_column {
+  biography
+  books_count
+  cached_tags
+  canonical_books_count
+  canonical_id
+  created_at
+  gender_id
+  has_disability
+  id
+  image_id
+  is_lgbtq
+  is_poc
+  locked
+  name
+  object_type
+  openlibrary_url
+  slug
+  state
+  updated_at
+  user_id
+}
+
+enum collection_import_results_select_column {
+  author
+  book_found_method
+  book_id
+  collection_import_id
+  contents
+  external_id
+  id
+  report
+  state
+  title
+}
+
+enum collection_imports_select_column {
+  completed_at
+  contents_key
+  created_at
+  current_book
+  error_message
+  failure_count
+  id
+  override_date_read
+  override_ratings
+  override_shelves
+  platform_id
+  processed_count
+  reimport_count
+  started_at
+  state
+  success_count
+  tag_resolution
+  total_count
+  updated_at
+  user_id
+}
+
+enum contributions_select_column {
+  author_id
+  contributable_id
+  contributable_type
+  contribution
+  created_at
+  id
+  updated_at
+}
+
+enum countries_select_column {
+  code2
+  code3
+  created_at
+  id
+  intermediate_region
+  intermediate_region_code
+  iso_3166
+  name
+  phone_code
+  region
+  region_code
+  sub_region
+  sub_region_code
+  updated_at
+}
+
+enum cursor_ordering {
+  ASC
+  DESC
+}
+
+enum editions_select_column {
+  alternative_titles
+  asin
+  audio_seconds
+  book_id
+  cached_contributors
+  cached_image
+  cached_tags
+  compilation
+  country_id
+  created_at
+  created_by_user_id
+  dto
+  dto_combined
+  dto_external
+  edition_format
+  edition_information
+  id
+  image_id
+  isbn_10
+  isbn_13
+  language_id
+  lists_count
+  locked
+  normalized_at
+  object_type
+  original_book_id
+  pages
+  physical_format
+  physical_information
+  publisher_id
+  rating
+  reading_format_id
+  release_date
+  release_year
+  score
+  source
+  state
+  subtitle
+  title
+  updated_at
+  user_added
+  users_count
+  users_read_count
+}
+
+enum flag_statuses_select_column {
+  id
+  status
+}
+
+enum followed_lists_select_column {
+  created_at
+  id
+  list_id
+  user_id
+}
+
+enum followed_prompts_constraint {
+  followed_prompts_pkey
+  question_features_id_key
+  question_features_userId_questionId_key
+}
+
+enum followed_prompts_select_column {
+  created_at
+  id
+  order
+  prompt_id
+  user_id
+}
+
+enum followed_prompts_update_column {
+  order
+}
+
+enum followed_user_books_select_column {
+  book_id
+  follower_user_id
+  user_book_id
+  user_id
+}
+
+enum followed_users_select_column {
+  created_at
+  followed_user_id
+  id
+  user_id
+}
+
+enum following_user_books_select_column {
+  book_id
+  followed_user_id
+  user_book_id
+  user_id
+}
+
+enum goals_select_column {
+  archived
+  completed_at
+  conditions
+  description
+  end_date
+  goal
+  id
+  metric
+  privacy_setting_id
+  progress
+  start_date
+  state
+  user_id
+}
+
+enum images_select_column {
+  color
+  colors
+  height
+  id
+  imageable_id
+  imageable_type
+  ratio
+  url
+  width
+}
+
+enum languages_select_column {
+  code2
+  code3
+  id
+  language
+}
+
+enum likes_select_column {
+  created_at
+  id
+  likeable_id
+  likeable_type
+  user_id
+}
+
+enum list_books_select_column {
+  book_id
+  created_at
+  date_added
+  edition_id
+  id
+  imported
+  list_id
+  merged_at
+  original_book_id
+  original_edition_id
+  position
+  reason
+  updated_at
+}
+
+enum list_books_select_column_list_books_aggregate_bool_exp_bool_and_arguments_columns {
+  imported
+}
+
+enum list_books_select_column_list_books_aggregate_bool_exp_bool_or_arguments_columns {
+  imported
+}
+
+enum lists_select_column {
+  books_count
+  created_at
+  default_view
+  description
+  featured
+  featured_profile
+  followers_count
+  id
+  imported
+  likes_count
+  name
+  object_type
+  privacy_setting_id
+  public
+  ranked
+  slug
+  updated_at
+  url
+  user_id
+}
+
+enum lists_select_column_lists_aggregate_bool_exp_bool_and_arguments_columns {
+  featured
+  featured_profile
+  imported
+  public
+  ranked
+}
+
+enum lists_select_column_lists_aggregate_bool_exp_bool_or_arguments_columns {
+  featured
+  featured_profile
+  imported
+  public
+  ranked
+}
+
+enum notification_channels_select_column {
+  channel
+  id
+}
+
+enum notification_deliveries_select_column {
+  channel_id
+  id
+  notification_id
+  read
+  read_at
+  sent_at
+  user_id
+}
+
+enum notification_deliveries_select_column_notification_deliveries_aggregate_bool_exp_bool_and_arguments_columns {
+  read
+}
+
+enum notification_deliveries_select_column_notification_deliveries_aggregate_bool_exp_bool_or_arguments_columns {
+  read
+}
+
+enum notification_settings_constraint {
+  notification_settings_pkey
+}
+
+enum notification_settings_select_column {
+  channel_ids
+  id
+  notification_type_id
+  user_id
+}
+
+enum notification_settings_update_column {
+  channel_ids
+}
+
+enum notification_types_select_column {
+  active
+  default_channel_ids
+  default_priority
+  description
+  id
+  name
+  uid
+}
+
+enum notifications_select_column {
+  created_at
+  description
+  id
+  link
+  link_text
+  notification_type_id
+  notifier_user_id
+  priority
+  title
+  uid
+}
+
+enum order_by {
+  asc
+  asc_nulls_first
+  asc_nulls_last
+  desc
+  desc_nulls_first
+  desc_nulls_last
+}
+
+enum platforms_select_column {
+  id
+  name
+  url
+}
+
+enum privacy_settings_select_column {
+  id
+  setting
+}
+
+enum prompt_answers_select_column {
+  book_id
+  created_at
+  description
+  id
+  merged_at
+  original_book_id
+  prompt_id
+  user_id
+}
+
+enum prompt_books_summary_select_column {
+  answers_count
+  book_id
+  prompt_id
+}
+
+enum prompts_select_column {
+  answers_count
+  books_count
+  created_at
+  description
+  featured
+  id
+  privacy_setting_id
+  question
+  slug
+  user_id
+  users_count
+}
+
+enum publishers_select_column {
+  canonical_id
+  created_at
+  editions_count
+  id
+  locked
+  name
+  parent_id
+  slug
+  state
+  updated_at
+  user_id
+}
+
+enum reading_formats_select_column {
+  format
+  id
+}
+
+enum reading_journals_select_column {
+  book_id
+  created_at
+  edition_id
+  entry
+  event
+  id
+  likes_count
+  metadata
+  object_type
+  privacy_setting_id
+  updated_at
+  user_id
+}
+
+enum reading_journals_summary_select_column {
+  book_id
+  journals_count
+  last_updated_at
+  user_id
+}
+
+enum recommendations_select_column {
+  context
+  created_at
+  id
+  item_id
+  item_type
+  score
+  subject_id
+  subject_type
+  updated_at
+}
+
+enum series_select_column {
+  author_id
+  books_count
+  canonical_id
+  description
+  id
+  identifiers
+  is_completed
+  locked
+  name
+  primary_books_count
+  slug
+  state
+  user_id
+}
+
+enum tag_categories_select_column {
+  category
+  created_at
+  id
+  slug
+}
+
+enum taggable_counts_select_column {
+  count
+  created_at
+  hardcover_tagged
+  id
+  spoiler_ratio
+  tag_id
+  taggable_id
+  taggable_type
+  updated_at
+}
+
+enum taggings_select_column {
+  created_at
+  id
+  spoiler
+  tag_id
+  taggable_id
+  taggable_type
+  user_id
+}
+
+enum taggings_select_column_taggings_aggregate_bool_exp_bool_and_arguments_columns {
+  spoiler
+}
+
+enum taggings_select_column_taggings_aggregate_bool_exp_bool_or_arguments_columns {
+  spoiler
+}
+
+enum tags_select_column {
+  count
+  id
+  slug
+  tag
+  tag_category_id
+}
+
+enum user_blocks_constraint {
+  index_user_blocks_on_user_id_and_blocked_user_id
+  user_blocks_pkey
+}
+
+enum user_blocks_select_column {
+  blocked_user_id
+  created_at
+  id
+  user_id
+}
+
+enum user_blocks_update_column {
+  _PLACEHOLDER
+}
+
+enum user_book_reads_select_column {
+  edition_id
+  finished_at
+  id
+  paused_at
+  progress
+  progress_pages
+  progress_seconds
+  started_at
+  user_book_id
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_avg_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_corr_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_covar_samp_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_max_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_min_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_stddev_samp_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_sum_arguments_columns {
+  progress
+}
+
+enum user_book_reads_select_column_user_book_reads_aggregate_bool_exp_var_samp_arguments_columns {
+  progress
+}
+
+enum user_book_statuses_select_column {
+  description
+  id
+  slug
+  status
+}
+
+enum user_books_select_column {
+  book_id
+  cached_match_score
+  created_at
+  date_added
+  edition_id
+  first_read_date
+  first_started_reading_date
+  has_review
+  id
+  imported
+  last_read_date
+  likes_count
+  media_url
+  merged_at
+  object_type
+  original_book_id
+  original_edition_id
+  owned
+  owned_copies
+  privacy_setting_id
+  private_notes
+  rating
+  read_count
+  reading_format_id
+  recommended_by
+  recommended_for
+  referrer_user_id
+  review
+  review_has_spoilers
+  review_html
+  review_length
+  review_migrated
+  review_object
+  review_raw
+  review_slate
+  reviewed_at
+  sponsored_review
+  starred
+  status_id
+  updated_at
+  url
+  user_id
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_avg_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_bool_and_arguments_columns {
+  has_review
+  imported
+  owned
+  review_has_spoilers
+  review_migrated
+  sponsored_review
+  starred
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_bool_or_arguments_columns {
+  has_review
+  imported
+  owned
+  review_has_spoilers
+  review_migrated
+  sponsored_review
+  starred
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_corr_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_covar_samp_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_max_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_min_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_stddev_samp_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_sum_arguments_columns {
+  cached_match_score
+}
+
+enum user_books_select_column_user_books_aggregate_bool_exp_var_samp_arguments_columns {
+  cached_match_score
+}
+
+enum user_flags_constraint {
+  user_flags_id_key
+  user_flags_pkey
+}
+
+enum user_flags_select_column {
+  action_id
+  action_type
+  category
+  created_at
+  details
+  flag_status_id
+  id
+  reported_user_id
+  user_id
+}
+
+enum user_flags_update_column {
+  _PLACEHOLDER
+}
+
+enum user_referrals_select_column {
+  created_at
+  id
+  referrer_id
+  state
+  updated_at
+  user_id
+}
+
+enum user_statuses_select_column {
+  id
+  status
+}
+
+enum users_aggregate_by_created_at_date_select_column {
+  count
+  created_at
+}
+
+enum users_select_column {
+  access_level
+  account_privacy_setting_id
+  activity_privacy_settings_id
+  admin
+  bio
+  birthdate
+  books_count
+  cached_cover
+  cached_genres
+  cached_image
+  confirmation_sent_at
+  confirmed_at
+  created_at
+  current_sign_in_at
+  email
+  email_verified
+  flair
+  followed_users_count
+  followers_count
+  id
+  image_id
+  last_activity_at
+  last_sign_in_at
+  librarian_roles
+  link
+  location
+  locked_at
+  match_updated_at
+  membership
+  membership_ends_at
+  name
+  object_type
+  onboarded
+  payment_system_id
+  pro
+  pronoun_personal
+  pronoun_possessive
+  referrer_id
+  referrer_url
+  remember_created_at
+  reset_password_sent_at
+  sign_in_count
+  status_id
+  unconfirmed_email
+  updated_at
+  username
+}
+
+

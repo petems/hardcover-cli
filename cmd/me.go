@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -42,78 +43,45 @@ Example:
 
 		gqlClient := client.NewClient(cfg.BaseURL, cfg.APIKey)
 
-		query := `
-			query GetCurrentUser {
-				me {
-					id
-					username
-					email
-					name
-					created_at
-					updated_at
-				}
-			}
-		`
-
-		var response GetCurrentUserResponse
-		if err := gqlClient.Execute(context.Background(), query, nil, &response); err != nil {
+		response, err := gqlClient.GetCurrentUser(context.Background())
+		if err != nil {
 			return fmt.Errorf("failed to get user profile: %w", err)
 		}
 
-		// Handle response data
-		if response.Me != nil {
-			// Try to extract user data
-			if userList, ok := response.Me.([]interface{}); ok && len(userList) > 0 {
-				if userProfile, userOk := userList[0].(map[string]interface{}); userOk {
-					printUserProfile(cmd.OutOrStdout(), userProfile)
-					return nil
-				}
-			}
+		// Display the user information
+		printToStdoutf(cmd.OutOrStdout(), "User Profile:\n")
 
-			// Try direct object approach
-			if userMap, ok := response.Me.(map[string]interface{}); ok {
-				printUserProfile(cmd.OutOrStdout(), userMap)
-				return nil
-			}
+		if response.Me == nil {
+			return errors.New("no user data received")
 		}
 
-		return errors.New("unexpected response format for user data")
+		user := response.Me
+		printToStdoutf(cmd.OutOrStdout(), "  ID: %d\n", user.ID)
+		if user.Username != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", user.Username)
+		}
+		if user.Email != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Email: %s\n", user.Email)
+		}
+		if user.Name != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Name: %s\n", user.Name)
+		}
+		if user.Bio != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Bio: %s\n", user.Bio)
+		}
+		if user.Location != "" {
+			printToStdoutf(cmd.OutOrStdout(), "  Location: %s\n", user.Location)
+		}
+		if user.Created_at != nil {
+			printToStdoutf(
+				cmd.OutOrStdout(),
+				"  Created: %s\n",
+				time.Time(*user.Created_at).Format("2006-01-02 15:04:05"),
+			)
+		}
+
+		return nil
 	},
-}
-
-// GetCurrentUserResponse represents the GraphQL response for the current user query.
-type GetCurrentUserResponse struct {
-	Me interface{} `json:"me"`
-}
-
-// printUserProfile formats and prints user profile information.
-func printUserProfile(w interface{ Write([]byte) (int, error) }, user map[string]interface{}) {
-	printToStdoutLn(w, "User Profile:")
-	printToStdoutLn(w, "=============")
-
-	if id, ok := user["id"].(string); ok {
-		printToStdoutf(w, "ID: %s\n", id)
-	}
-
-	if username, ok := user["username"].(string); ok {
-		printToStdoutf(w, "Username: %s\n", username)
-	}
-
-	if email, ok := user["email"].(string); ok && email != "" {
-		printToStdoutf(w, "Email: %s\n", email)
-	}
-
-	if name, ok := user["name"].(string); ok && name != "" {
-		printToStdoutf(w, "Display Name: %s\n", name)
-	}
-
-	if createdAt, ok := user["created_at"].(string); ok && createdAt != "" {
-		printToStdoutf(w, "Created: %s\n", createdAt)
-	}
-
-	if updatedAt, ok := user["updated_at"].(string); ok && updatedAt != "" {
-		printToStdoutf(w, "Updated: %s\n", updatedAt)
-	}
 }
 
 // setupMeCommands registers the me command with the root command.

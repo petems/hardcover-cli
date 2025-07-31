@@ -11,26 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Contributor represents a book contributor.
-type Contributor struct {
-	Name string `json:"name"`
-	Role string `json:"role"`
-}
-
-// Genre represents a book genre.
-type Genre struct {
-	Name string `json:"name"`
-}
-
-// Contribution represents a contribution to a book.
-type Contribution struct {
-	Author Author `json:"author"`
-}
-
-// Author represents an author from the API.
-type Author struct {
-	Name string `json:"name"`
-}
+// Note: Using types from internal/client package instead of duplicating them here
 
 // SearchUser represents a user from the search API.
 type SearchUser struct {
@@ -44,61 +25,6 @@ type SearchUser struct {
 	FollowersCount     int         `json:"followers_count"`
 	FollowedUsersCount int         `json:"followed_users_count"`
 	Pro                bool        `json:"pro"`
-}
-
-// Book represents a book from the search API.
-type Book struct {
-	ID                     string   `json:"id"`
-	FeaturedSeries         string   `json:"featured_series"`
-	CoverColor             string   `json:"cover_color"`
-	Slug                   string   `json:"slug"`
-	Description            string   `json:"description"`
-	Subtitle               string   `json:"subtitle"`
-	Title                  string   `json:"title"`
-	ContributionTypes      []string `json:"contribution_types"`
-	AuthorNames            []string `json:"author_names"`
-	Contributions          []string `json:"contributions"`
-	Tags                   []string `json:"tags"`
-	Moods                  []string `json:"moods"`
-	ContentWarnings        []string `json:"content_warnings"`
-	ISBNs                  []string `json:"isbns"`
-	Genres                 []string `json:"genres"`
-	SeriesNames            []string `json:"series_names"`
-	AlternativeTitles      []string `json:"alternative_titles"`
-	RatingsCount           int      `json:"ratings_count"`
-	ListsCount             int      `json:"lists_count"`
-	ReleaseYear            int      `json:"release_year"`
-	Rating                 float64  `json:"rating"`
-	UsersCount             int      `json:"users_count"`
-	UsersReadCount         int      `json:"users_read_count"`
-	ReviewsCount           int      `json:"reviews_count"`
-	Pages                  int      `json:"pages"`
-	PromptsCount           int      `json:"prompts_count"`
-	ActivitiesCount        int      `json:"activities_count"`
-	AudioSeconds           int      `json:"audio_seconds"`
-	ReleaseDateI           int      `json:"release_date_i"`
-	FeaturedSeriesPosition int      `json:"featured_series_position"`
-	HasAudiobook           bool     `json:"has_audiobook"`
-	HasEbook               bool     `json:"has_ebook"`
-	Compilation            bool     `json:"compilation"`
-}
-
-// BookSearchResults represents the search results for books.
-type BookSearchResults struct {
-	Results    []Book `json:"results"`
-	TotalCount int    `json:"totalCount"`
-}
-
-// SearchBooksResponse represents the response from the SearchBooks query.
-type SearchBooksResponse struct {
-	Search struct {
-		Query     string   `json:"query"`
-		QueryType string   `json:"query_type"`
-		IDs       []string `json:"ids"`
-		Results   []Book   `json:"results"`
-		Page      int      `json:"page"`
-		PerPage   int      `json:"per_page"`
-	} `json:"search"`
 }
 
 // SearchUsersResponse represents the response from the SearchUsers query.

@@ -1,30 +1,35 @@
 # Hardcover CLI
 
-A comprehensive command-line interface for interacting with the Hardcover.app GraphQL API.
+A comprehensive command-line interface for interacting with the Hardcover.app GraphQL API, built with custom type generation for type safety and maintainability.
 
 ## Features
 
-- **User Profile Management**: Get your authenticated user profile information
+- **User Profile Management**: Get your authenticated user profile information with type-safe GraphQL operations
 - **Book Search**: Search for books by title, author, or other criteria
 - **User Search**: Search for users by name, username, or location
 - **Configuration Management**: Easy setup and management of API keys
+- **Custom Type Generation**: Auto-generated Go types from GraphQL schema for compile-time safety
+- **DRY GraphQL Architecture**: Centralized queries and typed responses for maintainability
 - **High Test Coverage**: Comprehensive unit tests for all functionality
 - **Well-Documented**: Clear help text and documentation for all commands
 
 ## Current Status
 
-This CLI tool is actively developed and currently supports core functionality for interacting with the Hardcover.app API. Some features are still in development due to API schema inconsistencies.
+This CLI tool is actively developed and currently supports core functionality for interacting with the Hardcover.app API. The project uses a **custom type generation approach** to overcome GraphQL introspection schema issues while maintaining excellent developer experience.
 
 ### ✅ Working Features
 - Book search with detailed results
 - User search with profile information
-- User profile retrieval
+- User profile retrieval (type-safe implementation)
 - Configuration management
+- Custom GraphQL type generation
+- DRY GraphQL architecture with centralized queries
 - Comprehensive test coverage
 
 ### ⚠️ Known Issues
 - Limited to read-only operations (no write operations implemented)
-- Some API endpoints may have GraphQL schema inconsistencies
+- Standard GraphQL code generation tools don't work due to API schema inconsistencies
+- Our custom type generation solution works around these limitations
 
 For detailed API coverage information, see [API_COVERAGE.md](API_COVERAGE.md).
 
@@ -40,7 +45,24 @@ For detailed API coverage information, see [API_COVERAGE.md](API_COVERAGE.md).
 ```bash
 git clone <repository-url>
 cd hardcover-cli
-go build -o hardcover main.go
+
+# Generate types from GraphQL schema
+make generate-types
+
+# Build the application
+make build
+# or
+go build -o bin/hardcover-cli main.go
+```
+
+### Available Make Commands
+
+```bash
+make build              # Build the application
+make test               # Run all tests
+make generate-types     # Regenerate GraphQL types
+make clean              # Clean build artifacts
+make install            # Install to $GOPATH/bin
 ```
 
 ## Configuration
@@ -74,12 +96,20 @@ hardcover me
 Displays your user profile information including:
 - User ID
 - Username
+- Email (if available)
+- Name, bio, and location (if available)
+- Creation and update timestamps
 
 **Example Output:**
 ```
 User Profile:
   ID: 12345
   Username: johndoe
+  Email: john@example.com
+  Name: John Doe
+  Bio: Software developer and book lover
+  Location: San Francisco, CA
+  Created: 2023-01-15T10:30:00Z
 ```
 
 #### Search for Books
@@ -187,8 +217,6 @@ hardcover config show-path
 Configuration file: /home/user/.hardcover/config.yaml
 ```
 
-
-
 ### Global Options
 
 - `--config`: Specify a custom config file path
@@ -228,21 +256,55 @@ hardcover config get-api-key
 hardcover-cli/
 ├── cmd/                    # CLI command implementations
 │   ├── root.go            # Root command and CLI setup
-│   ├── me.go              # User profile command
+│   ├── me.go              # User profile command (type-safe)
 │   ├── search.go          # Search commands (books and users)
 │   ├── config.go          # Configuration commands
 │   └── *_test.go          # Unit tests
 ├── internal/
 │   ├── client/            # GraphQL client implementation
 │   │   ├── client.go      # HTTP client wrapper
-│   │   ├── schema.graphql # GraphQL schema
-│   │   └── queries.graphql # GraphQL queries
+│   │   ├── queries.go     # GraphQL query constants
+│   │   ├── responses.go   # Typed response structures
+│   │   ├── helpers.go     # Helper functions for query execution
+│   │   ├── types.go       # Generated GraphQL types
+│   │   └── queries.graphql # GraphQL query definitions
 │   └── config/            # Configuration management
 │       ├── config.go      # Configuration logic
 │       └── config_test.go # Configuration tests
+├── scripts/
+│   └── generate-types.go  # Custom type generation script
 ├── main.go                # Application entry point
 ├── go.mod                 # Go module definition
+├── Makefile               # Build and development commands
 └── README.md             # This file
+```
+
+### GraphQL Type Generation System
+
+Our project uses a custom Go script (`scripts/generate-types.go`) that:
+
+1. **Fetches GraphQL Schema**: Performs introspection query to get the schema
+2. **Handles Schema Issues**: Maps problematic types (e.g., `citext` → `string`)
+3. **Generates Go Types**: Creates type-safe Go structs from GraphQL types
+4. **Provides Type Safety**: Ensures compile-time type checking
+
+### DRY GraphQL Architecture
+
+We've implemented a maintainable GraphQL approach with:
+
+1. **Query Constants** (`internal/client/queries.go`): Centralized GraphQL queries
+2. **Typed Responses** (`internal/client/responses.go`): Type-safe response structures
+3. **Helper Functions** (`internal/client/helpers.go`): Clean API for query execution
+4. **Generated Types** (`internal/client/types.go`): Auto-generated from schema
+
+### Type Generation Workflow
+
+```bash
+# Generate types from GraphQL schema
+make generate-types
+
+# This runs: go run scripts/generate-types.go
+# Which creates: internal/client/types.go
 ```
 
 ### Running Tests
@@ -257,6 +319,21 @@ go test ./... -cover
 # Run tests for specific package
 go test ./internal/config -v
 ```
+
+### Implementing New Commands
+
+For adding new GraphQL commands, follow our established pattern:
+
+1. **Add Query** to `internal/client/queries.graphql`
+2. **Regenerate Types** with `make generate-types`
+3. **Add Response Type** to `internal/client/responses.go`
+4. **Add Helper Function** to `internal/client/helpers.go`
+5. **Add Query Constant** to `internal/client/queries.go`
+6. **Implement CLI Command** following the established pattern
+7. **Register Command** in `cmd/root.go`
+8. **Add Tests** for the new command
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed implementation guide.
 
 ### GraphQL Schema
 
@@ -277,7 +354,7 @@ The application uses a GraphQL schema based on the Hardcover.app API. The schema
 
 ### GraphQL Queries
 
-The application uses the following GraphQL queries:
+The application uses the following GraphQL queries with type-safe responses:
 
 #### Get Current User
 
@@ -287,6 +364,9 @@ query GetCurrentUser {
     id
     username
     email
+    name
+    bio
+    location
     createdAt
     updatedAt
   }
@@ -336,6 +416,22 @@ query SearchUsers($query: String!) {
 }
 ```
 
+### Type-Safe Usage Example
+
+```go
+// Clean, type-safe GraphQL operations
+gqlClient := client.NewClient(cfg.BaseURL, cfg.APIKey)
+response, err := gqlClient.GetCurrentUser(ctx)
+if err != nil {
+    return fmt.Errorf("failed to get user profile: %w", err)
+}
+
+// Direct access to typed fields
+user := response.Me
+printToStdoutf(cmd.OutOrStdout(), "  ID: %d\n", user.ID)
+printToStdoutf(cmd.OutOrStdout(), "  Username: %s\n", user.Username)
+```
+
 ## Contributing
 
 1. Fork the repository
@@ -344,6 +440,14 @@ query SearchUsers($query: String!) {
 4. Add tests for new functionality
 5. Ensure all tests pass
 6. Submit a pull request
+
+### Development Guidelines
+
+- **Use generated types** for type safety
+- **Follow DRY patterns** with centralized queries and responses
+- **Add comprehensive tests** with proper mocking
+- **Update documentation** for new commands
+- **Handle errors gracefully** with user-friendly messages
 
 ## License
 
@@ -361,12 +465,10 @@ Error: API key is required. Set it using:
   hardcover config set-api-key "your-api-key"
 ```
 
-**API Key Not Set:**
+**Type Generation Issues:**
 ```bash
-Error: API key is required. Set it using:
-  export HARDCOVER_API_KEY="your-api-key"
-  or
-  hardcover config set-api-key "your-api-key"
+# If types are out of sync, regenerate them
+make generate-types
 ```
 
 **Search Errors:**
@@ -375,15 +477,32 @@ Error: failed to search books: GraphQL errors: [some error message]
 ```
 This may indicate API schema changes or temporary service issues.
 
+**Build Errors:**
+```bash
+# Clean and rebuild
+make clean
+make generate-types
+make build
+```
+
 ### Getting Help
 
 For issues and questions:
 - Check the help text: `hardcover --help`
 - Review the documentation above
 - Check [API_COVERAGE.md](API_COVERAGE.md) for implementation status
+- Check [DEVELOPMENT.md](DEVELOPMENT.md) for development guidelines
+- Check [HARDCOVER_API_ISSUE.md](HARDCOVER_API_ISSUE.md) for API limitations
 - File an issue in the repository
 
 ## Changelog
+
+### v1.1.0
+- **Custom Type Generation**: Implemented custom GraphQL type generation system
+- **DRY GraphQL Architecture**: Centralized queries and typed responses
+- **Type-Safe Operations**: All GraphQL operations now use generated types
+- **Improved Development Workflow**: Added Make commands and type generation
+- **Enhanced Documentation**: Updated development guidelines and examples
 
 ### v1.0.0
 - Initial release

@@ -7,7 +7,7 @@ LINT := golangci-lint
 
 BUILD_FLAGS := -ldflags "-X main.Version=${VERSION}"
 
-.PHONY: all build test lint install clean help release fmt
+.PHONY: all build test lint install clean help release fmt generate-types
 
 all: build
 
@@ -44,6 +44,13 @@ clean:
 	@echo "Cleaning..."
 	rm -rf bin/
 	$(GO) clean -cache ./...
+
+## Generate Go types from GraphQL schema
+generate-types: ## Generate Go types from remote GraphQL schema
+	@echo "Generating Go types from GraphQL schema..."
+	@echo "Generation started at: $(shell date '+%Y-%m-%d %H:%M:%S %Z')"
+	@go run scripts/generate-types.go
+	@echo "Generation completed at: $(shell date '+%Y-%m-%d %H:%M:%S %Z')"
 
 ## Help
 help:
